@@ -1,0 +1,317 @@
+{
+  "products": [
+    {
+      "id": "p1",
+      "name": "Royal Marble Chess Board with Golden Veins",
+      "category": "boards",
+      "price": 249.99,
+      "discountPrice": 199.99,
+      "stock": 3,
+      "description": "An absolute masterpiece in the world of artisanal chess making. Hand-carved from premium Spanish marble with striking black and gold marble veins. Each square is meticulously polished to a high-gloss finish. Framed by an elegant gold-plated trim and dark mahogany border. Perfect for grandmasters and art collectors alike.",
+      "images": [
+        "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?auto=format&fit=crop&w=800&q=80"
+      ],
+      "rating": 4.9,
+      "reviewsCount": 8,
+      "isBestSeller": false,
+      "isNewArrival": true,
+      "specialOffer": true
+    },
+    {
+      "id": "p2",
+      "name": "Grandmaster Walnut & Maple Tournament Chess Board",
+      "category": "boards",
+      "price": 149.99,
+      "stock": 12,
+      "description": "Designed specifically according to official FIDE tournament standards. Crafted from solid American walnut and premium solid maple squares, finished with an eye-comfortable matte protective lacquer. Features reinforced brass corners and felt backing to protect your table surface.",
+      "images": [
+        "https://images.unsplash.com/photo-1586165368502-1badb97a6461?auto=format&fit=crop&w=800&q=80"
+      ],
+      "rating": 4.8,
+      "reviewsCount": 15,
+      "isBestSeller": true,
+      "isNewArrival": false,
+      "specialOffer": false
+    },
+    {
+      "id": "p3",
+      "name": "Minimalist Black Leather Roll-up Chess Board",
+      "category": "boards",
+      "price": 89.99,
+      "discountPrice": 79.99,
+      "stock": 20,
+      "description": "Designed for the modern strategist on the move. Crafted from premium Italian calfskin leather in executive ebony black, featuring soft, hand-pressed gold leaf coordinates. Flexible yet sturdy, this roll-up board combines absolute portability with luxury sophistication. Includes a velvet protection sleeve.",
+      "images": [
+        "https://images.unsplash.com/photo-1611195974226-a6a9be9dd763?auto=format&fit=crop&w=800&q=80"
+      ],
+      "rating": 4.6,
+      "reviewsCount": 5,
+      "isBestSeller": false,
+      "isNewArrival": false,
+      "specialOffer": true
+    },
+    {
+      "id": "p4",
+      "name": "Heavy Brass & Charcoal Chrome Championship Pieces",
+      "category": "pieces",
+      "price": 320,
+      "stock": 3,
+      "description": "Extremely well-weighted, these solid brass pieces are the pinnacle of tactile satisfaction during play. One army is plated in glistening 14k gold with a mirror-like shine, while the other is clad in sleek charcoal chrome. Triple-weighted with thick felt pads for quiet, authoritative moves. Includes extra queens.",
+      "images": [
+        "https://images.unsplash.com/photo-1523821741446-edb2b68bb7a0?auto=format&fit=crop&w=800&q=80"
+      ],
+      "rating": 5,
+      "reviewsCount": 21,
+      "isBestSeller": true,
+      "isNewArrival": false,
+      "specialOffer": false
+    },
+    {
+      "id": "p5",
+      "name": "Staunton Boxwood & Gabon Ebony Pieces",
+      "category": "pieces",
+      "price": 189.99,
+      "stock": 8,
+      "description": "A dream for classicists and traditionalists. Exquisitely hand-carved by master wood artisans in Amritsar, India. Crafted from premium selected boxwood (for the white pieces) and genuine Gabonese ebony wood (for the black pieces). Heavily weighted with billiard felt bases and detailed knight carvings.",
+      "images": [
+        "https://images.unsplash.com/photo-1604948501466-4e9c3e24955a?auto=format&fit=crop&w=800&q=80"
+      ],
+      "rating": 4.9,
+      "reviewsCount": 14,
+      "isBestSeller": false,
+      "isNewArrival": true,
+      "specialOffer": false
+    },
+    {
+      "id": "p6",
+      "name": "Artisan Imperial Gold-Accented Porcelain Pieces",
+      "category": "pieces",
+      "price": 450,
+      "discountPrice": 399.99,
+      "stock": 2,
+      "description": "An extraordinary intersection between classical history and fine porcelain art. Double-fired premium white porcelain with stunning liquid gold and obsidian black enamel details for each individual piece. These heavy, artistic figurines provide an elite, luxurious presence on any board.",
+      "images": [
+        "https://images.unsplash.com/photo-1560179707-f14e90ef3623?auto=format&fit=crop&w=800&q=80"
+      ],
+      "rating": 4.7,
+      "reviewsCount": 6,
+      "isBestSeller": false,
+      "isNewArrival": false,
+      "specialOffer": true
+    },
+    {
+      "id": "p7",
+      "name": "Retro Mechanical Brass Game Clock",
+      "category": "clocks",
+      "price": 110,
+      "stock": 6,
+      "description": "Relive the classic heartbeat of historic matches. Built with a durable steel casing fully plated in polished brass. This fully mechanical dual-clock features quiet windup movements, clear red flags, and dynamic brass tactile push buttons. No batteries required.",
+      "images": [
+        "https://images.unsplash.com/photo-1544085311-11a028465b03?auto=format&fit=crop&w=800&q=80"
+      ],
+      "rating": 4.5,
+      "reviewsCount": 11,
+      "isBestSeller": false,
+      "isNewArrival": false,
+      "specialOffer": false
+    },
+    {
+      "id": "p8",
+      "name": "Tempus Wood-Framed Digital Tournament Clock",
+      "category": "clocks",
+      "price": 125,
+      "stock": 15,
+      "description": "The official choice for high-stakes modern rapid chess matches. Features advanced digital programming for Fischer, delay, and increment time controls, fully conforming to FIDE standards. Beautifully encased in natural walnut veneer to complement your luxury board setup, with a high-contrast screen.",
+      "images": [
+        "https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=800&q=80"
+      ],
+      "rating": 4.8,
+      "reviewsCount": 19,
+      "isBestSeller": true,
+      "isNewArrival": true,
+      "specialOffer": false
+    },
+    {
+      "id": "p9",
+      "name": "Royal Leather Double Chess Set Carrier Bag",
+      "category": "accessories",
+      "price": 95,
+      "stock": 10,
+      "description": "Protect a lifetime investment with a bag worthy of its status. Crafted from durable, full-grain bovine leather in rich brown with solid brass locks and accessories. Fully lined inside with emerald velvet, featuring custom protective slots for 34 pieces, a roll-up board, and a standard game clock.",
+      "images": [
+        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=80"
+      ],
+      "rating": 4.7,
+      "reviewsCount": 9,
+      "isBestSeller": false,
+      "isNewArrival": false,
+      "specialOffer": false
+    },
+    {
+      "id": "p10",
+      "name": "Grandmaster Knight Badge Gold Suit Pin",
+      "category": "accessories",
+      "price": 25,
+      "stock": 50,
+      "description": "A subtle emblem of strategic elegance. Made of solid jewelry brass plated with polished 18k yellow gold. Designed as a miniature knight piece with intricate carving details. Features a secure butterfly backing. A perfect accessory for suit lapels, ties, and coats.",
+      "images": [
+        "https://images.unsplash.com/photo-1595909393164-190b79e2a4a7?auto=format&fit=crop&w=800&q=80"
+      ],
+      "rating": 4.9,
+      "reviewsCount": 32,
+      "isBestSeller": false,
+      "isNewArrival": true,
+      "specialOffer": false
+    },
+    {
+      "id": "p11",
+      "name": "Artisan Beeswax & Microfiber Polish Care Kit",
+      "category": "accessories",
+      "price": 19.99,
+      "stock": 40,
+      "description": "Keep the original pristine shine of your grandmaster setup. Includes 120ml of organic pure beeswax blended with subtle orange essential oils, and two ultra-dense microfiber polishing cloths. Safely removes fingerprints, dust, and micro-scratches, leaving a protective coat on wood, marble, and stone.",
+      "images": [
+        "https://images.unsplash.com/photo-1607344645866-009c320b63e0?auto=format&fit=crop&w=800&q=80"
+      ],
+      "rating": 4.5,
+      "reviewsCount": 7,
+      "isBestSeller": false,
+      "isNewArrival": false,
+      "specialOffer": false
+    }
+  ],
+  "reviews": [
+    {
+      "id": "r1",
+      "productId": "p4",
+      "username": "Alexandra Botez",
+      "rating": 5,
+      "comment": "The weighted brass chess pieces are absolutely majestic. Tactile response when placing a move feels deeply satisfying, and the gold finish is impeccable.",
+      "date": "2026-05-20"
+    },
+    {
+      "id": "r2",
+      "productId": "p2",
+      "username": "Gary Kasparov",
+      "rating": 5,
+      "comment": "The walnut tournament board perfectly meets official standard sizing while remaining a gorgeous centerpiece on my desk study. Highly recommended for static grandmaster preparation.",
+      "date": "2026-04-12"
+    },
+    {
+      "id": "r3",
+      "productId": "p8",
+      "username": "Hikaru Nakamura",
+      "rating": 5,
+      "comment": "I use the wood-plated Tempus clock for my rapid chess streams. It’s highly responsive, extremely stylish, and the analog tactile buttons respond instantly to pressure.",
+      "date": "2026-06-02"
+    }
+  ],
+  "users": [
+    {
+      "id": "u1",
+      "name": "Bobby Fischer",
+      "email": "customer@chess.com",
+      "role": "customer",
+      "phone": "+1 555-PAWN-WIN",
+      "address": "123 Chess Way, Oslo",
+      "joinedDate": "2026-01-15",
+      "ordersCount": 2,
+      "totalSpent": 519.99
+    },
+    {
+      "id": "u2",
+      "name": "Abdelrhman Ali",
+      "email": "abdelrhmanali981@gmail.com",
+      "role": "admin",
+      "phone": "+1 555-CHECKMATE",
+      "address": "456 Grandmaster Blvd, Cairo",
+      "joinedDate": "2025-12-01",
+      "ordersCount": 0,
+      "totalSpent": 0
+    },
+    {
+      "id": "u3_229",
+      "name": "mostafa",
+      "email": "mostafa@gmail.com",
+      "role": "customer",
+      "phone": "0101010101010",
+      "address": "",
+      "joinedDate": "2026-06-28",
+      "ordersCount": 0,
+      "totalSpent": 0
+    },
+    {
+      "id": "u4_702",
+      "name": "Mostafa",
+      "email": "mostafaaboali048@gmail.com",
+      "role": "customer",
+      "phone": "",
+      "address": "",
+      "joinedDate": "2026-06-28",
+      "ordersCount": 0,
+      "totalSpent": 0
+    }
+  ],
+  "coupons": [
+    {
+      "code": "WELCOME10",
+      "discountType": "percentage",
+      "value": 10,
+      "minSpend": 0
+    },
+    {
+      "code": "CHESSGOLD20",
+      "discountType": "percentage",
+      "value": 20,
+      "minSpend": 100
+    }
+  ],
+  "orders": [
+    {
+      "id": "o1001_85",
+      "userId": "u1",
+      "customerName": "Bobby Fischer",
+      "email": "customer@chess.com",
+      "phone": "+1 555-PAWN-WIN",
+      "address": "123 Chess Way, Oslo",
+      "items": [
+        {
+          "productId": "p4",
+          "name": "Heavy Brass & Charcoal Chrome Championship Pieces",
+          "quantity": 1,
+          "price": 320,
+          "image": "https://images.unsplash.com/photo-1523821741446-edb2b68bb7a0?auto=format&fit=crop&w=800&q=80"
+        }
+      ],
+      "total": 320,
+      "status": "Delivered",
+      "date": "2026-05-15T10:30:00.000Z",
+      "trackingNumber": "CH-84950284-IS"
+    },
+    {
+      "customerName": "Test",
+      "email": "test@test.com",
+      "phone": "123",
+      "address": "Test St",
+      "items": [
+        {
+          "productId": "p1",
+          "name": "Royal Marble Chess Board with Golden Veins",
+          "price": 199.99,
+          "quantity": 1,
+          "image": "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?auto=format&fit=crop&w=800&q=80"
+        }
+      ],
+      "subtotal": 199.99,
+      "discount": 0,
+      "shipping": 0,
+      "total": 199.99,
+      "paymentMethod": "card",
+      "userId": "u1",
+      "id": "o1002_26",
+      "status": "New",
+      "date": "2026-06-28T10:07:30.910Z",
+      "trackingNumber": "CH-12172242-IS"
+    }
+  ]
+}

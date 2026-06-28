@@ -1,0 +1,6 @@
+{
+  "name": "Chess E-Commerce Store",
+  "description": "An elegant, professional chess e-commerce platform featuring a premium dark theme, full product catalog, reviews, cart, wishlists, checkout simulation, user accounts, and a comprehensive admin dashboard with live sales reports.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
