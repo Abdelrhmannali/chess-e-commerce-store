@@ -2,160 +2,178 @@ import React from "react";
 import { ShoppingCart, Heart, Eye, Star } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 import { getProductTranslation } from "../utils/translations";
+import "../styles/Catalog.css";
+
+const formatSAR = (amount) =>
+  `${Number(amount).toLocaleString("ar-SA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ر.س`;
 
 export default function ProductCard({
   product,
   onSelect,
   onAddToCart,
   onToggleWishlist,
-  isWishlisted
+  isWishlisted,
+  animationIndex = 0,
 }) {
   const { t } = useLanguage();
   const translatedProduct = getProductTranslation(product);
 
-  const displayPrice = translatedProduct.discountPrice !== undefined ? translatedProduct.discountPrice : translatedProduct.price;
-  const originalPrice = translatedProduct.discountPrice !== undefined ? translatedProduct.price : null;
+  const displayPrice =
+    translatedProduct.discountPrice !== undefined
+      ? translatedProduct.discountPrice
+      : translatedProduct.price;
+  const originalPrice =
+    translatedProduct.discountPrice !== undefined ? translatedProduct.price : null;
+  const discountPercent = originalPrice
+    ? Math.round(((translatedProduct.price - displayPrice) / translatedProduct.price) * 100)
+    : null;
+
+  const imageSrc =
+    translatedProduct.images?.[0] ||
+    translatedProduct.image ||
+    "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?auto=format&fit=crop&w=800&q=80";
 
   return (
-    <div
-      onClick={() => onSelect(product)}
-      className="card h-100 product-card-custom position-relative cursor-pointer"
+    <article
+      className="beidaq-product-card"
       id={`product-card-${translatedProduct.id}`}
+      style={{ "--card-index": animationIndex }}
+      onClick={() => onSelect(product)}
     >
-      {/* Badges container */}
-      <div 
-        className="position-absolute z-3 d-flex flex-column gap-1" 
-        style={{ 
-          top: "14px", 
-          right: "auto", 
-          left: "14px" 
-        }}
-      >
-        {translatedProduct.isBestSeller && (
-          <span className="badge bg-black-custom text-white fw-bold text-uppercase px-2.5 py-1 text-xs" style={{ borderRadius: "0px", letterSpacing: "1px" }}>
-            {t("bestsellerBadge")}
-          </span>
-        )}
-        {translatedProduct.isNewArrival && (
-          <span className="badge bg-dark text-white border border-secondary fw-bold text-uppercase px-2.5 py-1 text-xs" style={{ borderRadius: "0px", letterSpacing: "1px" }}>
-            {t("newArrivalBadge")}
-          </span>
-        )}
-        {originalPrice && (
-          <span className="badge bg-danger text-white fw-bold text-uppercase px-2.5 py-1 text-xs" style={{ borderRadius: "0px", letterSpacing: "1px" }}>
-            {t("promoBadge")}
-          </span>
-        )}
-      </div>
-
-      {/* Wishlist Heart */}
-      <button
-        onClick={(e) => onToggleWishlist(product, e)}
-        className="btn bg-white border border-light position-absolute z-3 p-2 rounded-circle shadow-sm"
-        style={{ 
-          top: "14px", 
-          left: "auto", 
-          right: "14px",
-          width: "38px",
-          height: "38px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center"
-        }}
-        title={isWishlisted ? t("removeProduct") : t("viewWishlist")}
-      >
-        <Heart size={16} className={isWishlisted ? "text-danger fill-danger" : "text-secondary"} />
-      </button>
-
-      {/* Image container */}
-      <div className="position-relative overflow-hidden bg-light border-bottom" style={{ aspectRatio: "1" }}>
+      {/* Image */}
+      <div className="beidaq-product-image-wrap">
         <img
-          src={translatedProduct.images?.[0] || translatedProduct.image || "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?auto=format&fit=crop&w=800&q=80"}
+          src={imageSrc}
           alt={translatedProduct.name}
           referrerPolicy="no-referrer"
-          className="w-100 h-100 object-fit-cover transition"
-          style={{ transition: "all 0.5s ease" }}
+          className="beidaq-product-image"
+          loading="lazy"
         />
-        {/* Action Overlay */}
-        <div 
-          className="position-absolute inset-0 d-flex align-items-center justify-content-center bg-dark bg-opacity-25 opacity-0 text-white transition-opacity"
-          style={{ transition: "opacity 0.3s ease" }}
+        <div className="beidaq-product-image-overlay" aria-hidden="true" />
+
+        {/* Badges */}
+        <div className="beidaq-product-badges">
+          {translatedProduct.isBestSeller && (
+            <span className="beidaq-product-badge beidaq-product-badge--bestseller">
+              {t("bestsellerBadge")}
+            </span>
+          )}
+          {translatedProduct.isNewArrival && (
+            <span className="beidaq-product-badge beidaq-product-badge--new">
+              {t("newArrivalBadge")}
+            </span>
+          )}
+          {discountPercent && (
+            <span className="beidaq-product-badge beidaq-product-badge--discount">
+              -{discountPercent}%
+            </span>
+          )}
+        </div>
+
+        {/* Wishlist */}
+        <button
+          type="button"
+          onClick={(e) => onToggleWishlist(product, e)}
+          className={`beidaq-product-wishlist${isWishlisted ? " beidaq-product-wishlist--active" : ""}`}
+          title={isWishlisted ? t("removeProduct") : t("viewWishlist")}
+          aria-label={isWishlisted ? t("removeProduct") : t("viewWishlist")}
         >
-          <div className="p-3 bg-gold-custom text-charcoal-custom rounded-circle shadow-lg">
-            <Eye size={18} />
-          </div>
+          <Heart size={17} />
+        </button>
+
+        {/* Hover Actions */}
+        <div className="beidaq-product-actions">
+          <button
+            type="button"
+            className="beidaq-product-action-btn beidaq-product-action-btn--outline"
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect(product);
+            }}
+          >
+            <Eye size={15} />
+            <span>معاينة سريعة</span>
+          </button>
+          <button
+            type="button"
+            className="beidaq-product-action-btn beidaq-product-action-btn--primary"
+            disabled={translatedProduct.stock === 0}
+            onClick={(e) => onAddToCart(product, e)}
+          >
+            <ShoppingCart size={15} />
+            <span>أضف للسلة</span>
+          </button>
         </div>
       </div>
 
-      {/* Product Info */}
-      <div className="card-body d-flex flex-column p-4 text-start">
-        {/* Category */}
-        <span className={`font-mono-custom fw-bold text-gold-custom text-uppercase d-block mb-1`} style={{ fontSize: "10px", letterSpacing: "1.5px" }}>
+      {/* Body */}
+      <div className="beidaq-product-body">
+        <span className="beidaq-product-category">
           {translatedProduct.categoryName || translatedProduct.category}
         </span>
 
-        {/* Title */}
-        <h5 className="card-title font-serif-custom fw-bold text-charcoal-custom mb-2 text-truncate-2" style={{ fontSize: "1rem", lineHeight: "1.4" }}>
-          {translatedProduct.name}
-        </h5>
+        <h3 className="beidaq-product-title">{translatedProduct.name}</h3>
 
-        {/* Rating */}
-        <div className="d-flex align-items-center gap-2 mb-3 mt-auto flex-row-reverse">
-          <div className="d-flex text-warning">
+        {translatedProduct.description && (
+          <p className="beidaq-product-desc">{translatedProduct.description}</p>
+        )}
+
+        <div className="beidaq-product-rating">
+          <div className="beidaq-product-stars" aria-label={`${(translatedProduct.rating || 0).toFixed(1)} stars`}>
             {[...Array(5)].map((_, i) => (
               <Star
                 key={i}
-                size={12}
-                className={i < Math.floor(translatedProduct.rating) ? "text-gold-custom fill-gold" : "text-muted opacity-25"}
+                size={13}
+                className={
+                  i < Math.floor(translatedProduct.rating || 0)
+                    ? "beidaq-star--filled"
+                    : "beidaq-star--empty"
+                }
+                fill={i < Math.floor(translatedProduct.rating || 0) ? "currentColor" : "none"}
               />
             ))}
           </div>
-          <span className="text-muted font-mono-custom" style={{ fontSize: "11px" }}>
+          <span className="beidaq-product-rating-value">
             {(translatedProduct.rating || 0).toFixed(1)}
           </span>
         </div>
 
-        {/* Pricing & Cart Action */}
-        <div className="d-flex align-items-center justify-content-between pt-3 border-top flex-row-reverse">
-          <div className="d-flex flex-column">
+        <div className="beidaq-product-pricing">
+          <div className="beidaq-product-price-group">
             {originalPrice && (
-              <span className="text-muted text-decoration-line-through font-mono-custom" style={{ fontSize: "11px" }}>
-                ${translatedProduct.price.toFixed(2)}
-              </span>
+              <span className="beidaq-product-price-old">{formatSAR(originalPrice)}</span>
             )}
-            <span className="fs-5 fw-bold text-charcoal-custom font-serif-custom">
-              ${displayPrice.toFixed(2)}
-            </span>
+            <span className="beidaq-product-price">{formatSAR(displayPrice)}</span>
           </div>
 
           <button
+            type="button"
             onClick={(e) => onAddToCart(product, e)}
             disabled={translatedProduct.stock === 0}
-            className={`btn d-flex align-items-center justify-content-center ${
-              translatedProduct.stock === 0
-                ? "btn-light text-muted border-0 cursor-not-allowed"
-                : "btn-dark-custom"
-            }`}
-            style={{ width: "40px", height: "40px", borderRadius: "0px" }}
+            className="beidaq-product-cart-btn"
             title={translatedProduct.stock === 0 ? t("outOfStock") : t("viewCart")}
+            aria-label={translatedProduct.stock === 0 ? t("outOfStock") : t("viewCart")}
           >
-            <ShoppingCart size={16} />
+            <ShoppingCart size={18} />
           </button>
         </div>
 
-        {/* Inventory Stock Status */}
-        <div className="mt-2 text-start">
-          {translatedProduct.stock === 0 ? (
-            <span className="text-danger font-mono-custom fw-bold text-uppercase" style={{ fontSize: "10px", letterSpacing: "1px" }}>{t("soldOut")}</span>
-          ) : translatedProduct.stock <= 5 ? (
-            <span className="text-gold-custom font-mono-custom fw-bold text-uppercase" style={{ fontSize: "10px", letterSpacing: "1px" }}>
-              {t("onlyLeft").replace("{stock}", String(translatedProduct.stock))}
-            </span>
-          ) : (
-            <span className="text-muted font-mono-custom text-uppercase" style={{ fontSize: "10px", letterSpacing: "0.5px" }}>{t("inStock")}</span>
-          )}
+        <div
+          className={`beidaq-product-stock ${
+            translatedProduct.stock === 0
+              ? "beidaq-product-stock--out"
+              : translatedProduct.stock <= 5
+                ? "beidaq-product-stock--low"
+                : "beidaq-product-stock--available"
+          }`}
+        >
+          {translatedProduct.stock === 0
+            ? t("soldOut")
+            : translatedProduct.stock <= 5
+              ? t("onlyLeft").replace("{stock}", String(translatedProduct.stock))
+              : t("inStock")}
         </div>
       </div>
-    </div>
+    </article>
   );
 }

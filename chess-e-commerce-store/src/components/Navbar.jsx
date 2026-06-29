@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { ShoppingCart, Heart, User as UserIcon, LogOut, ShieldCheck, Menu, X } from "lucide-react";
+import { FaChessKing } from "react-icons/fa6";
 import { useLanguage } from "../context/LanguageContext";
+import "../styles/Navbar.css";
 
 export default function Navbar({
   currentUser,
@@ -21,36 +23,30 @@ export default function Navbar({
   };
 
   const navLinkClass = (tab) =>
-    `btn btn-link text-decoration-none px-3 py-2 text-uppercase fw-bold font-mono-custom nav-link-btn ${
-      activeTab === tab ? "nav-link-active" : ""
-    }`;
+    `beidaq-navbar__link${activeTab === tab ? " beidaq-navbar__link--active" : ""}`;
 
   if (isAdminMode) {
     return (
-      <nav className="sticky-top shadow-sm admin-navbar-minimal" id="app-navbar" style={{ zIndex: 1050 }}>
-        <div className="container py-3">
+      <nav className="beidaq-navbar beidaq-navbar--admin sticky-top" id="app-navbar">
+        <div className="container beidaq-navbar__inner">
           <div className="d-flex align-items-center justify-content-between">
-            <div className="d-flex align-items-center gap-3">
-              <div className="d-flex align-items-center justify-content-center font-serif-custom logo-mark fw-bold" style={{ width: "40px", height: "40px", fontSize: "1.3rem" }}>
-                ♔
+            <div className="beidaq-navbar__brand">
+              <div className="beidaq-navbar__logo">
+                <FaChessKing aria-hidden="true" />
               </div>
-              <div className="text-end">
-                <span className="font-sans text-uppercase fw-bold nav-brand-title tracking-widest d-block m-0" style={{ fontSize: "1rem" }}>
-                  {t("adminPanel")}
-                </span>
-                <span className="admin-badge d-block">لوحة الإدارة فقط</span>
+              <div className="beidaq-navbar__brand-text">
+                <span className="beidaq-navbar__brand-name">{t("adminPanel")}</span>
+                <span className="beidaq-navbar__admin-badge">لوحة الإدارة فقط</span>
               </div>
             </div>
             <div className="d-flex align-items-center gap-3">
               {currentUser && (
                 <>
-                  <div className="d-none d-sm-flex align-items-center gap-2">
-                    <div className="d-flex align-items-center justify-content-center bg-gold-custom text-charcoal-custom fw-bold rounded-circle shadow-sm" style={{ width: "32px", height: "32px", fontSize: "13px" }}>
-                      {currentUser.name[0].toUpperCase()}
-                    </div>
-                    <span className="nav-member-name fw-semibold m-0">{currentUser.name}</span>
+                  <div className="d-none d-sm-flex align-items-center gap-2 flex-row-reverse">
+                    <div className="beidaq-navbar__avatar">{currentUser.name[0].toUpperCase()}</div>
+                    <span className="beidaq-navbar__user-name">{currentUser.name}</span>
                   </div>
-                  <button onClick={onLogout} className="btn btn-logout d-flex align-items-center gap-1.5">
+                  <button type="button" onClick={onLogout} className="beidaq-navbar__logout">
                     <LogOut size={13} />
                     <span>{t("signOut")}</span>
                   </button>
@@ -64,40 +60,43 @@ export default function Navbar({
   }
 
   return (
-    <nav className="sticky-top shadow-sm" id="app-navbar" style={{ zIndex: 1050 }}>
-      <div className="container py-3">
+    <nav className="beidaq-navbar sticky-top" id="app-navbar">
+      <div className="container beidaq-navbar__inner">
         <div className="d-flex align-items-center justify-content-between">
-          <div className="d-flex align-items-center cursor-pointer" onClick={() => handleNavClick("home")} id="nav-logo">
-            <div className="d-flex align-items-center justify-content-center font-serif-custom logo-mark fw-bold ms-3" style={{ width: "40px", height: "40px", fontSize: "1.3rem" }}>
-              ♔
+          <div
+            className="beidaq-navbar__brand"
+            onClick={() => handleNavClick("home")}
+            id="nav-logo"
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === "Enter" && handleNavClick("home")}
+          >
+            <div className="beidaq-navbar__logo">
+              <FaChessKing aria-hidden="true" />
             </div>
-            <div className="text-end">
-              <span className="font-sans text-uppercase fw-bold nav-brand-title tracking-widest d-block m-0" style={{ fontSize: "1rem" }}>
-                {t("grandmaster")}
-              </span>
-              <span className="font-sans nav-brand-subtitle d-block">
-                {t("luxuryChesscraft")}
-              </span>
+            <div className="beidaq-navbar__brand-text">
+              <span className="beidaq-navbar__brand-name">{t("grandmaster")}</span>
+              <span className="beidaq-navbar__brand-tagline">{t("luxuryChesscraft")}</span>
             </div>
           </div>
 
-          <div className="d-none d-md-flex align-items-center gap-1" id="nav-desktop-links">
-            <button onClick={() => handleNavClick("home")} className={navLinkClass("home")} style={{ fontSize: "11px", letterSpacing: "1px" }}>
+          <div className="d-none d-md-flex beidaq-navbar__links" id="nav-desktop-links">
+            <button type="button" onClick={() => handleNavClick("home")} className={navLinkClass("home")}>
               {t("collection")}
             </button>
-            <button onClick={() => handleNavClick("shop")} className={navLinkClass("shop")} style={{ fontSize: "11px", letterSpacing: "1px" }}>
+            <button type="button" onClick={() => handleNavClick("shop")} className={navLinkClass("shop")}>
               {t("catalog")}
             </button>
-            <button onClick={() => handleNavClick("account")} className={navLinkClass("account")} style={{ fontSize: "11px", letterSpacing: "1px" }}>
+            <button type="button" onClick={() => handleNavClick("account")} className={navLinkClass("account")}>
               {t("myAccount")}
             </button>
             {currentUser?.role === "admin" && (
               <button
+                type="button"
                 onClick={() => handleNavClick("admin")}
-                className={`btn btn-link text-decoration-none px-3 py-2 text-uppercase fw-bold font-mono-custom d-flex align-items-center gap-1 nav-link-btn ${
-                  activeTab === "admin" ? "nav-link-active" : ""
+                className={`beidaq-navbar__link beidaq-navbar__link--admin${
+                  activeTab === "admin" ? " beidaq-navbar__link--active" : ""
                 }`}
-                style={{ fontSize: "11px", letterSpacing: "1px" }}
               >
                 <ShieldCheck size={14} />
                 {t("adminPanel")}
@@ -105,99 +104,88 @@ export default function Navbar({
             )}
           </div>
 
-          <div className="d-none d-md-flex align-items-center gap-3" id="nav-desktop-actions">
-            <button
-              onClick={() => handleNavClick("wishlist")}
-              className="btn btn-link nav-icon-btn p-2 position-relative bg-transparent border-0"
-              title={t("viewWishlist")}
-            >
-              <Heart size={18} className={wishlistCount > 0 ? "fill-gold text-gold-custom" : ""} />
-              {wishlistCount > 0 && (
-                <span className="position-absolute top-0 start-100 translate-middle badge bg-gold-custom text-charcoal-custom rounded-circle" style={{ fontSize: "9px", padding: "3px 6px" }}>
-                  {wishlistCount}
-                </span>
-              )}
-            </button>
+          <div className="d-none d-md-flex beidaq-navbar__actions" id="nav-desktop-actions">
+            {currentUser && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => handleNavClick("wishlist")}
+                  className="beidaq-navbar__icon-btn"
+                  title={t("viewWishlist")}
+                  aria-label={t("viewWishlist")}
+                >
+                  <Heart size={17} className={wishlistCount > 0 ? "fill-gold text-gold-custom" : ""} />
+                  {wishlistCount > 0 && <span className="beidaq-navbar__badge">{wishlistCount}</span>}
+                </button>
 
-            <button
-              onClick={() => handleNavClick("cart")}
-              className="btn btn-link nav-icon-btn p-2 position-relative bg-transparent border-0"
-              title={t("viewCart")}
-            >
-              <ShoppingCart size={18} />
-              {cartCount > 0 && (
-                <span className="position-absolute top-0 start-100 translate-middle badge bg-gold-custom text-charcoal-custom rounded-circle" style={{ fontSize: "9px", padding: "3px 6px" }}>
-                  {cartCount}
-                </span>
-              )}
-            </button>
+                <button
+                  type="button"
+                  onClick={() => handleNavClick("cart")}
+                  className="beidaq-navbar__icon-btn"
+                  title={t("viewCart")}
+                  aria-label={t("viewCart")}
+                >
+                  <ShoppingCart size={17} />
+                  {cartCount > 0 && <span className="beidaq-navbar__badge">{cartCount}</span>}
+                </button>
 
-            <div className="nav-divider" />
+                <div className="beidaq-navbar__divider" aria-hidden="true" />
+              </>
+            )}
 
             {currentUser ? (
-              <div className="d-flex align-items-center gap-2">
-                <div
-                  onClick={() => handleNavClick("account")}
-                  className="d-flex align-items-center gap-2 cursor-pointer"
-                >
-                  <div className="d-flex align-items-center justify-content-center bg-gold-custom text-charcoal-custom fw-bold rounded-circle shadow-sm" style={{ width: "32px", height: "32px", fontSize: "13px" }}>
-                    {currentUser.name[0].toUpperCase()}
-                  </div>
-                  <div className="text-end">
-                    <p className="nav-member-label m-0 font-mono-custom text-uppercase">{t("member")}</p>
-                    <p className="nav-member-name fw-semibold m-0">{currentUser.name}</p>
+              <div className="d-flex align-items-center gap-2 flex-row-reverse">
+                <div className="beidaq-navbar__user" onClick={() => handleNavClick("account")}>
+                  <div className="beidaq-navbar__avatar">{currentUser.name[0].toUpperCase()}</div>
+                  <div className="beidaq-navbar__user-info">
+                    <p className="beidaq-navbar__user-label">{t("member")}</p>
+                    <p className="beidaq-navbar__user-name">{currentUser.name}</p>
                   </div>
                 </div>
-                <button
-                  onClick={onLogout}
-                  className="btn btn-logout d-flex align-items-center gap-1.5"
-                  title={t("signOut")}
-                >
+                <button type="button" onClick={onLogout} className="beidaq-navbar__logout" title={t("signOut")}>
                   <LogOut size={13} />
                   <span>{t("signOut")}</span>
                 </button>
               </div>
             ) : (
-              <button
-                onClick={onOpenAuth}
-                className="btn btn-gold-custom d-flex align-items-center gap-1.5 px-4 py-1.5"
-                style={{ fontSize: "11px" }}
-              >
-                <UserIcon size={12} />
+              <button type="button" onClick={onOpenAuth} className="beidaq-navbar__login-btn">
+                <UserIcon size={14} />
                 {t("loginJoin")}
               </button>
             )}
           </div>
 
           <div className="d-flex d-md-none align-items-center gap-2" id="nav-mobile-toggle">
-            <button
-              onClick={() => handleNavClick("wishlist")}
-              className="btn btn-link nav-icon-btn p-1 position-relative"
-            >
-              <Heart size={18} className={wishlistCount > 0 ? "fill-gold text-gold-custom" : ""} />
-              {wishlistCount > 0 && (
-                <span className="position-absolute top-0 start-100 translate-middle badge bg-gold-custom text-charcoal-custom rounded-circle" style={{ fontSize: "8px", padding: "2px 5px" }}>
-                  {wishlistCount}
-                </span>
-              )}
-            </button>
+            {currentUser && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => handleNavClick("wishlist")}
+                  className="beidaq-navbar__icon-btn"
+                  aria-label={t("viewWishlist")}
+                >
+                  <Heart size={17} className={wishlistCount > 0 ? "fill-gold text-gold-custom" : ""} />
+                  {wishlistCount > 0 && <span className="beidaq-navbar__badge">{wishlistCount}</span>}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleNavClick("cart")}
+                  className="beidaq-navbar__icon-btn"
+                  aria-label={t("viewCart")}
+                >
+                  <ShoppingCart size={17} />
+                  {cartCount > 0 && <span className="beidaq-navbar__badge">{cartCount}</span>}
+                </button>
+              </>
+            )}
 
             <button
-              onClick={() => handleNavClick("cart")}
-              className="btn btn-link nav-icon-btn p-1 position-relative"
-            >
-              <ShoppingCart size={18} />
-              {cartCount > 0 && (
-                <span className="position-absolute top-0 start-100 translate-middle badge bg-gold-custom text-charcoal-custom rounded-circle" style={{ fontSize: "8px", padding: "2px 5px" }}>
-                  {cartCount}
-                </span>
-              )}
-            </button>
-
-            <button
+              type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="btn btn-outline-custom nav-icon-btn p-1 ms-2"
-              style={{ borderRadius: "8px" }}
+              className="beidaq-navbar__menu-toggle"
+              aria-label={mobileMenuOpen ? "إغلاق القائمة" : "فتح القائمة"}
+              aria-expanded={mobileMenuOpen}
             >
               {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -206,79 +194,77 @@ export default function Navbar({
       </div>
 
       {mobileMenuOpen && (
-        <div className="d-md-none p-3" id="nav-mobile-drawer">
-          <div className="d-grid gap-2">
+        <div className="beidaq-navbar__drawer d-md-none" id="nav-mobile-drawer">
+          <div className="container d-grid gap-2">
             <button
+              type="button"
               onClick={() => handleNavClick("home")}
-              className={`btn nav-mobile-link text-uppercase fw-bold font-mono-custom p-2 ${activeTab === "home" ? "active" : ""}`}
-              style={{ fontSize: "11px" }}
+              className={`beidaq-navbar__mobile-link${activeTab === "home" ? " beidaq-navbar__mobile-link--active" : ""}`}
             >
               {t("collection")}
             </button>
             <button
+              type="button"
               onClick={() => handleNavClick("shop")}
-              className={`btn nav-mobile-link text-uppercase fw-bold font-mono-custom p-2 ${activeTab === "shop" ? "active" : ""}`}
-              style={{ fontSize: "11px" }}
+              className={`beidaq-navbar__mobile-link${activeTab === "shop" ? " beidaq-navbar__mobile-link--active" : ""}`}
             >
               {t("catalog")}
             </button>
             <button
+              type="button"
               onClick={() => handleNavClick("account")}
-              className={`btn nav-mobile-link text-uppercase fw-bold font-mono-custom p-2 ${activeTab === "account" ? "active" : ""}`}
-              style={{ fontSize: "11px" }}
+              className={`beidaq-navbar__mobile-link${activeTab === "account" ? " beidaq-navbar__mobile-link--active" : ""}`}
             >
               {t("myAccount")}
             </button>
             {currentUser?.role === "admin" && (
               <button
+                type="button"
                 onClick={() => handleNavClick("admin")}
-                className={`btn nav-mobile-link text-uppercase fw-bold font-mono-custom p-2 d-flex align-items-center gap-2 ${activeTab === "admin" ? "active" : ""}`}
-                style={{ fontSize: "11px" }}
+                className={`beidaq-navbar__mobile-link d-flex align-items-center gap-2 flex-row-reverse${
+                  activeTab === "admin" ? " beidaq-navbar__mobile-link--active" : ""
+                }`}
               >
                 <ShieldCheck size={14} />
                 {t("adminPanel")}
               </button>
             )}
 
-            <div className="nav-divider my-2" style={{ width: "100%", height: "1px" }} />
+            <div className="beidaq-navbar__divider my-1" style={{ width: "100%", height: "1px" }} aria-hidden="true" />
 
             {currentUser ? (
-              <div className="p-2">
-                <div className="d-flex align-items-center gap-3 mb-3">
-                  <div className="d-flex align-items-center justify-content-center bg-gold-custom text-charcoal-custom fw-bold rounded-circle shadow-sm" style={{ width: "36px", height: "36px" }}>
-                    {currentUser.name[0].toUpperCase()}
-                  </div>
-                  <div>
-                    <p className="nav-member-name fw-bold m-0" style={{ fontSize: "13px" }}>{currentUser.name}</p>
-                    <p className="nav-member-label m-0 font-mono-custom">{currentUser.email}</p>
+              <div className="beidaq-navbar__mobile-user">
+                <div className="d-flex align-items-center gap-3 mb-3 flex-row-reverse">
+                  <div className="beidaq-navbar__avatar">{currentUser.name[0].toUpperCase()}</div>
+                  <div className="text-end">
+                    <p className="beidaq-navbar__user-name mb-1">{currentUser.name}</p>
+                    <p className="beidaq-navbar__user-label mb-0">{currentUser.email}</p>
                   </div>
                 </div>
                 <button
+                  type="button"
                   onClick={() => {
                     onLogout();
                     setMobileMenuOpen(false);
                   }}
-                  className="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center gap-2 text-uppercase fw-bold py-2"
-                  style={{ fontSize: "11px", borderRadius: "8px" }}
+                  className="beidaq-navbar__mobile-logout"
                 >
                   <LogOut size={14} />
                   {t("signOut")}
                 </button>
               </div>
             ) : (
-              <div className="p-1">
-                <button
-                  onClick={() => {
-                    onOpenAuth();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="btn btn-gold-custom w-100 py-2 d-flex align-items-center justify-content-center gap-2"
-                  style={{ fontSize: "11px" }}
-                >
-                  <UserIcon size={14} />
-                  {t("loginJoin")}
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  onOpenAuth();
+                  setMobileMenuOpen(false);
+                }}
+                className="beidaq-navbar__login-btn w-100 justify-content-center"
+              >
+                <UserIcon size={14} />
+                {t("loginJoin")}
+              </button>
             )}
           </div>
         </div>

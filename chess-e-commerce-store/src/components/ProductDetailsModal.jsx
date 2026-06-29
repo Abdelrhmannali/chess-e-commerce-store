@@ -1,24 +1,40 @@
 import React, { useState, useEffect } from "react";
-import { X, Star, ShoppingCart, Heart, ShieldAlert } from "lucide-react";
+import { X, Star, ShoppingCart, Heart, ShieldCheck } from "lucide-react";
 import { api } from "../utils/api";
 import { useLanguage } from "../context/LanguageContext";
 import { getProductTranslation } from "../utils/translations";
+import "../styles/ProductDetails.css";
 
-const PLACEHOLDER_IMAGE = "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?auto=format&fit=crop&w=800&q=80";
+const PLACEHOLDER_IMAGE =
+  "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?auto=format&fit=crop&w=800&q=80";
+
+const formatSAR = (amount) =>
+  `${Number(amount).toLocaleString("ar-SA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ر.س`;
 
 export default function ProductDetailsModal({
   product,
   onClose,
   onAddToCart,
   onToggleWishlist,
-  isWishlisted
+  isWishlisted,
 }) {
   const [liveProduct, setLiveProduct] = useState(product);
   const [loadingProduct, setLoadingProduct] = useState(true);
 
   const { t } = useLanguage();
   const translatedProduct = getProductTranslation(liveProduct);
-  const imageUrl = translatedProduct.images?.[0] || translatedProduct.image || PLACEHOLDER_IMAGE;
+  const imageUrl =
+    translatedProduct.images?.[0] || translatedProduct.image || PLACEHOLDER_IMAGE;
+
+  const displayPrice =
+    translatedProduct.discountPrice !== undefined
+      ? translatedProduct.discountPrice
+      : translatedProduct.price;
+  const originalPrice =
+    translatedProduct.discountPrice !== undefined ? translatedProduct.price : null;
+  const discountPercent = originalPrice
+    ? Math.round(((translatedProduct.price - displayPrice) / translatedProduct.price) * 100)
+    : null;
 
   useEffect(() => {
     let active = true;
@@ -34,80 +50,163 @@ export default function ProductDetailsModal({
       }
     }
     fetchFreshProduct();
-    return () => { active = false; };
+    return () => {
+      active = false;
+    };
   }, [product.id, product]);
 
-  return (
-    <div className="modal fade show d-block" tabIndex="-1" style={{ backgroundColor: "rgba(17, 17, 17, 0.85)", backdropFilter: "blur(5px)", zIndex: 1060, overflowY: "auto" }}>
-      <div className="modal-dialog modal-lg modal-dialog-centered my-5">
-        <div className="modal-content bg-white border-gold-custom rounded-0 shadow-lg position-relative overflow-hidden">
-          <button onClick={onClose} className="btn btn-dark-custom position-absolute border-0 rounded-circle" style={{ top: "16px", right: "auto", left: "16px", zIndex: 10, width: "40px", height: "40px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <X size={18} />
-          </button>
+  const stockClass =
+    translatedProduct.stock === 0
+      ? "beidaq-product-modal__stock--out"
+      : translatedProduct.stock <= 5
+        ? "beidaq-product-modal__stock--low"
+        : "beidaq-product-modal__stock--in";
 
-          <div className="row g-0">
-            <div className="col-md-6 p-4 bg-light d-flex flex-column justify-content-center border-end">
-              <div className="bg-white border border-custom p-2 mb-3" style={{ aspectRatio: "1" }}>
-                <img src={imageUrl} alt={translatedProduct.name} referrerPolicy="no-referrer" className="w-100 h-100 object-fit-cover" />
+  const stockLabel =
+    translatedProduct.stock === 0
+      ? t("soldOut")
+      : translatedProduct.stock <= 5
+        ? t("onlyLeft").replace("{stock}", String(translatedProduct.stock))
+        : `${t("inStock")} (${translatedProduct.stock})`;
+
+  return (
+    <div
+      className="beidaq-product-overlay rtl"
+      tabIndex={-1}
+      onClick={onClose}
+      role="presentation"
+    >
+      <div
+        className="beidaq-product-modal"
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="product-modal-title"
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          className="beidaq-product-modal__close"
+          aria-label="إغلاق"
+        >
+          <X size={18} />
+        </button>
+
+        <div className="beidaq-product-modal__grid">
+          <div className="beidaq-product-modal__media">
+            <div className="beidaq-product-modal__image-wrap">
+              <img
+                src={imageUrl}
+                alt={translatedProduct.name}
+                referrerPolicy="no-referrer"
+                className="beidaq-product-modal__image"
+              />
+            </div>
+          </div>
+
+          <div className="beidaq-product-modal__body">
+            <span className="beidaq-product-modal__category">
+              {translatedProduct.categoryName || translatedProduct.category}
+            </span>
+
+            <h2 className="beidaq-product-modal__title" id="product-modal-title">
+              {translatedProduct.name}
+            </h2>
+
+            {loadingProduct && (
+              <span className="beidaq-product-modal__loading">جاري التحديث...</span>
+            )}
+
+            <div className="beidaq-product-modal__rating">
+              <div
+                className="beidaq-product-modal__stars"
+                aria-label={`${(translatedProduct.rating || 0).toFixed(1)} stars`}
+              >
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    size={14}
+                    className={
+                      i < Math.floor(translatedProduct.rating || 0)
+                        ? "beidaq-star--filled"
+                        : "beidaq-star--empty"
+                    }
+                    fill={
+                      i < Math.floor(translatedProduct.rating || 0) ? "currentColor" : "none"
+                    }
+                  />
+                ))}
+              </div>
+              <span className="beidaq-product-modal__rating-value">
+                {(translatedProduct.rating || 0).toFixed(1)}
+              </span>
+            </div>
+
+            <div className="beidaq-product-modal__price-box">
+              <div className="beidaq-product-modal__price-row">
+                <div>
+                  <span className="beidaq-product-modal__price-label">السعر</span>
+                  {originalPrice && (
+                    <span className="beidaq-product-modal__price-old">
+                      {formatSAR(originalPrice)}
+                    </span>
+                  )}
+                  <span className="beidaq-product-modal__price">
+                    {formatSAR(displayPrice)}
+                    {discountPercent && (
+                      <span className="beidaq-product-modal__discount">-{discountPercent}%</span>
+                    )}
+                  </span>
+                </div>
+                <div>
+                  <span className="beidaq-product-modal__stock-label">التوفر</span>
+                  <span className={`beidaq-product-modal__stock ${stockClass}`}>
+                    {stockLabel}
+                  </span>
+                </div>
               </div>
             </div>
 
-            <div className="col-md-6 p-4 d-flex flex-column text-end" style={{ maxHeight: "85vh", overflowY: "auto" }}>
-              <span className="font-mono-custom fw-bold text-gold-custom text-uppercase d-block mb-1" style={{ fontSize: "11px", letterSpacing: "1.5px" }}>
-                {translatedProduct.categoryName || translatedProduct.category}
-              </span>
-              <h3 className="font-serif-custom fw-bold text-charcoal-custom mb-2">{translatedProduct.name}</h3>
-              {loadingProduct && <span className="badge badge-custom mb-2">جاري التحديث...</span>}
-
-              <div className="d-flex align-items-center gap-2 mb-4 flex-row-reverse">
-                <div className="d-flex text-warning">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={14} className={i < Math.floor(translatedProduct.rating || 0) ? "text-gold-custom fill-gold" : "text-muted opacity-25"} />
-                  ))}
-                </div>
-                <span className="text-muted font-mono-custom" style={{ fontSize: "11px" }}>{(translatedProduct.rating || 0).toFixed(1)}</span>
+            {translatedProduct.description && (
+              <div>
+                <h3 className="beidaq-product-modal__desc-title">الوصف</h3>
+                <p className="beidaq-product-modal__desc">{translatedProduct.description}</p>
               </div>
+            )}
 
-              <div className="p-3 bg-light border border-custom mb-4">
-                <div className="d-flex align-items-center justify-content-between flex-row-reverse">
-                  <div>
-                    <span className="text-muted font-mono-custom text-uppercase d-block mb-1" style={{ fontSize: "9px" }}>السعر</span>
-                    <span className="fs-3 fw-bold text-charcoal-custom font-serif-custom">${translatedProduct.price.toFixed(2)}</span>
-                  </div>
-                  <div>
-                    <span className="text-muted font-mono-custom text-uppercase d-block mb-1" style={{ fontSize: "9px" }}>{t("statusLabel")}</span>
-                    {translatedProduct.stock === 0 ? (
-                      <span className="badge bg-danger-subtle text-danger border border-danger rounded-0 px-2.5 py-1 text-uppercase font-mono-custom" style={{ fontSize: "10px" }}>{t("soldOut")}</span>
-                    ) : translatedProduct.stock <= 5 ? (
-                      <span className="badge bg-warning-subtle text-warning-emphasis border border-warning rounded-0 px-2.5 py-1 text-uppercase font-mono-custom" style={{ fontSize: "10px" }}>{t("onlyLeft").replace("{stock}", String(translatedProduct.stock))}</span>
-                    ) : (
-                      <span className="badge bg-success-subtle text-success border border-success rounded-0 px-2.5 py-1 text-uppercase font-mono-custom" style={{ fontSize: "10px" }}>{t("inStock")} ({translatedProduct.stock})</span>
-                    )}
-                  </div>
-                </div>
+            <div className="beidaq-product-modal__actions">
+              <button
+                type="button"
+                onClick={() => {
+                  if (translatedProduct.stock > 0) onAddToCart(liveProduct);
+                }}
+                disabled={translatedProduct.stock === 0}
+                className="beidaq-product-modal__cart-btn"
+              >
+                <ShoppingCart size={16} />
+                <span>أضف للسلة</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => onToggleWishlist(liveProduct)}
+                className={`beidaq-product-modal__wishlist-btn${
+                  isWishlisted ? " beidaq-product-modal__wishlist-btn--active" : ""
+                }`}
+                aria-label={isWishlisted ? t("removeProduct") : t("viewWishlist")}
+              >
+                <Heart size={18} />
+              </button>
+            </div>
+
+            <div className="beidaq-product-modal__trust">
+              <div className="beidaq-product-modal__trust-icon">
+                <ShieldCheck size={20} aria-hidden="true" />
               </div>
-
-              <div className="mb-4">
-                <h6 className="text-muted font-mono-custom text-uppercase fw-bold mb-2" style={{ fontSize: "10px" }}>الوصف</h6>
-                <p className="text-secondary font-sans mb-0" style={{ fontSize: "13px", lineHeight: "1.6" }}>{translatedProduct.description}</p>
-              </div>
-
-              <div className="d-flex gap-2 mb-4 flex-row-reverse">
-                <button onClick={() => { if (translatedProduct.stock > 0) onAddToCart(liveProduct); }} disabled={translatedProduct.stock === 0} className={`btn flex-grow-1 py-3 text-uppercase fw-bold font-mono-custom d-flex align-items-center justify-content-center gap-2 ${translatedProduct.stock === 0 ? "btn-light text-muted border border-custom" : "btn-gold-custom"}`} style={{ fontSize: "11px" }}>
-                  <ShoppingCart size={14} />
-                  إضافة إلى السلة
-                </button>
-                <button onClick={() => onToggleWishlist(liveProduct)} className={`btn p-3 border rounded-0 d-flex align-items-center justify-content-center ${isWishlisted ? "btn-light border-danger text-danger bg-danger-subtle" : "btn-light border-secondary text-secondary"}`} style={{ width: "48px" }}>
-                  <Heart size={16} className={isWishlisted ? "fill-danger" : ""} />
-                </button>
-              </div>
-
-              <div className="p-3 bg-light border border-custom d-flex gap-3 flex-row-reverse text-end">
-                <ShieldAlert size={18} className="text-gold-custom shrink-0 mt-1" />
-                <div>
-                  <span className="font-mono-custom fw-bold text-gold-custom text-uppercase d-block mb-1" style={{ fontSize: "10px" }}>{t("verifySecurityCert")}</span>
-                  <p className="text-secondary m-0" style={{ fontSize: "11px", lineHeight: "1.4" }}>{t("qualityGuarantee")}</p>
-                </div>
+              <div>
+                <span className="beidaq-product-modal__trust-title">
+                  {t("verifySecurityCert")}
+                </span>
+                <p className="beidaq-product-modal__trust-text">{t("qualityGuarantee")}</p>
               </div>
             </div>
           </div>

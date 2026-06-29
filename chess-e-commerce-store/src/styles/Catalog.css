@@ -1,0 +1,770 @@
+/* ── Beidaq Luxury Catalog & Product Cards ─────────────────────────── */
+
+.beidaq-app-shell {
+  background: #F8F7F4;
+}
+
+:root {
+  --beidaq-gold: #D4AF37;
+  --beidaq-gold-light: #E8C547;
+  --beidaq-gold-dark: #B8962E;
+  --beidaq-bg: #0F1115;
+  --beidaq-bg-soft: #151820;
+  --beidaq-glass: rgba(255, 255, 255, 0.04);
+  --beidaq-glass-hover: rgba(255, 255, 255, 0.07);
+  --beidaq-border: rgba(212, 175, 55, 0.2);
+  --beidaq-border-hover: rgba(212, 175, 55, 0.38);
+  --beidaq-text: #FFFFFF;
+  --beidaq-text-secondary: #C8C8C8;
+  --beidaq-text-muted: rgba(200, 200, 200, 0.55);
+  --beidaq-radius-card: 22px;
+  --beidaq-radius-pill: 999px;
+  --beidaq-transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Catalog Section ─────────────────────────────────────────────── */
+
+.beidaq-catalog {
+  position: relative;
+  overflow: hidden;
+  background: #F8F7F4;
+  color: #737373;
+  padding: 3.5rem 0 5rem;
+  min-height: 60vh;
+
+  /* Light-theme tokens scoped to catalog shell */
+  --beidaq-glass: rgba(255, 255, 255, 0.9);
+  --beidaq-glass-hover: #FFFFFF;
+  --beidaq-text: #121212;
+  --beidaq-text-secondary: #444444;
+  --beidaq-text-muted: #737373;
+}
+
+.beidaq-catalog-glow {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 800px;
+  height: 400px;
+  background: radial-gradient(ellipse, rgba(212, 175, 55, 0.06) 0%, transparent 65%);
+  pointer-events: none;
+}
+
+.beidaq-catalog-pattern {
+  position: absolute;
+  inset: 0;
+  opacity: 0.035;
+  background-image:
+    linear-gradient(rgba(212, 175, 55, 0.35) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 175, 55, 0.35) 1px, transparent 1px);
+  background-size: 56px 56px;
+  pointer-events: none;
+}
+
+/* Header */
+.beidaq-catalog-header {
+  text-align: center;
+  margin-bottom: 3rem;
+  padding-top: 1rem;
+}
+
+.beidaq-catalog-fade-in {
+  animation: beidaq-fade-in 0.8s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@keyframes beidaq-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.beidaq-catalog-header-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 1.25rem;
+  background: linear-gradient(135deg, var(--beidaq-gold) 0%, var(--beidaq-gold-dark) 100%);
+  color: var(--beidaq-bg);
+  border-radius: 16px;
+  font-size: 1.5rem;
+  box-shadow: 0 8px 32px rgba(212, 175, 55, 0.3);
+}
+
+.beidaq-catalog-title {
+  font-family: "Tajawal", "Playfair Display", serif;
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  font-weight: 800;
+  color: var(--beidaq-text);
+  margin: 0 0 0.75rem;
+  letter-spacing: 0.01em;
+  line-height: 1.25;
+}
+
+.beidaq-catalog-subtitle {
+  font-family: "Tajawal", sans-serif;
+  font-size: clamp(0.88rem, 2vw, 1rem);
+  color: var(--beidaq-text-muted);
+  max-width: 560px;
+  margin: 0 auto 1.5rem;
+  line-height: 1.75;
+}
+
+.beidaq-catalog-divider {
+  width: 80px;
+  height: 3px;
+  margin: 0 auto;
+  background: linear-gradient(90deg, transparent, var(--beidaq-gold), transparent);
+  border-radius: 2px;
+}
+
+/* Toolbar */
+.beidaq-catalog-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+  animation: beidaq-fade-in 0.8s 0.15s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@media (min-width: 768px) {
+  .beidaq-catalog-toolbar {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.beidaq-catalog-search {
+  position: relative;
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 320px;
+}
+
+.beidaq-catalog-search-input {
+  width: 100%;
+  padding: 0.75rem 2.75rem 0.75rem 1.15rem;
+  background: #FFFFFF;
+  border: 1px solid #E5E5E5;
+  border-radius: var(--beidaq-radius-pill);
+  color: #121212;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.88rem;
+  transition: var(--beidaq-transition);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.rtl .beidaq-catalog-search-input {
+  padding: 0.75rem 1.15rem 0.75rem 2.75rem;
+}
+
+.beidaq-catalog-search-input::placeholder {
+  color: #999999;
+}
+
+.beidaq-catalog-search-input:focus {
+  outline: none;
+  border-color: var(--beidaq-border-hover);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+  background: #FFFFFF;
+}
+
+.beidaq-catalog-search-icon {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  color: var(--beidaq-gold);
+  font-size: 0.95rem;
+  pointer-events: none;
+}
+
+.rtl .beidaq-catalog-search-icon {
+  right: auto;
+  left: 1rem;
+}
+
+/* Category Filters */
+.beidaq-catalog-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.beidaq-filter-pill {
+  padding: 0.55rem 1.25rem;
+  background: #FFFFFF;
+  border: 1px solid #E5E5E5;
+  border-radius: var(--beidaq-radius-pill);
+  color: #555555;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--beidaq-transition);
+  white-space: nowrap;
+}
+
+.beidaq-filter-pill:hover {
+  border-color: var(--beidaq-border-hover);
+  color: #121212;
+  background: rgba(212, 175, 55, 0.06);
+  transform: translateY(-1px);
+}
+
+.beidaq-filter-pill--active {
+  background: linear-gradient(135deg, var(--beidaq-gold) 0%, var(--beidaq-gold-dark) 100%);
+  border-color: var(--beidaq-gold);
+  color: #0F1115;
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.35);
+}
+
+.beidaq-filter-pill--active:hover {
+  background: linear-gradient(135deg, var(--beidaq-gold-light) 0%, var(--beidaq-gold) 100%);
+  color: #0F1115;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(212, 175, 55, 0.45);
+}
+
+/* Sort */
+.beidaq-catalog-sort {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-shrink: 0;
+}
+
+.beidaq-catalog-sort-label {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #737373;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.beidaq-catalog-sort-select {
+  padding: 0.55rem 2rem 0.55rem 1rem;
+  background: #FFFFFF;
+  border: 1px solid #E5E5E5;
+  border-radius: var(--beidaq-radius-pill);
+  color: #121212;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: var(--beidaq-transition);
+  appearance: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23D4AF37' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 0.85rem center;
+}
+
+.rtl .beidaq-catalog-sort-select {
+  padding: 0.55rem 1rem 0.55rem 2rem;
+  background-position: right 0.85rem center;
+}
+
+.beidaq-catalog-sort-select:focus {
+  outline: none;
+  border-color: var(--beidaq-border-hover);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.12);
+}
+
+.beidaq-catalog-sort-select option {
+  background: #FFFFFF;
+  color: #121212;
+}
+
+/* Empty State */
+.beidaq-catalog-empty {
+  padding: 4rem 2rem;
+  text-align: center;
+  background: #FAFAFA;
+  border: 1px solid #E5E5E5;
+  border-radius: var(--beidaq-radius-card);
+  color: #737373;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.95rem;
+}
+
+/* Grid */
+.beidaq-catalog-grid {
+  --bs-gutter-x: 1.5rem;
+  --bs-gutter-y: 1.75rem;
+}
+
+/* ── Product Card ────────────────────────────────────────────────── */
+
+.beidaq-product-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #FFFFFF;
+  border: 1px solid #E8E8E8;
+  border-radius: var(--beidaq-radius-card);
+  overflow: hidden;
+  cursor: pointer;
+  transition: var(--beidaq-transition);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  animation: beidaq-card-enter 0.65s cubic-bezier(0.4, 0, 0.2, 1) both;
+  animation-delay: calc(var(--card-index, 0) * 0.07s);
+}
+
+@keyframes beidaq-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.beidaq-product-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(212, 175, 55, 0.45);
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(212, 175, 55, 0.12);
+}
+
+/* Image */
+.beidaq-product-image-wrap {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: #F5F5F5;
+}
+
+.beidaq-product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 -40px 60px rgba(0, 0, 0, 0.15);
+}
+
+.beidaq-product-card:hover .beidaq-product-image {
+  transform: scale(1.08);
+}
+
+.beidaq-product-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(15, 17, 21, 0) 30%,
+    rgba(15, 17, 21, 0.55) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.beidaq-product-card:hover .beidaq-product-image-overlay {
+  opacity: 1;
+}
+
+/* Overlay Actions */
+.beidaq-product-actions {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: var(--beidaq-transition);
+  z-index: 2;
+}
+
+.beidaq-product-card:hover .beidaq-product-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.beidaq-product-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1.1rem;
+  border: none;
+  border-radius: var(--beidaq-radius-pill);
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--beidaq-transition);
+  white-space: nowrap;
+}
+
+.beidaq-product-action-btn--primary {
+  background: linear-gradient(135deg, var(--beidaq-gold) 0%, var(--beidaq-gold-dark) 100%);
+  color: var(--beidaq-bg);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.4);
+}
+
+.beidaq-product-action-btn--primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--beidaq-gold-light) 0%, var(--beidaq-gold) 100%);
+  transform: scale(1.05);
+  box-shadow: 0 6px 24px rgba(212, 175, 55, 0.5);
+}
+
+.beidaq-product-action-btn--primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.beidaq-product-action-btn--outline {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  color: #121212;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+}
+
+.beidaq-product-action-btn--outline:hover {
+  border-color: var(--beidaq-gold);
+  color: var(--beidaq-gold);
+  background: rgba(212, 175, 55, 0.1);
+  transform: scale(1.05);
+}
+
+/* Badges */
+.beidaq-product-badges {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  z-index: 3;
+}
+
+.rtl .beidaq-product-badges {
+  left: auto;
+  right: 14px;
+}
+
+.beidaq-product-badge {
+  display: inline-block;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--beidaq-radius-pill);
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  animation: beidaq-badge-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes beidaq-badge-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+.beidaq-product-badge--bestseller {
+  background: #121212;
+  color: #FFFFFF;
+}
+
+.beidaq-product-badge--new {
+  background: rgba(255, 255, 255, 0.95);
+  color: #121212;
+  border: 1px solid #E5E5E5;
+  backdrop-filter: blur(8px);
+}
+
+.beidaq-product-badge--discount {
+  background: linear-gradient(135deg, #E53935, #C62828);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(229, 57, 53, 0.4);
+}
+
+/* Wishlist */
+.beidaq-product-wishlist {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  border: 1px solid #E5E5E5;
+  border-radius: 50%;
+  color: #888888;
+  cursor: pointer;
+  transition: var(--beidaq-transition);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.rtl .beidaq-product-wishlist {
+  right: auto;
+  left: 14px;
+}
+
+.beidaq-product-wishlist:hover {
+  border-color: var(--beidaq-gold);
+  color: #E53935;
+  transform: scale(1.1);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.25);
+}
+
+.beidaq-product-wishlist--active {
+  color: #E53935;
+  border-color: rgba(229, 57, 53, 0.5);
+  background: rgba(229, 57, 53, 0.15);
+}
+
+.beidaq-product-wishlist--active svg {
+  fill: #E53935;
+}
+
+/* Body */
+.beidaq-product-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1.35rem 1.4rem 1.5rem;
+  text-align: right;
+}
+
+.beidaq-product-category {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 0.2rem 0.65rem;
+  margin-bottom: 0.65rem;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: var(--beidaq-radius-pill);
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--beidaq-gold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.rtl .beidaq-product-category {
+  align-self: flex-end;
+}
+
+.beidaq-product-title {
+  font-family: "Tajawal", "Playfair Display", serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #121212;
+  margin: 0 0 0.5rem;
+  line-height: 1.45;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.beidaq-product-desc {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.82rem;
+  color: #737373;
+  line-height: 1.65;
+  margin: 0 0 0.85rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Rating */
+.beidaq-product-rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.rtl .beidaq-product-rating {
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+.beidaq-product-stars {
+  display: flex;
+  gap: 2px;
+  color: var(--beidaq-gold);
+}
+
+.beidaq-product-stars svg {
+  width: 13px;
+  height: 13px;
+}
+
+.beidaq-product-stars .beidaq-star--empty {
+  color: rgba(200, 200, 200, 0.2);
+}
+
+.beidaq-product-rating-value {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #555555;
+}
+
+/* Pricing */
+.beidaq-product-pricing {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  margin-top: auto;
+  border-top: 1px solid rgba(212, 175, 55, 0.12);
+}
+
+.rtl .beidaq-product-pricing {
+  flex-direction: row-reverse;
+}
+
+.beidaq-product-price-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.beidaq-product-price-old {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.78rem;
+  color: #999999;
+  text-decoration: line-through;
+}
+
+.beidaq-product-price {
+  font-family: "Tajawal", "Playfair Display", serif;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--beidaq-gold);
+  letter-spacing: 0.01em;
+}
+
+.beidaq-product-cart-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--beidaq-gold) 0%, var(--beidaq-gold-dark) 100%);
+  border: none;
+  border-radius: 14px;
+  color: var(--beidaq-bg);
+  cursor: pointer;
+  transition: var(--beidaq-transition);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
+}
+
+.beidaq-product-cart-btn:hover:not(:disabled) {
+  transform: scale(1.08);
+  box-shadow: 0 6px 24px rgba(212, 175, 55, 0.45);
+}
+
+.beidaq-product-cart-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: #F0F0F0;
+  color: #AAAAAA;
+  box-shadow: none;
+}
+
+/* Stock */
+.beidaq-product-stock {
+  margin-top: 0.75rem;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.beidaq-product-stock--available {
+  color: #34D399;
+}
+
+.beidaq-product-stock--low {
+  color: var(--beidaq-gold);
+}
+
+.beidaq-product-stock--out {
+  color: #FB7185;
+}
+
+/* Responsive */
+@media (max-width: 767.98px) {
+  .beidaq-catalog {
+    padding: 2.5rem 0 3.5rem;
+  }
+
+  .beidaq-catalog-header {
+    margin-bottom: 2rem;
+  }
+
+  .beidaq-catalog-toolbar {
+    align-items: stretch;
+  }
+
+  .beidaq-catalog-search {
+    max-width: 100%;
+  }
+
+  .beidaq-catalog-filters-row {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 1rem !important;
+  }
+
+  .beidaq-catalog-sort {
+    justify-content: space-between;
+  }
+
+  .beidaq-product-actions {
+    flex-direction: column;
+    padding: 0 1rem;
+  }
+
+  .beidaq-product-action-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Show actions on touch devices without hover */
+  @media (hover: none) {
+    .beidaq-product-actions {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .beidaq-product-image-overlay {
+      opacity: 0.6;
+    }
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .beidaq-catalog-grid {
+    --bs-gutter-x: 1.25rem;
+  }
+}

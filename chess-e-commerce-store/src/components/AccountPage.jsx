@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { KeyRound, MapPin, Phone, History, Heart, Shield, Eye, CheckCircle2, Truck, RefreshCw, X, LogOut, ArrowLeft, Mail } from "lucide-react";
+import { FaChessKing } from "react-icons/fa6";
 import { api } from "../utils/api";
 import { useLanguage } from "../context/LanguageContext";
 import { useToast } from "../context/ToastContext";
 import { getPasswordResetParams, hasPasswordResetLink } from "../utils/authParams";
 import { getProductTranslation } from "../utils/translations";
+import "../styles/Auth.css";
 
 export default function AccountPage({
   currentUser,
@@ -14,7 +16,8 @@ export default function AccountPage({
   wishlist,
   onRemoveFromWishlist,
   onSelectProduct,
-  onRefreshOrders
+  onRefreshOrders,
+  embedded = false,
 }) {
   const resetParams = getPasswordResetParams();
   const showAuthForms = !currentUser || hasPasswordResetLink();
@@ -177,145 +180,268 @@ export default function AccountPage({
       login: { title: t("accessAccount"), sub: t("loginSub"), icon: KeyRound },
       register: { title: t("createAccount"), sub: t("registerSub"), icon: KeyRound },
       forgot: { title: "نسيت كلمة المرور", sub: "أدخل بريدك لاستلام رابط إعادة التعيين", icon: Mail },
-      reset: { title: "إعادة تعيين كلمة المرور", sub: "أدخل كلمة المرور الجديدة", icon: KeyRound }
+      reset: { title: "إعادة تعيين كلمة المرور", sub: "أدخل كلمة المرور الجديدة", icon: KeyRound },
     };
     const view = titles[authMode] || titles.login;
     const Icon = view.icon;
+    const showTabs = authMode === "login" || authMode === "register";
 
-    return (
-      <div className="container py-5" id="account-auth-container" style={{ maxWidth: "450px" }}>
-        <div className="card rounded-0 p-4 border-custom bg-white shadow-lg position-relative rtl">
-          <div className="position-absolute top-0 start-0 w-100 bg-gold-custom" style={{ height: "4px" }} />
-          <div className="text-center mb-4">
-            <div className="d-flex align-items-center justify-content-center bg-light border border-custom rounded-3 mb-3 mx-auto text-gold-custom shadow-sm" style={{ width: "64px", height: "64px" }}>
-              <Icon size={28} />
-            </div>
-            <h4 className="font-serif-custom fw-bold text-charcoal-custom text-uppercase m-0">{view.title}</h4>
-            <p className="text-muted font-mono-custom m-0 mt-1" style={{ fontSize: "11px" }}>{view.sub}</p>
-          </div>
+    const authContent = (
+      <div className={`beidaq-auth rtl${embedded ? " beidaq-auth--embedded" : ""}`} id="account-auth-container">
+        <div className={embedded ? "" : "beidaq-auth__wrap"}>
+          <div className="beidaq-auth-card">
+            <header className="beidaq-auth-header">
+              <div className="beidaq-auth-logo">
+                {authMode === "forgot" || authMode === "reset" ? (
+                  <Icon size={24} aria-hidden="true" />
+                ) : (
+                  <FaChessKing aria-hidden="true" />
+                )}
+              </div>
+              <h2 className="beidaq-auth-title">{view.title}</h2>
+              <p className="beidaq-auth-subtitle">{view.sub}</p>
+            </header>
 
-          {errorMessage && (
-            <div className="alert alert-danger p-2 mb-3 text-center font-sans d-flex align-items-center justify-content-center gap-2" style={{ fontSize: "11px" }}>
-              <X size={14} /> {errorMessage}
-            </div>
-          )}
-          {successMessage && (
-            <div className="alert alert-success p-2 mb-3 text-center font-sans d-flex align-items-center justify-content-center gap-2" style={{ fontSize: "11px" }}>
-              <CheckCircle2 size={14} /> {successMessage}
-            </div>
-          )}
+            {showTabs && (
+              <div className="beidaq-auth-tabs" role="tablist">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={authMode === "login"}
+                  className={`beidaq-auth-tab${authMode === "login" ? " beidaq-auth-tab--active" : ""}`}
+                  onClick={() => {
+                    setAuthMode("login");
+                    clearMessages();
+                  }}
+                >
+                  {t("accessAccount")}
+                </button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={authMode === "register"}
+                  className={`beidaq-auth-tab${authMode === "register" ? " beidaq-auth-tab--active" : ""}`}
+                  onClick={() => {
+                    setAuthMode("register");
+                    clearMessages();
+                  }}
+                >
+                  {t("createAccount")}
+                </button>
+              </div>
+            )}
 
-          {(authMode === "login" || authMode === "register") && (
-            <form onSubmit={handleAuthSubmit} className="d-grid gap-3">
-              {authMode === "register" && (
-                <div>
-                  <label className="form-label text-muted font-mono-custom text-uppercase mb-1" style={{ fontSize: "9px" }}>{t("yourFullName")}</label>
-                  <input type="text" required value={name} onChange={(e) => setName(e.target.value)} className="form-control rounded-0 font-sans" style={{ fontSize: "12px" }} />
+            {errorMessage && (
+              <div className="beidaq-auth-alert beidaq-auth-alert--error">
+                <X size={15} aria-hidden="true" />
+                {errorMessage}
+              </div>
+            )}
+            {successMessage && (
+              <div className="beidaq-auth-alert beidaq-auth-alert--success">
+                <CheckCircle2 size={15} aria-hidden="true" />
+                {successMessage}
+              </div>
+            )}
+
+            {(authMode === "login" || authMode === "register") && (
+              <form onSubmit={handleAuthSubmit} className="beidaq-auth-form">
+                {authMode === "register" && (
+                  <div className="beidaq-auth-field">
+                    <label className="beidaq-auth-label" htmlFor="auth-name">{t("yourFullName")}</label>
+                    <input
+                      id="auth-name"
+                      type="text"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="beidaq-auth-input"
+                      placeholder="أدخل اسمك الكامل"
+                    />
+                  </div>
+                )}
+                <div className="beidaq-auth-field">
+                  <label className="beidaq-auth-label" htmlFor="auth-email">{t("emailAddress")}</label>
+                  <input
+                    id="auth-email"
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="beidaq-auth-input"
+                    placeholder="example@email.com"
+                    dir="ltr"
+                  />
                 </div>
-              )}
-              <div>
-                <label className="form-label text-muted font-mono-custom text-uppercase mb-1" style={{ fontSize: "9px" }}>{t("emailAddress")}</label>
-                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="form-control rounded-0 font-mono-custom" style={{ fontSize: "12px" }} />
-              </div>
-              <div>
-                <label className="form-label text-muted font-mono-custom text-uppercase mb-1" style={{ fontSize: "9px" }}>{"كلمة المرور"}</label>
-                <input type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} className="form-control rounded-0 font-mono-custom" style={{ fontSize: "12px" }} />
-              </div>
-              {authMode === "register" && (
-                <>
-                  <div>
-                    <label className="form-label text-muted font-mono-custom text-uppercase mb-1" style={{ fontSize: "9px" }}>{"تأكيد كلمة المرور"}</label>
-                    <input type="password" required minLength={8} value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.target.value)} className="form-control rounded-0 font-mono-custom" style={{ fontSize: "12px" }} />
-                  </div>
-                  <div>
-                    <label className="form-label text-muted font-mono-custom text-uppercase mb-1" style={{ fontSize: "9px" }}>{t("phoneOptional")}</label>
-                    <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} className="form-control rounded-0 font-sans" style={{ fontSize: "12px" }} />
-                  </div>
-                  <div>
-                    <label className="form-label text-muted font-mono-custom text-uppercase mb-1" style={{ fontSize: "9px" }}>{t("addressOptional")}</label>
-                    <input type="text" value={address} onChange={(e) => setAddress(e.target.value)} className="form-control rounded-0 font-sans" style={{ fontSize: "12px" }} />
-                  </div>
-                </>
-              )}
-              {authMode === "login" && (
-                <div className="text-end">
-                  <button type="button" onClick={() => { setAuthMode("forgot"); clearMessages(); }} className="btn btn-link text-decoration-none p-0 font-mono-custom" style={{ fontSize: "10px" }}>
-                    {"نسيت كلمة المرور؟"}
+                <div className="beidaq-auth-field">
+                  <label className="beidaq-auth-label" htmlFor="auth-password">كلمة المرور</label>
+                  <input
+                    id="auth-password"
+                    type="password"
+                    required
+                    minLength={8}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="beidaq-auth-input"
+                    placeholder="••••••••"
+                    dir="ltr"
+                  />
+                </div>
+                {authMode === "register" && (
+                  <>
+                    <div className="beidaq-auth-field">
+                      <label className="beidaq-auth-label" htmlFor="auth-password-confirm">تأكيد كلمة المرور</label>
+                      <input
+                        id="auth-password-confirm"
+                        type="password"
+                        required
+                        minLength={8}
+                        value={passwordConfirmation}
+                        onChange={(e) => setPasswordConfirmation(e.target.value)}
+                        className="beidaq-auth-input"
+                        placeholder="••••••••"
+                        dir="ltr"
+                      />
+                    </div>
+                    <div className="beidaq-auth-field">
+                      <label className="beidaq-auth-label" htmlFor="auth-phone">{t("phoneOptional")}</label>
+                      <input
+                        id="auth-phone"
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className="beidaq-auth-input"
+                        placeholder="05XXXXXXXX"
+                        dir="ltr"
+                      />
+                    </div>
+                    <div className="beidaq-auth-field">
+                      <label className="beidaq-auth-label" htmlFor="auth-address">{t("addressOptional")}</label>
+                      <input
+                        id="auth-address"
+                        type="text"
+                        value={address}
+                        onChange={(e) => setAddress(e.target.value)}
+                        className="beidaq-auth-input"
+                        placeholder="الرياض، المملكة العربية السعودية"
+                      />
+                    </div>
+                  </>
+                )}
+                {authMode === "login" && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAuthMode("forgot");
+                      clearMessages();
+                    }}
+                    className="beidaq-auth-forgot"
+                  >
+                    نسيت كلمة المرور؟
                   </button>
+                )}
+                <button type="submit" disabled={loading} className="beidaq-auth-submit">
+                  {loading ? t("authenticating") : authMode === "register" ? t("createCredentials") : t("enterDashboard")}
+                </button>
+              </form>
+            )}
+
+            {authMode === "forgot" && (
+              <form onSubmit={handleForgotSubmit} className="beidaq-auth-form">
+                <div className="beidaq-auth-field">
+                  <label className="beidaq-auth-label" htmlFor="forgot-email">{t("emailAddress")}</label>
+                  <input
+                    id="forgot-email"
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="beidaq-auth-input"
+                    placeholder="example@email.com"
+                    dir="ltr"
+                  />
                 </div>
-              )}
-              <button type="submit" disabled={loading} className="btn btn-gold-custom w-100 py-2.5 text-uppercase fw-bold font-mono-custom" style={{ fontSize: "11px", letterSpacing: "1px" }}>
-                {loading ? t("authenticating") : authMode === "register" ? t("createCredentials") : t("enterDashboard")}
-              </button>
-            </form>
-          )}
+                <button type="submit" disabled={loading} className="beidaq-auth-submit">
+                  {loading ? "جاري الإرسال..." : "إرسال رابط إعادة التعيين"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAuthMode("login");
+                    clearMessages();
+                  }}
+                  className="beidaq-auth-back"
+                >
+                  <ArrowLeft size={14} className="rotate-180" />
+                  العودة لتسجيل الدخول
+                </button>
+              </form>
+            )}
 
-          {authMode === "forgot" && (
-            <form onSubmit={handleForgotSubmit} className="d-grid gap-3">
-              <div>
-                <label className="form-label text-muted font-mono-custom text-uppercase mb-1" style={{ fontSize: "9px" }}>{t("emailAddress")}</label>
-                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="form-control rounded-0 font-mono-custom" style={{ fontSize: "12px" }} />
-              </div>
-              <button type="submit" disabled={loading} className="btn btn-gold-custom w-100 py-2.5 text-uppercase fw-bold font-mono-custom" style={{ fontSize: "11px" }}>
-                {loading ? ("جاري الإرسال...") : ("إرسال رابط إعادة التعيين")}
-              </button>
-              <button type="button" onClick={() => { setAuthMode("login"); clearMessages(); }} className="btn btn-link text-decoration-none text-muted font-mono-custom p-0 d-flex align-items-center justify-content-center gap-1" style={{ fontSize: "11px" }}>
-                <ArrowLeft size={12} /> {"العودة لتسجيل الدخول"}
-              </button>
-            </form>
-          )}
+            {authMode === "reset" && (
+              <form onSubmit={handleResetSubmit} className="beidaq-auth-form">
+                <div className="beidaq-auth-field">
+                  <label className="beidaq-auth-label" htmlFor="reset-email">{t("emailAddress")}</label>
+                  <input id="reset-email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="beidaq-auth-input" dir="ltr" />
+                </div>
+                <div className="beidaq-auth-field">
+                  <label className="beidaq-auth-label" htmlFor="reset-token">رمز إعادة التعيين</label>
+                  <input id="reset-token" type="text" required value={resetToken} onChange={(e) => setResetToken(e.target.value)} className="beidaq-auth-input" dir="ltr" />
+                </div>
+                <div className="beidaq-auth-field">
+                  <label className="beidaq-auth-label" htmlFor="reset-password">كلمة المرور الجديدة</label>
+                  <input id="reset-password" type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} className="beidaq-auth-input" dir="ltr" />
+                </div>
+                <div className="beidaq-auth-field">
+                  <label className="beidaq-auth-label" htmlFor="reset-password-confirm">تأكيد كلمة المرور</label>
+                  <input id="reset-password-confirm" type="password" required minLength={8} value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.target.value)} className="beidaq-auth-input" dir="ltr" />
+                </div>
+                <button type="submit" disabled={loading} className="beidaq-auth-submit">
+                  {loading ? "جاري الحفظ..." : "إعادة تعيين كلمة المرور"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAuthMode("login");
+                    clearMessages();
+                  }}
+                  className="beidaq-auth-back"
+                >
+                  <ArrowLeft size={14} className="rotate-180" />
+                  العودة لتسجيل الدخول
+                </button>
+              </form>
+            )}
 
-          {authMode === "reset" && (
-            <form onSubmit={handleResetSubmit} className="d-grid gap-3">
-              <div>
-                <label className="form-label text-muted font-mono-custom text-uppercase mb-1" style={{ fontSize: "9px" }}>{t("emailAddress")}</label>
-                <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="form-control rounded-0 font-mono-custom" style={{ fontSize: "12px" }} />
+            {authMode === "login" && (
+              <div className="beidaq-auth-demo">
+                <span className="beidaq-auth-demo-title">{t("demoLogin")}</span>
+                <span className="beidaq-auth-demo-text">test@example.com / password</span>
               </div>
-              <div>
-                <label className="form-label text-muted font-mono-custom text-uppercase mb-1" style={{ fontSize: "9px" }}>{"رمز إعادة التعيين"}</label>
-                <input type="text" required value={resetToken} onChange={(e) => setResetToken(e.target.value)} className="form-control rounded-0 font-mono-custom" style={{ fontSize: "12px" }} />
-              </div>
-              <div>
-                <label className="form-label text-muted font-mono-custom text-uppercase mb-1" style={{ fontSize: "9px" }}>{"كلمة المرور الجديدة"}</label>
-                <input type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} className="form-control rounded-0 font-mono-custom" style={{ fontSize: "12px" }} />
-              </div>
-              <div>
-                <label className="form-label text-muted font-mono-custom text-uppercase mb-1" style={{ fontSize: "9px" }}>{"تأكيد كلمة المرور"}</label>
-                <input type="password" required minLength={8} value={passwordConfirmation} onChange={(e) => setPasswordConfirmation(e.target.value)} className="form-control rounded-0 font-mono-custom" style={{ fontSize: "12px" }} />
-              </div>
-              <button type="submit" disabled={loading} className="btn btn-gold-custom w-100 py-2.5 text-uppercase fw-bold font-mono-custom" style={{ fontSize: "11px" }}>
-                {loading ? ("جاري الحفظ...") : ("إعادة تعيين كلمة المرور")}
-              </button>
-              <button type="button" onClick={() => { setAuthMode("login"); clearMessages(); }} className="btn btn-link text-decoration-none text-muted font-mono-custom p-0 d-flex align-items-center justify-content-center gap-1" style={{ fontSize: "11px" }}>
-                <ArrowLeft size={12} /> {"العودة لتسجيل الدخول"}
-              </button>
-            </form>
-          )}
+            )}
 
-          {authMode === "login" && (
-            <div className="mt-3 p-2.5 bg-light border border-custom text-center rounded-0 font-mono-custom" style={{ fontSize: "9px" }}>
-              <span className="text-gold-custom d-block fw-bold mb-1">{t("demoLogin")}</span>
-              <span className="text-secondary">test@example.com / password</span>
-            </div>
-          )}
-
-          {(authMode === "login" || authMode === "register") && (
-            <div className="mt-4 text-center">
-              <button
-                onClick={() => {
-                  setAuthMode(authMode === "register" ? "login" : "register");
-                  clearMessages();
-                }}
-                className="btn btn-link text-decoration-none text-muted font-mono-custom p-0"
-                style={{ fontSize: "11px" }}
-              >
-                {authMode === "register" ? t("alreadyHaveAcc") : t("firstTimeAcc")}
-              </button>
-            </div>
-          )}
+            {showTabs && (
+              <div className="beidaq-auth-switch">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAuthMode(authMode === "register" ? "login" : "register");
+                    clearMessages();
+                  }}
+                  className="beidaq-auth-switch-btn"
+                >
+                  {authMode === "register" ? t("alreadyHaveAcc") : t("firstTimeAcc")}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     );
+
+    if (embedded) return authContent;
+
+    return <div className="beidaq-auth-page">{authContent}</div>;
   }
 
   return (

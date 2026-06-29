@@ -1,0 +1,422 @@
+/* ── Beidaq Luxury Navbar ─────────────────────────────────────────── */
+
+.beidaq-navbar {
+  --nav-gold: #D4AF37;
+  --nav-gold-light: #E8C547;
+  --nav-gold-dark: #B8962E;
+  --nav-bg: rgba(248, 247, 244, 0.88);
+  --nav-surface: #FFFFFF;
+  --nav-ink: #121212;
+  --nav-muted: #737373;
+  --nav-border: rgba(212, 175, 55, 0.18);
+  --nav-transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+
+  z-index: 1050;
+  background: var(--nav-bg) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--nav-border) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04) !important;
+}
+
+.beidaq-navbar__inner {
+  padding-top: 0.85rem;
+  padding-bottom: 0.85rem;
+}
+
+/* Brand */
+.beidaq-navbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  cursor: pointer;
+  transition: var(--nav-transition);
+  flex-direction: row-reverse;
+}
+
+.beidaq-navbar__brand:hover {
+  opacity: 0.92;
+}
+
+.beidaq-navbar__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--nav-gold) 0%, var(--nav-gold-dark) 100%);
+  color: #0F1115;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
+  transition: var(--nav-transition);
+}
+
+.beidaq-navbar__brand:hover .beidaq-navbar__logo {
+  transform: scale(1.05);
+  box-shadow: 0 6px 22px rgba(212, 175, 55, 0.4);
+}
+
+.beidaq-navbar__brand-text {
+  text-align: right;
+}
+
+.beidaq-navbar__brand-name {
+  display: block;
+  font-family: "Tajawal", "Playfair Display", serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--nav-ink);
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.beidaq-navbar__brand-tagline {
+  display: block;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--nav-muted);
+  line-height: 1.4;
+  margin-top: 0.15rem;
+  max-width: 200px;
+}
+
+/* Desktop links */
+.beidaq-navbar__links {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.beidaq-navbar__link {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--nav-muted) !important;
+  text-decoration: none;
+  cursor: pointer;
+  transition: var(--nav-transition);
+  position: relative;
+}
+
+.beidaq-navbar__link:hover {
+  color: var(--nav-ink) !important;
+  background: rgba(212, 175, 55, 0.08);
+  border-color: rgba(212, 175, 55, 0.15);
+}
+
+.beidaq-navbar__link--active {
+  background: linear-gradient(135deg, var(--nav-gold) 0%, var(--nav-gold-dark) 100%) !important;
+  border-color: var(--nav-gold) !important;
+  color: #0F1115 !important;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.28);
+}
+
+.beidaq-navbar__link--active::after {
+  display: none;
+}
+
+.beidaq-navbar__link--admin {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Actions */
+.beidaq-navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.beidaq-navbar__icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: var(--nav-surface);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-radius: 50%;
+  color: var(--nav-ink) !important;
+  cursor: pointer;
+  transition: var(--nav-transition);
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.beidaq-navbar__icon-btn:hover {
+  border-color: var(--nav-gold);
+  color: var(--nav-gold-dark) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.2);
+}
+
+.beidaq-navbar__icon-btn .fill-gold,
+.beidaq-navbar__icon-btn .text-gold-custom {
+  fill: var(--nav-gold) !important;
+  color: var(--nav-gold) !important;
+}
+
+.beidaq-navbar__badge {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--nav-gold) 0%, var(--nav-gold-dark) 100%);
+  color: #0F1115;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.6rem;
+  font-weight: 800;
+  border-radius: 999px;
+  border: 2px solid var(--nav-surface);
+  line-height: 1;
+}
+
+.beidaq-navbar__divider {
+  width: 1px;
+  height: 28px;
+  background: rgba(212, 175, 55, 0.2);
+  margin: 0 0.35rem;
+}
+
+/* User block */
+.beidaq-navbar__user {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  cursor: pointer;
+  flex-direction: row-reverse;
+}
+
+.beidaq-navbar__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--nav-gold) 0%, var(--nav-gold-dark) 100%);
+  color: #0F1115;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  border-radius: 50%;
+  box-shadow: 0 3px 12px rgba(212, 175, 55, 0.3);
+}
+
+.beidaq-navbar__user-info {
+  text-align: right;
+}
+
+.beidaq-navbar__user-label {
+  margin: 0;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: var(--nav-gold-dark);
+  letter-spacing: 0.04em;
+}
+
+.beidaq-navbar__user-name {
+  margin: 0;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--nav-ink);
+}
+
+.beidaq-navbar__logout {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.85rem;
+  background: transparent;
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  border-radius: 999px;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--nav-muted);
+  cursor: pointer;
+  transition: var(--nav-transition);
+}
+
+.beidaq-navbar__logout:hover {
+  border-color: rgba(225, 29, 72, 0.35);
+  color: #E11D48;
+  background: rgba(225, 29, 72, 0.05);
+}
+
+.beidaq-navbar__login-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.55rem 1.25rem;
+  background: linear-gradient(135deg, var(--nav-gold) 0%, var(--nav-gold-dark) 100%);
+  border: none;
+  border-radius: 999px;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #0F1115;
+  cursor: pointer;
+  transition: var(--nav-transition);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
+}
+
+.beidaq-navbar__login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(212, 175, 55, 0.4);
+  background: linear-gradient(135deg, var(--nav-gold-light) 0%, var(--nav-gold) 100%);
+}
+
+/* Mobile toggle */
+.beidaq-navbar__menu-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  background: var(--nav-surface);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 12px;
+  color: var(--nav-ink);
+  cursor: pointer;
+  transition: var(--nav-transition);
+}
+
+.beidaq-navbar__menu-toggle:hover {
+  border-color: var(--nav-gold);
+  color: var(--nav-gold-dark);
+}
+
+/* Mobile drawer */
+.beidaq-navbar__drawer {
+  padding: 1rem 0 1.25rem;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--nav-border);
+  animation: beidaq-nav-drawer-in 0.3s ease both;
+}
+
+@keyframes beidaq-nav-drawer-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.beidaq-navbar__mobile-link {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--nav-muted);
+  text-align: right;
+  cursor: pointer;
+  transition: var(--nav-transition);
+}
+
+.beidaq-navbar__mobile-link:hover {
+  background: rgba(212, 175, 55, 0.06);
+  color: var(--nav-ink);
+}
+
+.beidaq-navbar__mobile-link--active {
+  background: linear-gradient(135deg, var(--nav-gold) 0%, var(--nav-gold-dark) 100%);
+  color: #0F1115;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.25);
+}
+
+.beidaq-navbar__mobile-user {
+  padding: 1rem;
+  background: rgba(248, 247, 244, 0.8);
+  border: 1px solid rgba(212, 175, 55, 0.12);
+  border-radius: 14px;
+}
+
+.beidaq-navbar__mobile-logout {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  background: transparent;
+  border: 1px solid rgba(225, 29, 72, 0.25);
+  border-radius: 12px;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #E11D48;
+  cursor: pointer;
+  transition: var(--nav-transition);
+}
+
+.beidaq-navbar__mobile-logout:hover {
+  background: rgba(225, 29, 72, 0.06);
+}
+
+/* Admin navbar variant */
+.beidaq-navbar--admin {
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+.beidaq-navbar__admin-badge {
+  display: block;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--nav-gold-dark);
+  margin-top: 0.1rem;
+}
+
+/* Responsive */
+@media (max-width: 767.98px) {
+  .beidaq-navbar__brand-tagline {
+    display: none;
+  }
+
+  .beidaq-navbar__brand-name {
+    font-size: 1.05rem;
+  }
+
+  .beidaq-navbar__logo {
+    width: 40px;
+    height: 40px;
+    font-size: 1.05rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .beidaq-navbar__inner {
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
+  }
+}
