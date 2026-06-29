@@ -36,7 +36,7 @@ class OrderController extends Controller
         $order->load(['user', 'items.product']);
 
         return response()->json([
-            'message' => 'Order updated successfully.',
+            'message' => 'تم تحديث الطلب بنجاح.',
             'order' => new OrderResource($order),
         ]);
     }
@@ -45,12 +45,12 @@ class OrderController extends Controller
     {
         if ($order->status !== 'cancelled') {
             return response()->json([
-                'message' => 'Only cancelled orders can be deleted.',
+                'message' => 'يمكن حذف الطلبات الملغاة فقط.',
             ], 422);
         }
 
         $order->delete();
 
-        return response()->json(['message' => 'Order deleted successfully.']);
+        return response()->json(['message' => 'تم حذف الطلب بنجاح.']);
     }
 }

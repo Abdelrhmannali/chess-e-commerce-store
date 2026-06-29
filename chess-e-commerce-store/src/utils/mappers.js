@@ -1,5 +1,16 @@
 const NEW_ARRIVAL_DAYS = 30;
 
+const API_BASE = import.meta.env.VITE_API_URL || "/api";
+
+export function resolveImageUrl(image) {
+  if (!image) return "";
+  if (image.startsWith("http://") || image.startsWith("https://") || image.startsWith("//")) {
+    return image;
+  }
+  const base = API_BASE.replace(/\/api\/?$/, "");
+  return `${base}${image.startsWith("/") ? image : `/${image}`}`;
+}
+
 function unwrapData(payload) {
   if (payload && typeof payload === "object" && "data" in payload && !payload.token && !payload.user && !payload.cart && !payload.order) {
     return payload.data;
@@ -21,7 +32,7 @@ export function mapCategory(raw) {
     id: c.id,
     name: c.name,
     slug: c.slug,
-    image: c.image,
+    image: resolveImageUrl(c.image),
     description: c.description,
     productsCount: c.products_count ?? 0
   };
@@ -41,8 +52,8 @@ export function mapProduct(raw) {
     price,
     stock: p.quantity ?? 0,
     quantity: p.quantity ?? 0,
-    image: p.image || "",
-    images: p.image ? [p.image] : [],
+    image: resolveImageUrl(p.image || ""),
+    images: p.image ? [resolveImageUrl(p.image)] : [],
     status: p.status,
     created_at: p.created_at,
     rating: 4.8,
@@ -85,11 +96,11 @@ export function mapOrderItem(item) {
 }
 
 const STATUS_DISPLAY = {
-  pending: "Pending",
-  processing: "Processing",
-  shipped: "Shipped",
-  delivered: "Delivered",
-  cancelled: "Cancelled"
+  pending: "قيد الانتظار",
+  processing: "قيد المعالجة",
+  shipped: "تم الشحن",
+  delivered: "تم التوصيل",
+  cancelled: "ملغى"
 };
 
 export function mapOrder(raw) {
@@ -189,10 +200,15 @@ export function toApiStatus(displayStatus) {
   const map = {
     New: "pending",
     Pending: "pending",
+    "قيد الانتظار": "pending",
     Processing: "processing",
+    "قيد المعالجة": "processing",
     Shipped: "shipped",
+    "تم الشحن": "shipped",
     Delivered: "delivered",
-    Cancelled: "cancelled"
+    "تم التوصيل": "delivered",
+    Cancelled: "cancelled",
+    "ملغى": "cancelled"
   };
   return map[displayStatus] || displayStatus?.toLowerCase();
 }

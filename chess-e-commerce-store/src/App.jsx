@@ -24,9 +24,13 @@ import AdminDashboard from "./components/AdminDashboard";
 import { api } from "./utils/api";
 import { cartToUiItems, markBestSellers } from "./utils/mappers";
 import { useLanguage } from "./context/LanguageContext";
+import { useToast } from "./context/ToastContext";
+import { hasPasswordResetLink } from "./utils/authParams";
+
+const USER_TABS = new Set(["home", "shop", "cart", "checkout", "account", "wishlist"]);
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState("home");
+  const [activeTab, setActiveTab] = useState(() => (hasPasswordResetLink() ? "account" : "home"));
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   const [categories, setCategories] = useState([]);
@@ -45,7 +49,10 @@ export default function App() {
   const [apiOnline, setApiOnline] = useState(null);
   const [loadingProducts, setLoadingProducts] = useState(true);
 
-  const { lang, t } = useLanguage();
+  const { t } = useLanguage();
+  const { showSuccess, showError } = useToast();
+  const isAdmin = currentUser?.role === "admin";
+  const passwordResetLink = hasPasswordResetLink();
 
   const loadCart = useCallback(async () => {
     if (!localStorage.getItem("chess_token")) return;
@@ -89,12 +96,20 @@ export default function App() {
         setProducts(markBestSellers(catalog, 3));
 
         const token = localStorage.getItem("chess_token");
-        if (token) {
+        if (hasPasswordResetLink()) {
+          localStorage.removeItem("chess_token");
+          setCurrentUser(null);
+          setActiveTab("account");
+        } else if (token) {
           const session = await api.getMe();
           setCurrentUser(session.user);
-          const userOrders = await api.getOrders();
-          setOrders(userOrders);
-          await loadCart();
+          if (session.user.role === "admin") {
+            setActiveTab("admin");
+          } else {
+            const userOrders = await api.getOrders();
+            setOrders(userOrders);
+            await loadCart();
+          }
         }
       } catch (err) {
         console.warn("Failed to load store data", err);
@@ -116,6 +131,12 @@ export default function App() {
 
     loadInitialData();
   }, [loadCart]);
+
+  useEffect(() => {
+    if (isAdmin && USER_TABS.has(activeTab) && !hasPasswordResetLink()) {
+      setActiveTab("admin");
+    }
+  }, [isAdmin, activeTab]);
 
   useEffect(() => {
     if (categories.length > 0) {
@@ -148,6 +169,14 @@ export default function App() {
     setCurrentUser(user);
     setAuthOpen(false);
 
+    if (user.role === "admin") {
+      setActiveTab("admin");
+      showSuccess("مرحباً بك في لوحة الإدارة.");
+      return;
+    }
+
+    showSuccess("تم تسجيل الدخول بنجاح.");
+
     const pendingLocal = localStorage.getItem("chess_cart_pending");
     if (pendingLocal) {
       try {
@@ -178,6 +207,7 @@ export default function App() {
     setOrders([]);
     setCartItems([]);
     setActiveTab("home");
+    showSuccess("تم تسجيل الخروج.");
   };
 
   const handleAddToCart = async (product, e) => {
@@ -194,7 +224,7 @@ export default function App() {
       setCartItems(cartToUiItems(cart));
       setActiveTab("cart");
     } catch (err) {
-      alert(err.message || "Could not add to cart");
+      showError(err.message || "تعذر إضافة المنتج إلى السلة.");
     }
   };
 
@@ -212,7 +242,7 @@ export default function App() {
         : await api.addCartItem(productId, newQty);
       setCartItems(cartToUiItems(cart));
     } catch (err) {
-      alert(err.message || "Could not update cart");
+      showError(err.message || "تعذر تحديث السلة.");
     }
   };
 
@@ -283,7 +313,11 @@ export default function App() {
 
   const refreshCatalogFull = async () => {
     try {
-      const freshCatalog = await api.getProducts({ per_page: 100 });
+      const [freshCategories, freshCatalog] = await Promise.all([
+        api.getCategories(),
+        api.getProducts({ per_page: 100 })
+      ]);
+      setCategories(freshCategories);
       setProducts(markBestSellers(freshCatalog, 3));
     } catch (e) {
       console.error(e);
@@ -293,10 +327,10 @@ export default function App() {
   const isWishlisted = (id) => wishlist.some((item) => item.id === id);
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
-  const categoryFilters = [{ slug: "all", name: lang === "ar" ? "الكل" : "All" }, ...categories];
+  const categoryFilters = [{ slug: "all", name: "الكل" }, ...categories];
 
   const getCategoryLabel = (cat) => {
-    if (cat === "all") return lang === "ar" ? "الكل" : "All";
+    if (cat === "all") return "الكل";
     const found = categories.find((c) => c.slug === cat);
     if (found) return found.name;
     if (cat === "boards") return t("boards");
@@ -317,8 +351,28 @@ export default function App() {
         { id: "accessories", slug: "accessories", name: t("accessories") }
       ];
 
+  if (isAdmin && !passwordResetLink) {
+    return (
+      <div className="min-h-screen bg-white text-charcoal-custom d-flex flex-col flex-column rtl text-end">
+        <Navbar
+          currentUser={currentUser}
+          onLogout={handleLogout}
+          cartCount={0}
+          wishlistCount={0}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          onOpenAuth={() => setAuthOpen(true)}
+          isAdminMode
+        />
+        <main className="flex-grow-1">
+          {activeTab === "admin" && <AdminDashboard categories={categories} onRefreshCatalog={refreshCatalogFull} />}
+        </main>
+      </div>
+    );
+  }
+
   return (
-    <div className={`min-h-screen bg-white text-charcoal-custom d-flex flex-col flex-column ${lang === "ar" ? "rtl text-end" : "ltr text-start"}`}>
+    <div className="min-h-screen bg-white text-charcoal-custom d-flex flex-col flex-column rtl text-end">
       <Navbar
         currentUser={currentUser}
         onLogout={handleLogout}
@@ -335,7 +389,7 @@ export default function App() {
             <section className="hero-section text-white py-5 py-sm-5 border-bottom border-custom overflow-hidden position-relative">
               <div className="container py-4 position-relative" style={{ zIndex: "2" }}>
                 <div className="row align-items-center g-4">
-                  <div className={`col-lg-6 ${lang === "ar" ? "order-lg-2 text-lg-end" : "order-lg-1 text-lg-start"}`}>
+                  <div className="col-lg-6 order-lg-2 text-lg-end">
                     <div className="d-inline-flex align-items-center gap-1 hero-badge px-3 py-1 font-mono-custom text-uppercase mb-3" style={{ fontSize: "10px" }}>
                       <Sparkles size={12} className="animate-pulse" />
                       <span>{t("choiceOfSovereigns")}</span>
@@ -350,7 +404,7 @@ export default function App() {
                     <div className="d-flex flex-wrap gap-3">
                       <button onClick={() => handleCategorySelect("all")} className="btn btn-gold-custom px-4 py-3 text-uppercase fw-bold font-mono-custom d-flex align-items-center gap-2" style={{ fontSize: "11px" }}>
                         <span>{t("browseCatalog")}</span>
-                        <ArrowRight size={14} className={lang === "ar" ? "rotate-180" : ""} />
+                        <ArrowRight size={14} className="rotate-180" />
                       </button>
                       {categories[0] && (
                         <button onClick={() => handleCategorySelect(categories[0].slug)} className="btn btn-outline-hero px-4 py-3 text-uppercase fw-bold font-mono-custom" style={{ fontSize: "11px" }}>
@@ -359,7 +413,7 @@ export default function App() {
                       )}
                     </div>
                   </div>
-                  <div className={`col-lg-6 d-flex justify-content-center ${lang === "ar" ? "order-lg-1" : "order-lg-2"}`}>
+                  <div className="col-lg-6 d-flex justify-content-center order-lg-1">
                     <div className="hero-glass-card p-3 w-100 shadow-lg" style={{ maxWidth: "450px" }}>
                       <img
                         src={featuredProduct?.images?.[0] || "https://images.unsplash.com/photo-1523821741446-edb2b68bb7a0?auto=format&fit=crop&w=800&q=80"}
@@ -417,19 +471,19 @@ export default function App() {
             </section>
 
             <section className="container mt-4">
-              <div className={`d-flex flex-column flex-sm-row justify-content-between align-items-baseline border-bottom pb-3 mb-4 ${lang === "ar" ? "flex-row-reverse" : ""}`}>
+              <div className="d-flex flex-column flex-sm-row justify-content-between align-items-baseline border-bottom pb-3 mb-4 flex-row-reverse">
                 <div className="text-start">
                   <span className="section-label-accent font-sans d-block" style={{ fontSize: "10px" }}>{t("acquisitionLeaders")}</span>
                   <h4 className="font-serif-custom fw-bold text-charcoal-custom text-uppercase m-0">{t("bestSellers")}</h4>
                 </div>
                 <button onClick={() => handleCategorySelect("all")} className="btn btn-link text-decoration-none text-charcoal-custom font-sans fw-bold text-uppercase p-0 mt-2 mt-sm-0 d-flex align-items-center gap-1" style={{ fontSize: "11px" }}>
                   <span>{t("viewFullCatalog")}</span>
-                  <ChevronRight size={14} className={lang === "ar" ? "rotate-180" : ""} />
+                  <ChevronRight size={14} className="rotate-180" />
                 </button>
               </div>
               <div className="row g-4">
                 {loadingProducts ? (
-                  <div className="col-12 text-center text-muted font-mono-custom py-4">Loading catalog...</div>
+                  <div className="col-12 text-center text-muted font-mono-custom py-4">جاري تحميل الكتالوج...</div>
                 ) : (
                   products.filter((p) => p.isBestSeller).slice(0, 3).map((product) => (
                     <div className="col-md-6 col-lg-4" key={product.id}>
@@ -441,14 +495,14 @@ export default function App() {
             </section>
 
             <section className="container mt-4">
-              <div className={`d-flex flex-column flex-sm-row justify-content-between align-items-baseline border-bottom pb-3 mb-4 ${lang === "ar" ? "flex-row-reverse" : ""}`}>
+              <div className="d-flex flex-column flex-sm-row justify-content-between align-items-baseline border-bottom pb-3 mb-4 flex-row-reverse">
                 <div className="text-start">
                   <span className="section-label-accent font-sans d-block" style={{ fontSize: "10px" }}>{t("craftHotRelease")}</span>
                   <h4 className="font-serif-custom fw-bold text-charcoal-custom text-uppercase m-0">{t("eliteNewArrivals")}</h4>
                 </div>
                 <button onClick={() => handleCategorySelect("all")} className="btn btn-link text-decoration-none text-charcoal-custom font-sans fw-bold text-uppercase p-0 mt-2 mt-sm-0 d-flex align-items-center gap-1" style={{ fontSize: "11px" }}>
                   <span>{t("viewFullCatalog")}</span>
-                  <ChevronRight size={14} className={lang === "ar" ? "rotate-180" : ""} />
+                  <ChevronRight size={14} className="rotate-180" />
                 </button>
               </div>
               <div className="row g-4">
@@ -464,18 +518,18 @@ export default function App() {
 
         {activeTab === "shop" && (
           <div className="container py-5" id="shop-view-page">
-            <div className={`border-bottom pb-4 mb-4 d-flex flex-column md:flex-row align-items-md-center justify-content-between gap-3 ${lang === "ar" ? "flex-row-reverse" : ""}`}>
+            <div className="border-bottom pb-4 mb-4 d-flex flex-column md:flex-row align-items-md-center justify-content-between gap-3 flex-row-reverse">
               <div>
                 <h2 className="font-serif-custom fw-bold text-charcoal-custom text-uppercase m-0">{t("sovereignCatalog")}</h2>
                 <p className="text-muted font-mono-custom m-0 mt-1" style={{ fontSize: "11px" }}>{t("catalogSub")}</p>
               </div>
               <form onSubmit={handleSearchSubmit} className="position-relative d-flex align-items-center" style={{ minWidth: "280px" }}>
-                <input type="text" placeholder={t("fastSearch")} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="form-control rounded-0 font-mono-custom" style={{ fontSize: "12px", paddingLeft: lang === "ar" ? "12px" : "32px", paddingRight: lang === "ar" ? "32px" : "12px" }} />
-                <Search size={14} className="text-muted position-absolute" style={{ left: lang === "ar" ? "auto" : "12px", right: lang === "ar" ? "12px" : "auto" }} />
+                <input type="text" placeholder={t("fastSearch")} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="form-control rounded-0 font-mono-custom" style={{ fontSize: "12px", paddingLeft: "12px", paddingRight: "32px" }} />
+                <Search size={14} className="text-muted position-absolute" style={{ left: "auto", right: "12px" }} />
               </form>
             </div>
 
-            <div className={`d-flex flex-column sm:flex-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4 ${lang === "ar" ? "flex-row-reverse" : ""}`}>
+            <div className="d-flex flex-column sm:flex-row justify-content-between align-items-start align-items-sm-center gap-3 mb-4 flex-row-reverse">
               <div className="d-flex flex-wrap gap-1.5" id="category-filters">
                 {categoryFilters.map((cat) => (
                   <button key={cat.slug || cat.id} onClick={() => handleCategorySelect(cat.slug)} className={`btn btn-sm font-mono-custom text-uppercase fw-bold px-3 py-1.5 border rounded-0 ${selectedCategory === cat.slug ? "btn-gold-custom" : "btn-light text-muted border-custom"}`} style={{ fontSize: "10px" }}>
@@ -483,7 +537,7 @@ export default function App() {
                   </button>
                 ))}
               </div>
-              <div className={`d-flex align-items-center gap-2 font-mono-custom ${lang === "ar" ? "flex-row-reverse" : ""}`} style={{ fontSize: "11px" }}>
+              <div className="d-flex align-items-center gap-2 font-mono-custom flex-row-reverse" style={{ fontSize: "11px" }}>
                 <span className="text-muted text-uppercase">{t("sortByLabel")}</span>
                 <select value={sortBy} onChange={(e) => handleSortChange(e.target.value)} className="form-select form-select-sm rounded-0 text-charcoal-custom font-mono-custom" style={{ fontSize: "11px", width: "150px" }}>
                   <option value="popularity">{t("sortPopularity")}</option>
@@ -510,7 +564,7 @@ export default function App() {
 
         {activeTab === "wishlist" && (
           <div className="container py-5" id="wishlist-view-page">
-            <div className={`border-bottom pb-4 mb-4 ${lang === "ar" ? "text-end" : "text-start"}`}>
+            <div className="border-bottom pb-4 mb-4 text-end">
               <h2 className="font-serif-custom fw-bold text-charcoal-custom text-uppercase m-0">{t("myStrategyWishlist")}</h2>
               <p className="text-muted font-mono-custom m-0 mt-1" style={{ fontSize: "11px" }}>{t("wishlistSub")}</p>
             </div>
@@ -580,7 +634,7 @@ export default function App() {
         )}
       </main>
 
-      <footer className={`site-footer mt-auto ${lang === "ar" ? "rtl" : "ltr"}`} id="app-footer">
+      <footer className="site-footer mt-auto rtl" id="app-footer">
         <div className="container py-5">
           <div className="row g-4 g-lg-5">
             <div className="col-lg-4 col-md-6">
@@ -616,14 +670,14 @@ export default function App() {
 
             <div className="col-md-6 col-lg-4">
               <h6 className="footer-heading">{t("telemetryStatus")}</h6>
-              <div className={`footer-status ${lang === "ar" ? "flex-row-reverse" : ""}`}>
+              <div className="footer-status flex-row-reverse">
                 <span className={`api-status-dot ${apiOnline ? "online" : apiOnline === false ? "offline" : "loading-shimmer"}`} />
                 <span className={apiOnline ? "footer-status-live" : apiOnline === false ? "footer-status-offline" : "footer-text"}>
-                  {apiOnline ? t("nodeLive") : apiOnline === false ? (lang === "ar" ? "غير متصل بالخادم" : "Server offline") : "..."}
+                  {apiOnline ? t("nodeLive") : apiOnline === false ? "غير متصل بالخادم" : "..."}
                 </span>
               </div>
               <p className="footer-text footer-meta mb-0">
-                {apiOnline ? t("connectedLog") : (lang === "ar" ? "شغّل Laravel: php artisan serve" : "Run Laravel: php artisan serve")}
+                {apiOnline ? t("connectedLog") : "شغّل Laravel: php artisan serve"}
               </p>
             </div>
           </div>
@@ -656,8 +710,8 @@ export default function App() {
                   <div className="d-flex align-items-center justify-content-center bg-light border border-custom mx-auto mb-3 text-gold-custom" style={{ width: "48px", height: "48px" }}>
                     <Lock size={20} />
                   </div>
-                  <h6 className="font-serif-custom fw-bold text-uppercase m-0">{lang === "ar" ? "التحقق من الهوية مطلوب" : "Authentication Required"}</h6>
-                  <p className="text-muted font-sans mt-1 m-0" style={{ fontSize: "11px" }}>{lang === "ar" ? "يرجى تسجيل الدخول أو إنشاء حساب قبل المتابعة" : "Please log in or register to continue"}</p>
+                  <h6 className="font-serif-custom fw-bold text-uppercase m-0">التحقق من الهوية مطلوب</h6>
+                  <p className="text-muted font-sans mt-1 m-0" style={{ fontSize: "11px" }}>يرجى تسجيل الدخول أو إنشاء حساب قبل المتابعة</p>
                 </div>
                 <AccountPage
                   currentUser={currentUser}

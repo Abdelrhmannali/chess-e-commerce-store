@@ -6,12 +6,14 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class EnsureUserIsAdmin
+class EnsureUserIsNotAdmin
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $request->user()?->isAdmin()) {
-            return response()->json(['message' => 'غير مصرح. يلزم صلاحية المدير.'], 403);
+        if ($request->user()?->isAdmin()) {
+            return response()->json([
+                'message' => 'لا يمكن لحسابات المدير الوصول إلى ميزات العملاء.',
+            ], 403);
         }
 
         return $next($request);

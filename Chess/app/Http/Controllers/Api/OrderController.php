@@ -34,19 +34,19 @@ class OrderController extends Controller
             ->first();
 
         if (! $cart || $cart->items->isEmpty()) {
-            return response()->json(['message' => 'Your cart is empty.'], 422);
+            return response()->json(['message' => 'سلة التسوق فارغة.'], 422);
         }
 
         foreach ($cart->items as $item) {
             if (! $item->product || ! $item->product->status) {
                 return response()->json([
-                    'message' => "Product \"{$item->product?->name}\" is no longer available.",
+                    'message' => "المنتج \"{$item->product?->name}\" لم يعد متاحاً.",
                 ], 422);
             }
 
             if ($item->product->quantity < $item->quantity) {
                 return response()->json([
-                    'message' => "Insufficient stock for \"{$item->product->name}\".",
+                    'message' => "الكمية المتوفرة من \"{$item->product->name}\" غير كافية.",
                 ], 422);
             }
         }
@@ -82,7 +82,7 @@ class OrderController extends Controller
         $order->load(['items.product']);
 
         return response()->json([
-            'message' => 'Order placed successfully.',
+            'message' => 'تم تقديم الطلب بنجاح.',
             'order' => new OrderResource($order),
         ], 201);
     }
@@ -90,7 +90,7 @@ class OrderController extends Controller
     public function show(Request $request, Order $order): OrderResource|JsonResponse
     {
         if ($order->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Order not found.'], 404);
+            return response()->json(['message' => 'الطلب غير موجود.'], 404);
         }
 
         $order->load(['items.product']);

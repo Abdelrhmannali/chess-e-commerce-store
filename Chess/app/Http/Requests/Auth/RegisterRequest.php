@@ -21,4 +21,17 @@ class RegisterRequest extends FormRequest
             'address' => ['nullable', 'string'],
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            'name.required' => 'الاسم مطلوب.',
+            'email.required' => 'البريد الإلكتروني مطلوب.',
+            'email.email' => 'يرجى إدخال بريد إلكتروني صالح.',
+            'email.unique' => 'هذا البريد الإلكتروني مسجل مسبقاً.',
+            'password.required' => 'كلمة المرور مطلوبة.',
+            'password.min' => 'يجب أن تكون كلمة المرور 8 أحرف على الأقل.',
+            'password.confirmed' => 'كلمات المرور غير متطابقة.',
+        ];
+    }
 }

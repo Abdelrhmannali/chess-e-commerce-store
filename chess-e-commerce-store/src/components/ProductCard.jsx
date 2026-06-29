@@ -10,8 +10,8 @@ export default function ProductCard({
   onToggleWishlist,
   isWishlisted
 }) {
-  const { lang, t } = useLanguage();
-  const translatedProduct = getProductTranslation(product, lang);
+  const { t } = useLanguage();
+  const translatedProduct = getProductTranslation(product);
 
   const displayPrice = translatedProduct.discountPrice !== undefined ? translatedProduct.discountPrice : translatedProduct.price;
   const originalPrice = translatedProduct.discountPrice !== undefined ? translatedProduct.price : null;
@@ -27,8 +27,8 @@ export default function ProductCard({
         className="position-absolute z-3 d-flex flex-column gap-1" 
         style={{ 
           top: "14px", 
-          right: lang === "ar" ? "auto" : "14px", 
-          left: lang === "ar" ? "14px" : "auto" 
+          right: "auto", 
+          left: "14px" 
         }}
       >
         {translatedProduct.isBestSeller && (
@@ -54,8 +54,8 @@ export default function ProductCard({
         className="btn bg-white border border-light position-absolute z-3 p-2 rounded-circle shadow-sm"
         style={{ 
           top: "14px", 
-          left: lang === "ar" ? "auto" : "14px", 
-          right: lang === "ar" ? "14px" : "auto",
+          left: "auto", 
+          right: "14px",
           width: "38px",
           height: "38px",
           display: "flex",
@@ -100,7 +100,7 @@ export default function ProductCard({
         </h5>
 
         {/* Rating */}
-        <div className={`d-flex align-items-center gap-2 mb-3 mt-auto ${lang === "ar" ? "flex-row-reverse" : "flex-row"}`}>
+        <div className="d-flex align-items-center gap-2 mb-3 mt-auto flex-row-reverse">
           <div className="d-flex text-warning">
             {[...Array(5)].map((_, i) => (
               <Star
@@ -116,7 +116,7 @@ export default function ProductCard({
         </div>
 
         {/* Pricing & Cart Action */}
-        <div className={`d-flex align-items-center justify-content-between pt-3 border-top ${lang === "ar" ? "flex-row-reverse" : "flex-row"}`}>
+        <div className="d-flex align-items-center justify-content-between pt-3 border-top flex-row-reverse">
           <div className="d-flex flex-column">
             {originalPrice && (
               <span className="text-muted text-decoration-line-through font-mono-custom" style={{ fontSize: "11px" }}>
@@ -144,7 +144,7 @@ export default function ProductCard({
         </div>
 
         {/* Inventory Stock Status */}
-        <div className={`mt-2 ${lang === "ar" ? "text-start" : "text-end"}`}>
+        <div className="mt-2 text-start">
           {translatedProduct.stock === 0 ? (
             <span className="text-danger font-mono-custom fw-bold text-uppercase" style={{ fontSize: "10px", letterSpacing: "1px" }}>{t("soldOut")}</span>
           ) : translatedProduct.stock <= 5 ? (

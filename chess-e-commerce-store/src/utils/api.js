@@ -17,7 +17,7 @@ function extractError(data) {
     const first = Object.values(data.errors)[0];
     return Array.isArray(first) ? first[0] : String(first);
   }
-  return data?.message || data?.error || "Request failed";
+  return data?.message || data?.error || "فشل الطلب";
 }
 
 async function request(path, options = {}) {
@@ -36,6 +36,47 @@ async function request(path, options = {}) {
     throw new Error(extractError(data));
   }
   return data;
+}
+
+async function multipartRequest(path, formData, method = "POST", onProgress) {
+  const token = localStorage.getItem("chess_token");
+
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open(method, `${API_BASE}${path}`);
+    xhr.setRequestHeader("Accept", "application/json");
+    if (token) {
+      xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+    }
+
+    if (onProgress) {
+      xhr.upload.addEventListener("progress", (event) => {
+        if (event.lengthComputable) {
+          onProgress(Math.round((event.loaded / event.total) * 100));
+        }
+      });
+    }
+
+    xhr.addEventListener("load", () => {
+      let data = {};
+      try {
+        data = JSON.parse(xhr.responseText || "{}");
+      } catch {
+        data = {};
+      }
+
+      if (xhr.status >= 200 && xhr.status < 300) {
+        resolve(data);
+      } else {
+        reject(new Error(extractError(data)));
+      }
+    });
+
+    xhr.addEventListener("error", () => reject(new Error("فشل الرفع. يرجى التحقق من اتصالك.")));
+    xhr.addEventListener("abort", () => reject(new Error("تم إلغاء الرفع.")));
+
+    xhr.send(formData);
+  });
 }
 
 function storeSession(token, user) {
@@ -94,6 +135,25 @@ export const api = {
     return { user: mapUser(result.user) };
   },
 
+  async forgotPassword(email) {
+    return request("/forgot-password", {
+      method: "POST",
+      body: JSON.stringify({ email })
+    });
+  },
+
+  async resetPassword(email, token, password, passwordConfirmation) {
+    return request("/reset-password", {
+      method: "POST",
+      body: JSON.stringify({
+        email,
+        token,
+        password,
+        password_confirmation: passwordConfirmation
+      })
+    });
+  },
+
   async getCategories() {
     const result = await request("/categories?per_page=100");
     const list = Array.isArray(result.data) ? result.data : [];
@@ -136,19 +196,33 @@ export const api = {
     return mapProducts(result);
   },
 
-  async addProduct(product) {
-    const result = await request("/admin/products", {
-      method: "POST",
-      body: JSON.stringify(product)
+  async addProduct(product, imageFile, onProgress) {
+    if (!imageFile) {
+      throw new Error("يرجى رفع ملف صورة.");
+    }
+    const formData = new FormData();
+    Object.entries(product).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        formData.append(key, typeof value === "boolean" ? (value ? "1" : "0") : value);
+      }
     });
+    formData.append("image", imageFile);
+    const result = await multipartRequest("/admin/products", formData, "POST", onProgress);
     return mapProduct(result.product);
   },
 
-  async updateProduct(id, product) {
-    const result = await request(`/admin/products/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(product)
+  async updateProduct(id, product, imageFile, onProgress) {
+    const formData = new FormData();
+    Object.entries(product).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        formData.append(key, typeof value === "boolean" ? (value ? "1" : "0") : value);
+      }
     });
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+    formData.append("_method", "PUT");
+    const result = await multipartRequest(`/admin/products/${id}`, formData, "POST", onProgress);
     return mapProduct(result.product);
   },
 
@@ -241,19 +315,33 @@ export const api = {
     return list.map(mapCategory);
   },
 
-  async addCategory(category) {
-    const result = await request("/admin/categories", {
-      method: "POST",
-      body: JSON.stringify(category)
+  async addCategory(category, imageFile, onProgress) {
+    if (!imageFile) {
+      throw new Error("يرجى رفع ملف صورة.");
+    }
+    const formData = new FormData();
+    Object.entries(category).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== "") {
+        formData.append(key, value);
+      }
     });
+    formData.append("image", imageFile);
+    const result = await multipartRequest("/admin/categories", formData, "POST", onProgress);
     return mapCategory(result.category);
   },
 
-  async updateCategory(id, category) {
-    const result = await request(`/admin/categories/${id}`, {
-      method: "PUT",
-      body: JSON.stringify(category)
+  async updateCategory(id, category, imageFile, onProgress) {
+    const formData = new FormData();
+    Object.entries(category).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== "") {
+        formData.append(key, value);
+      }
     });
+    if (imageFile) {
+      formData.append("image", imageFile);
+    }
+    formData.append("_method", "PUT");
+    const result = await multipartRequest(`/admin/categories/${id}`, formData, "POST", onProgress);
     return mapCategory(result.category);
   },
 
@@ -270,7 +358,7 @@ export const api = {
   async healthCheck() {
     const base = API_BASE.replace(/\/api\/?$/, "");
     const res = await fetch(`${base}/up`);
-    if (!res.ok) throw new Error("API offline");
+    if (!res.ok) throw new Error("الخادم غير متصل");
     return { status: "ok" };
   }
 };

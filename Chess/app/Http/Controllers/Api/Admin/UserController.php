@@ -15,7 +15,7 @@ class UserController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $users = User::query()
-            ->when($request->role, fn ($query) => $query->where('role', $request->role))
+            ->where('role', 'user')
             ->when($request->search, fn ($query, $search) => $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                     ->orWhere('email', 'like', "%{$search}%");
@@ -44,7 +44,7 @@ class UserController extends Controller
         $user->update($data);
 
         return response()->json([
-            'message' => 'User updated successfully.',
+            'message' => 'تم تحديث المستخدم بنجاح.',
             'user' => new UserResource($user),
         ]);
     }
@@ -52,11 +52,11 @@ class UserController extends Controller
     public function destroy(User $user): JsonResponse
     {
         if ($user->id === auth()->id()) {
-            return response()->json(['message' => 'You cannot delete your own account.'], 422);
+            return response()->json(['message' => 'لا يمكنك حذف حسابك الخاص.'], 422);
         }
 
         $user->delete();
 
-        return response()->json(['message' => 'User deleted successfully.']);
+        return response()->json(['message' => 'تم حذف المستخدم بنجاح.']);
     }
 }

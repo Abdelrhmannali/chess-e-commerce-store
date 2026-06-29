@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ShoppingCart, Heart, User as UserIcon, LogOut, ShieldCheck, Menu, X, Globe } from "lucide-react";
+import { ShoppingCart, Heart, User as UserIcon, LogOut, ShieldCheck, Menu, X } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 
 export default function Navbar({
@@ -9,10 +9,11 @@ export default function Navbar({
   wishlistCount,
   activeTab,
   setActiveTab,
-  onOpenAuth
+  onOpenAuth,
+  isAdminMode = false
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { lang, setLang, t } = useLanguage();
+  const { t } = useLanguage();
 
   const handleNavClick = (tab) => {
     setActiveTab(tab);
@@ -24,16 +25,53 @@ export default function Navbar({
       activeTab === tab ? "nav-link-active" : ""
     }`;
 
+  if (isAdminMode) {
+    return (
+      <nav className="sticky-top shadow-sm admin-navbar-minimal" id="app-navbar" style={{ zIndex: 1050 }}>
+        <div className="container py-3">
+          <div className="d-flex align-items-center justify-content-between">
+            <div className="d-flex align-items-center gap-3">
+              <div className="d-flex align-items-center justify-content-center font-serif-custom logo-mark fw-bold" style={{ width: "40px", height: "40px", fontSize: "1.3rem" }}>
+                ♔
+              </div>
+              <div className="text-end">
+                <span className="font-sans text-uppercase fw-bold nav-brand-title tracking-widest d-block m-0" style={{ fontSize: "1rem" }}>
+                  {t("adminPanel")}
+                </span>
+                <span className="admin-badge d-block">لوحة الإدارة فقط</span>
+              </div>
+            </div>
+            <div className="d-flex align-items-center gap-3">
+              {currentUser && (
+                <>
+                  <div className="d-none d-sm-flex align-items-center gap-2">
+                    <div className="d-flex align-items-center justify-content-center bg-gold-custom text-charcoal-custom fw-bold rounded-circle shadow-sm" style={{ width: "32px", height: "32px", fontSize: "13px" }}>
+                      {currentUser.name[0].toUpperCase()}
+                    </div>
+                    <span className="nav-member-name fw-semibold m-0">{currentUser.name}</span>
+                  </div>
+                  <button onClick={onLogout} className="btn btn-logout d-flex align-items-center gap-1.5">
+                    <LogOut size={13} />
+                    <span>{t("signOut")}</span>
+                  </button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </nav>
+    );
+  }
+
   return (
     <nav className="sticky-top shadow-sm" id="app-navbar" style={{ zIndex: 1050 }}>
       <div className="container py-3">
         <div className="d-flex align-items-center justify-content-between">
-          {/* Logo */}
           <div className="d-flex align-items-center cursor-pointer" onClick={() => handleNavClick("home")} id="nav-logo">
-            <div className={`d-flex align-items-center justify-content-center font-serif-custom logo-mark fw-bold ${lang === "ar" ? "ms-3" : "me-3"}`} style={{ width: "40px", height: "40px", fontSize: "1.3rem" }}>
+            <div className="d-flex align-items-center justify-content-center font-serif-custom logo-mark fw-bold ms-3" style={{ width: "40px", height: "40px", fontSize: "1.3rem" }}>
               ♔
             </div>
-            <div className={lang === "ar" ? "text-end" : "text-start"}>
+            <div className="text-end">
               <span className="font-sans text-uppercase fw-bold nav-brand-title tracking-widest d-block m-0" style={{ fontSize: "1rem" }}>
                 {t("grandmaster")}
               </span>
@@ -43,7 +81,6 @@ export default function Navbar({
             </div>
           </div>
 
-          {/* Desktop Navigation Links */}
           <div className="d-none d-md-flex align-items-center gap-1" id="nav-desktop-links">
             <button onClick={() => handleNavClick("home")} className={navLinkClass("home")} style={{ fontSize: "11px", letterSpacing: "1px" }}>
               {t("collection")}
@@ -68,17 +105,7 @@ export default function Navbar({
             )}
           </div>
 
-          {/* User Operations */}
           <div className="d-none d-md-flex align-items-center gap-3" id="nav-desktop-actions">
-            <button
-              onClick={() => setLang(lang === "en" ? "ar" : "en")}
-              className="btn nav-lang-btn d-flex align-items-center gap-1.5 px-3 py-1"
-              title={lang === "en" ? "تغيير اللغة إلى العربية" : "Change Language to English"}
-            >
-              <Globe size={13} />
-              <span>{lang === "en" ? "العربية" : "English"}</span>
-            </button>
-
             <button
               onClick={() => handleNavClick("wishlist")}
               className="btn btn-link nav-icon-btn p-2 position-relative bg-transparent border-0"
@@ -116,7 +143,7 @@ export default function Navbar({
                   <div className="d-flex align-items-center justify-content-center bg-gold-custom text-charcoal-custom fw-bold rounded-circle shadow-sm" style={{ width: "32px", height: "32px", fontSize: "13px" }}>
                     {currentUser.name[0].toUpperCase()}
                   </div>
-                  <div className={lang === "ar" ? "text-end" : "text-start"}>
+                  <div className="text-end">
                     <p className="nav-member-label m-0 font-mono-custom text-uppercase">{t("member")}</p>
                     <p className="nav-member-name fw-semibold m-0">{currentUser.name}</p>
                   </div>
@@ -142,16 +169,7 @@ export default function Navbar({
             )}
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="d-flex d-md-none align-items-center gap-2" id="nav-mobile-toggle">
-            <button
-              onClick={() => setLang(lang === "en" ? "ar" : "en")}
-              className="btn btn-link nav-icon-btn p-1"
-              title={lang === "en" ? "العربية" : "English"}
-            >
-              <Globe size={18} />
-            </button>
-
             <button
               onClick={() => handleNavClick("wishlist")}
               className="btn btn-link nav-icon-btn p-1 position-relative"
@@ -187,7 +205,6 @@ export default function Navbar({
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="d-md-none p-3" id="nav-mobile-drawer">
           <div className="d-grid gap-2">

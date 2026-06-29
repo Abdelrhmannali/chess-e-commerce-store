@@ -554,8 +554,7 @@ export const arabicProducts = {
   }
 };
 
-export function getProductTranslation(product, lang) {
-  if (lang !== "ar") return product;
+export function getProductTranslation(product) {
   const translation = arabicProducts[product.id];
   const translatedCategory = 
     product.category === "boards" ? translations.ar.boards :

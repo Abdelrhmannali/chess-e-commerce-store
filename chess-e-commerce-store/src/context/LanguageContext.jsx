@@ -1,33 +1,21 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, { createContext, useContext, useEffect } from "react";
 import { translations } from "../utils/translations";
 
 const LanguageContext = createContext(undefined);
 
 export function LanguageProvider({ children }) {
-  // Read initial language from localStorage, default to Arabic "ar" as requested by the user
-  const [lang, setLangState] = useState(() => {
-    const saved = localStorage.getItem("chess_lang");
-    return (saved === "en" || saved === "ar") ? saved : "ar";
-  });
-
-  const setLang = (newLang) => {
-    setLangState(newLang);
-    localStorage.setItem("chess_lang", newLang);
-  };
+  const lang = "ar";
 
   useEffect(() => {
-    // Dynamically update document direction based on language
-    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-    document.documentElement.lang = lang;
-  }, [lang]);
+    document.documentElement.dir = "rtl";
+    document.documentElement.lang = "ar";
+    localStorage.setItem("chess_lang", "ar");
+  }, []);
 
-  const t = (key) => {
-    const dict = translations[lang] || translations["ar"];
-    return dict[key] || translations["en"][key] || String(key);
-  };
+  const t = (key) => translations.ar[key] || String(key);
 
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t }}>
+    <LanguageContext.Provider value={{ lang, t }}>
       {children}
     </LanguageContext.Provider>
   );
@@ -36,7 +24,7 @@ export function LanguageProvider({ children }) {
 export function useLanguage() {
   const context = useContext(LanguageContext);
   if (!context) {
-    throw new Error("useLanguage must be used within a LanguageProvider");
+    throw new Error("يجب استخدام useLanguage داخل LanguageProvider");
   }
   return context;
 }

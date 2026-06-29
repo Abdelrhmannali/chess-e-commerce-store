@@ -21,7 +21,7 @@ export default function CheckoutPage({
   const [placedOrder, setPlacedOrder] = useState(null);
   const [copiedText, setCopiedText] = useState(false);
 
-  const { lang, t } = useLanguage();
+  const { t } = useLanguage();
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const shipping = subtotal > 150 ? 0 : 15.0;
@@ -45,7 +45,7 @@ export default function CheckoutPage({
       setPlacedOrder(response.order);
       onOrderCompleted();
     } catch (err) {
-      setErrorMessage(err.message || (lang === "ar" ? "فشل إرسال الطلب." : "Failed to place order."));
+      setErrorMessage(err.message || ("فشل إرسال الطلب."));
     } finally {
       setLoading(false);
     }
@@ -68,20 +68,20 @@ export default function CheckoutPage({
         <p className="text-secondary font-sans mb-4">{t("orderDispatchedSub")}</p>
 
         <div className="card rounded-0 p-4 border-custom bg-white mb-4 shadow-sm text-start">
-          <div className={`d-flex justify-content-between align-items-center border-bottom pb-2.5 mb-2.5 ${lang === "ar" ? "flex-row-reverse" : ""}`}>
+          <div className={`d-flex justify-content-between align-items-center border-bottom pb-2.5 mb-2.5 ${"flex-row-reverse"}`}>
             <span className="font-mono-custom text-muted text-uppercase" style={{ fontSize: "11px" }}>{t("orderId")}</span>
             <span className="font-mono-custom fw-bold text-charcoal-custom">#{placedOrder.id}</span>
           </div>
-          <div className={`d-flex justify-content-between align-items-center border-bottom pb-2.5 mb-2.5 ${lang === "ar" ? "flex-row-reverse" : ""}`}>
+          <div className={`d-flex justify-content-between align-items-center border-bottom pb-2.5 mb-2.5 ${"flex-row-reverse"}`}>
             <span className="font-mono-custom text-muted text-uppercase" style={{ fontSize: "11px" }}>{t("courierTrackingId")}</span>
-            <div className={`d-flex align-items-center gap-2 ${lang === "ar" ? "flex-row-reverse" : ""}`}>
+            <div className={`d-flex align-items-center gap-2 ${"flex-row-reverse"}`}>
               <span className="font-mono-custom fw-bold text-gold-custom">{placedOrder.trackingNumber}</span>
               <button onClick={() => copyToClipboard(placedOrder.trackingNumber || "")} className="btn btn-link text-secondary p-0">
                 {copiedText ? <Check size={14} className="text-success" /> : <Copy size={14} />}
               </button>
             </div>
           </div>
-          <div className={`d-flex justify-content-between align-items-center ${lang === "ar" ? "flex-row-reverse" : ""}`}>
+          <div className={`d-flex justify-content-between align-items-center ${"flex-row-reverse"}`}>
             <span className="font-mono-custom text-muted text-uppercase" style={{ fontSize: "11px" }}>{t("deliveryLocation")}</span>
             <span className="text-secondary text-truncate" style={{ maxWidth: "250px", fontSize: "13px" }}>{placedOrder.address}</span>
           </div>
@@ -97,7 +97,7 @@ export default function CheckoutPage({
           </div>
         )}
 
-        <div className={`d-flex flex-column flex-sm-row justify-content-center gap-3 ${lang === "ar" ? "flex-row-reverse" : ""}`}>
+        <div className={`d-flex flex-column flex-sm-row justify-content-center gap-3 ${"flex-row-reverse"}`}>
           <button onClick={onNavigateToOrders} className="btn btn-outline-secondary text-uppercase fw-bold font-mono-custom py-3 px-4" style={{ fontSize: "11px", borderRadius: "0px" }}>{t("trackHistoryBtn")}</button>
           <button onClick={onNavigateToShop} className="btn btn-gold-custom text-uppercase fw-bold font-mono-custom py-3 px-5" style={{ fontSize: "11px" }}>{t("continueShoppingBtn")}</button>
         </div>
@@ -106,9 +106,9 @@ export default function CheckoutPage({
   }
 
   return (
-    <div className={`container py-5 ${lang === "ar" ? "text-end" : "text-start"}`} id="checkout-view-layout">
-      <button onClick={onNavigateToShop} className={`btn btn-link text-muted font-mono-custom text-uppercase text-decoration-none p-0 mb-4 d-flex align-items-center gap-1 ${lang === "ar" ? "flex-row-reverse" : ""}`} style={{ fontSize: "11px" }}>
-        <ChevronLeft size={16} className={lang === "ar" ? "rotate-180" : ""} />
+    <div className={`container py-5 ${"text-end"}`} id="checkout-view-layout">
+      <button onClick={onNavigateToShop} className={`btn btn-link text-muted font-mono-custom text-uppercase text-decoration-none p-0 mb-4 d-flex align-items-center gap-1 ${"flex-row-reverse"}`} style={{ fontSize: "11px" }}>
+        <ChevronLeft size={16} className={"rotate-180"} />
         <span>{t("returnToCatalog")}</span>
       </button>
 
@@ -120,7 +120,7 @@ export default function CheckoutPage({
       <form onSubmit={handlePlaceOrder} className="row g-4">
         <div className="col-lg-8 d-flex flex-column gap-4">
           <div className="card rounded-0 p-4 border-custom bg-white">
-            <h5 className={`font-serif-custom fw-bold text-charcoal-custom text-uppercase mb-4 d-flex align-items-center gap-2 ${lang === "ar" ? "flex-row-reverse" : ""}`}>
+            <h5 className={`font-serif-custom fw-bold text-charcoal-custom text-uppercase mb-4 d-flex align-items-center gap-2 ${"flex-row-reverse"}`}>
               <Truck size={18} className="text-gold-custom" />
               <span>{t("shippingAddressSection")}</span>
             </h5>
@@ -146,7 +146,7 @@ export default function CheckoutPage({
           </div>
 
           <div className="card rounded-0 p-4 border-custom bg-white">
-            <h5 className={`font-serif-custom fw-bold text-charcoal-custom text-uppercase mb-4 d-flex align-items-center gap-2 ${lang === "ar" ? "flex-row-reverse" : ""}`}>
+            <h5 className={`font-serif-custom fw-bold text-charcoal-custom text-uppercase mb-4 d-flex align-items-center gap-2 ${"flex-row-reverse"}`}>
               <CreditCard size={18} className="text-gold-custom" />
               <span>{t("secureGatewaySection")}</span>
             </h5>
@@ -158,18 +158,18 @@ export default function CheckoutPage({
               </div>
               <div className="col-6">
                 <button type="button" onClick={() => setPaymentMethod("cash")} className={`btn w-100 py-2.5 font-mono-custom text-uppercase fw-bold ${paymentMethod === "cash" ? "btn-dark-custom" : "btn-light border border-custom text-muted"}`} style={{ fontSize: "10px", borderRadius: "0px" }}>
-                  {lang === "ar" ? "الدفع عند الاستلام" : "Cash on Delivery"}
+                  {"الدفع عند الاستلام"}
                 </button>
               </div>
             </div>
-            <div className={`d-flex align-items-center gap-1.5 text-muted ${lang === "ar" ? "flex-row-reverse" : ""}`}>
+            <div className={`d-flex align-items-center gap-1.5 text-muted ${"flex-row-reverse"}`}>
               <ShieldCheck size={14} className="text-success" />
               <span className="font-mono-custom" style={{ fontSize: "10px" }}>{t("aesEncryption")}</span>
             </div>
           </div>
 
           <div className="card rounded-0 p-4 border-custom bg-white">
-            <h5 className={`font-serif-custom fw-bold text-charcoal-custom text-uppercase mb-3 d-flex align-items-center gap-2 ${lang === "ar" ? "flex-row-reverse" : ""}`}>
+            <h5 className={`font-serif-custom fw-bold text-charcoal-custom text-uppercase mb-3 d-flex align-items-center gap-2 ${"flex-row-reverse"}`}>
               <Send size={18} className="text-gold-custom" />
               <span>{t("alertsSection")}</span>
             </h5>
@@ -189,9 +189,9 @@ export default function CheckoutPage({
             <h6 className="font-serif-custom fw-bold text-charcoal-custom text-uppercase mb-4">{t("exchangeReview")}</h6>
             <div className="d-grid gap-3 mb-4 border-bottom pb-3">
               {cartItems.map(({ product, quantity }) => {
-                const translatedProduct = getProductTranslation(product, lang);
+                const translatedProduct = getProductTranslation(product);
                 return (
-                  <div key={translatedProduct.id} className={`d-flex gap-3 align-items-center ${lang === "ar" ? "flex-row-reverse text-end" : "text-start"}`}>
+                  <div key={translatedProduct.id} className={`d-flex gap-3 align-items-center ${"flex-row-reverse text-end"}`}>
                     <img src={translatedProduct.images?.[0] || ""} alt={translatedProduct.name} referrerPolicy="no-referrer" className="object-fit-cover rounded-0 bg-white border shrink-0" style={{ width: "48px", height: "48px" }} />
                     <div className="flex-grow min-w-0">
                       <p className="font-serif-custom fw-bold text-charcoal-custom text-truncate mb-0" style={{ fontSize: "12px" }}>{translatedProduct.name}</p>

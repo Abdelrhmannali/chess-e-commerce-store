@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\StoreProductRequest;
 use App\Http\Requests\Admin\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use App\Support\ImageUploadHelper;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -28,6 +29,8 @@ class ProductController extends Controller
 
     public function store(StoreProductRequest $request): JsonResponse
     {
+        $imagePath = ImageUploadHelper::store($request->file('image'), 'products');
+
         $product = Product::create([
             'category_id' => $request->category_id,
             'name' => $request->name,
@@ -35,14 +38,14 @@ class ProductController extends Controller
             'description' => $request->description,
             'price' => $request->price,
             'quantity' => $request->quantity,
-            'image' => $request->image,
+            'image' => $imagePath,
             'status' => $request->boolean('status', true),
         ]);
 
         $product->load('category');
 
         return response()->json([
-            'message' => 'Product created successfully.',
+            'message' => 'تم إنشاء المنتج بنجاح.',
             'product' => new ProductResource($product),
         ], 201);
     }
@@ -66,19 +69,27 @@ class ProductController extends Controller
             $data['status'] = $request->boolean('status');
         }
 
+        if ($request->hasFile('image')) {
+            ImageUploadHelper::delete($product->image);
+            $data['image'] = ImageUploadHelper::store($request->file('image'), 'products');
+        } else {
+            unset($data['image']);
+        }
+
         $product->update($data);
         $product->load('category');
 
         return response()->json([
-            'message' => 'Product updated successfully.',
+            'message' => 'تم تحديث المنتج بنجاح.',
             'product' => new ProductResource($product),
         ]);
     }
 
     public function destroy(Product $product): JsonResponse
     {
+        ImageUploadHelper::delete($product->image);
         $product->delete();
 
-        return response()->json(['message' => 'Product deleted successfully.']);
+        return response()->json(['message' => 'تم حذف المنتج بنجاح.']);
     }
 }

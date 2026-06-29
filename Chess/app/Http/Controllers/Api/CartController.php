@@ -30,7 +30,7 @@ class CartController extends Controller
 
         if ($product->quantity < $request->quantity) {
             return response()->json([
-                'message' => 'Insufficient stock for this product.',
+                'message' => 'الكمية المتوفرة من هذا المنتج غير كافية.',
             ], 422);
         }
 
@@ -43,7 +43,7 @@ class CartController extends Controller
 
             if ($product->quantity < $newQuantity) {
                 return response()->json([
-                    'message' => 'Insufficient stock for this product.',
+                    'message' => 'الكمية المتوفرة من هذا المنتج غير كافية.',
                 ], 422);
             }
 
@@ -62,7 +62,7 @@ class CartController extends Controller
         $cart->load(['items.product.category']);
 
         return response()->json([
-            'message' => 'Product added to cart.',
+            'message' => 'تمت إضافة المنتج إلى السلة.',
             'cart' => new CartResource($cart),
         ]);
     }
@@ -72,14 +72,14 @@ class CartController extends Controller
         $cart = $this->getOrCreateCart($request->user()->id);
 
         if ($cartItem->cart_id !== $cart->id) {
-            return response()->json(['message' => 'Cart item not found.'], 404);
+            return response()->json(['message' => 'عنصر السلة غير موجود.'], 404);
         }
 
         $product = $cartItem->product;
 
         if ($product->quantity < $request->quantity) {
             return response()->json([
-                'message' => 'Insufficient stock for this product.',
+                'message' => 'الكمية المتوفرة من هذا المنتج غير كافية.',
             ], 422);
         }
 
@@ -91,7 +91,7 @@ class CartController extends Controller
         $cart->load(['items.product.category']);
 
         return response()->json([
-            'message' => 'Cart item updated.',
+            'message' => 'تم تحديث عنصر السلة.',
             'cart' => new CartResource($cart),
         ]);
     }
@@ -101,14 +101,14 @@ class CartController extends Controller
         $cart = $this->getOrCreateCart($request->user()->id);
 
         if ($cartItem->cart_id !== $cart->id) {
-            return response()->json(['message' => 'Cart item not found.'], 404);
+            return response()->json(['message' => 'عنصر السلة غير موجود.'], 404);
         }
 
         $cartItem->delete();
         $cart->load(['items.product.category']);
 
         return response()->json([
-            'message' => 'Item removed from cart.',
+            'message' => 'تمت إزالة العنصر من السلة.',
             'cart' => new CartResource($cart),
         ]);
     }
@@ -120,7 +120,7 @@ class CartController extends Controller
         $cart->load(['items.product.category']);
 
         return response()->json([
-            'message' => 'Cart cleared.',
+            'message' => 'تم تفريغ السلة.',
             'cart' => new CartResource($cart),
         ]);
     }

@@ -31,7 +31,7 @@ class ProductController extends Controller
     public function show(Product $product): ProductResource|JsonResponse
     {
         if (! $product->status) {
-            return response()->json(['message' => 'Product not found.'], 404);
+            return response()->json(['message' => 'المنتج غير موجود.'], 404);
         }
 
         $product->load('category');

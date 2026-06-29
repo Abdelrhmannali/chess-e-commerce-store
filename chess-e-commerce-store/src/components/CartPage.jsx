@@ -10,7 +10,7 @@ export default function CartPage({
   onCheckout,
   onNavigateToShop
 }) {
-  const { lang, t } = useLanguage();
+  const { t } = useLanguage();
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
   const shipping = subtotal > 0 ? (subtotal > 150 ? 0 : 15.0) : 0;
@@ -31,17 +31,17 @@ export default function CartPage({
 
   return (
     <div className="container py-5" id="cart-page-layout">
-      <div className={`border-bottom pb-4 mb-4 ${lang === "ar" ? "text-end" : "text-start"}`} style={{ borderColor: "var(--color-beige)" }}>
+      <div className="border-bottom pb-4 mb-4 text-end" style={{ borderColor: "var(--color-beige)" }}>
         <h2 className="font-serif-custom fw-bold text-charcoal-custom text-uppercase m-0">{t("yourChessCart")}</h2>
         <p className="text-muted font-mono-custom m-0 mt-1" style={{ fontSize: "11px" }}>{t("cartSub")}</p>
       </div>
 
-      <div className={`row g-4 ${lang === "ar" ? "text-end" : "text-start"}`}>
+      <div className="row g-4 text-end">
         <div className="col-lg-8 d-flex flex-column gap-3">
           {cartItems.map(({ id: cartItemId, product, quantity }) => {
-            const translatedProduct = getProductTranslation(product, lang);
+            const translatedProduct = getProductTranslation(product);
             return (
-              <div key={cartItemId || product.id} className={`card rounded-0 p-3 shadow-sm border-custom ${lang === "ar" ? "rtl" : "ltr"}`} style={{ backgroundColor: "var(--color-white)", borderColor: "var(--color-border)" }}>
+              <div key={cartItemId || product.id} className="card rounded-0 p-3 shadow-sm border-custom rtl" style={{ backgroundColor: "var(--color-white)", borderColor: "var(--color-border)" }}>
                 <div className="row g-3 align-items-center">
                   <div className="col-4 col-sm-2 text-center">
                     <div className="border p-1" style={{ width: "80px", height: "80px", borderColor: "var(--color-beige)", backgroundColor: "var(--color-offwhite)" }}>
@@ -98,7 +98,7 @@ export default function CartPage({
             </div>
             <button onClick={onCheckout} className="btn btn-primary-custom w-100 py-3 text-uppercase fw-bold font-mono-custom d-flex align-items-center justify-content-center gap-2" style={{ fontSize: "11px", letterSpacing: "1px" }}>
               <span>{t("secureCheckoutBtn")}</span>
-              <ChevronRight size={14} className={lang === "ar" ? "rotate-180" : ""} />
+              <ChevronRight size={14} className="rotate-180" />
             </button>
             <div className="mt-4 pt-3 d-flex align-items-center justify-content-center gap-2 font-mono-custom text-muted" style={{ fontSize: "10px", borderTop: "0.5px solid var(--color-beige)" }}>
               <ShieldCheck size={14} className="text-success" />
