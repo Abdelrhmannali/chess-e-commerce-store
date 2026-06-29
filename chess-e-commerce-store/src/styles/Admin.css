@@ -1,0 +1,939 @@
+/* ── Beidaq Admin Dashboard ─────────────────────────────────────── */
+
+.beidaq-admin {
+  --adm-gold: #D4AF37;
+  --adm-gold-light: #E8C547;
+  --adm-gold-dark: #B8962E;
+  --adm-ink: #121212;
+  --adm-muted: #737373;
+  --adm-offwhite: #F8F7F4;
+  --adm-surface: #FFFFFF;
+  --adm-dark: #0F1115;
+  --adm-dark-soft: #1A1D24;
+  --adm-border: rgba(212, 175, 55, 0.18);
+  --adm-transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+
+  padding: 2rem 0 3rem;
+  background: var(--adm-offwhite);
+  min-height: calc(100vh - 72px);
+}
+
+.beidaq-admin__layout {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 0;
+  background: var(--adm-surface);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--adm-border);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.06);
+  min-height: calc(100vh - 140px);
+}
+
+@media (max-width: 991.98px) {
+  .beidaq-admin__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .beidaq-admin__sidebar {
+    display: none;
+  }
+
+  .beidaq-admin__mobile-tabs {
+    display: flex !important;
+  }
+}
+
+/* Sidebar */
+.beidaq-admin__sidebar {
+  background: linear-gradient(180deg, var(--adm-dark-soft) 0%, var(--adm-dark) 100%);
+  padding: 1.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.beidaq-admin__brand {
+  padding: 0 0.75rem 1.5rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+  margin-bottom: 0.75rem;
+  text-align: right;
+}
+
+.beidaq-admin__brand-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(212, 175, 55, 0.12);
+  color: var(--adm-gold);
+  margin-bottom: 0.75rem;
+}
+
+.beidaq-admin__brand-title {
+  font-family: "Tajawal", sans-serif;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 0.25rem;
+}
+
+.beidaq-admin__brand-sub {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.beidaq-admin__nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.65);
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-align: right;
+  width: 100%;
+  transition: var(--adm-transition);
+  cursor: pointer;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+}
+
+.beidaq-admin__nav-item:hover {
+  background: rgba(212, 175, 55, 0.08);
+  color: #fff;
+}
+
+.beidaq-admin__nav-item--active {
+  background: rgba(212, 175, 55, 0.14);
+  color: var(--adm-gold-light);
+  border-color: rgba(212, 175, 55, 0.25);
+}
+
+.beidaq-admin__nav-badge {
+  margin-right: auto;
+  background: rgba(212, 175, 55, 0.2);
+  color: var(--adm-gold-light);
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+}
+
+/* Mobile tabs */
+.beidaq-admin__mobile-tabs {
+  display: none;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--adm-dark);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+}
+
+.beidaq-admin__tab-pill {
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--adm-transition);
+}
+
+.beidaq-admin__tab-pill--active {
+  background: linear-gradient(135deg, var(--adm-gold-dark), var(--adm-gold));
+  color: var(--adm-dark);
+  border-color: var(--adm-gold);
+}
+
+/* Main */
+.beidaq-admin__main {
+  padding: 2rem;
+  overflow-y: auto;
+  background: var(--adm-offwhite);
+}
+
+.beidaq-admin__page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+.beidaq-admin__page-title {
+  font-family: "Tajawal", "Playfair Display", serif;
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+  font-weight: 800;
+  color: var(--adm-ink);
+  margin: 0 0 0.35rem;
+}
+
+.beidaq-admin__page-sub {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.88rem;
+  color: var(--adm-muted);
+  margin: 0;
+}
+
+.beidaq-admin__live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(5, 150, 105, 0.1);
+  color: #059669;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* Stats */
+.beidaq-admin__stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1.15rem;
+  margin-bottom: 2rem;
+}
+
+.beidaq-admin__stat-card {
+  background: var(--adm-surface);
+  border-radius: 16px;
+  padding: 1.35rem;
+  border: 1px solid var(--adm-border);
+  position: relative;
+  overflow: hidden;
+  transition: var(--adm-transition);
+  text-align: right;
+}
+
+.beidaq-admin__stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.07);
+}
+
+.beidaq-admin__stat-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--adm-gold-dark), var(--adm-gold));
+}
+
+.beidaq-admin__stat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.85rem;
+  margin-right: auto;
+}
+
+.beidaq-admin__stat-value {
+  font-family: "Tajawal", "Playfair Display", serif;
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--adm-ink);
+  line-height: 1.1;
+  margin-bottom: 0.2rem;
+}
+
+.beidaq-admin__stat-label {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.78rem;
+  color: var(--adm-muted);
+  font-weight: 600;
+}
+
+/* Panels */
+.beidaq-admin__panel {
+  background: var(--adm-surface);
+  border-radius: 16px;
+  border: 1px solid var(--adm-border);
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.beidaq-admin__panel-head {
+  padding: 1.15rem 1.35rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row-reverse;
+  background: linear-gradient(180deg, #fff 0%, var(--adm-offwhite) 100%);
+}
+
+.beidaq-admin__panel-title {
+  font-family: "Tajawal", sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--adm-ink);
+}
+
+.beidaq-admin__panel-link {
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--adm-gold-dark);
+  cursor: pointer;
+  transition: var(--adm-transition);
+}
+
+.beidaq-admin__panel-link:hover {
+  color: var(--adm-gold);
+}
+
+.beidaq-admin__panel-body {
+  padding: 1rem 1.35rem;
+}
+
+/* Tables */
+.beidaq-admin__table {
+  width: 100%;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.85rem;
+}
+
+.beidaq-admin__table thead th {
+  background: var(--adm-offwhite);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--adm-muted);
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.beidaq-admin__table tbody td {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.08);
+  vertical-align: middle;
+  color: var(--adm-ink);
+  text-align: right;
+}
+
+.beidaq-admin__table tbody tr:hover {
+  background: rgba(248, 247, 244, 0.8);
+}
+
+.beidaq-admin__table-thumb {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--adm-border);
+}
+
+.beidaq-admin__price {
+  font-weight: 800;
+  color: var(--adm-gold-dark);
+}
+
+/* Form card */
+.beidaq-admin__form-card {
+  background: var(--adm-surface);
+  border-radius: 16px;
+  padding: 1.5rem;
+  border: 1px solid var(--adm-border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  text-align: right;
+}
+
+.beidaq-admin__form-title {
+  font-family: "Tajawal", sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--adm-ink);
+  margin: 0 0 1.25rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.12);
+}
+
+.beidaq-admin__form-card label {
+  display: block;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--adm-muted);
+  margin-bottom: 0.4rem;
+}
+
+.beidaq-admin__form-card .form-control,
+.beidaq-admin__form-card .form-select {
+  background: var(--adm-offwhite) !important;
+  border: 1px solid rgba(212, 175, 55, 0.2) !important;
+  color: var(--adm-ink) !important;
+  border-radius: 10px !important;
+  font-family: "Tajawal", sans-serif !important;
+  font-size: 0.88rem !important;
+  padding: 0.6rem 0.85rem !important;
+}
+
+.beidaq-admin__form-card .form-control:focus,
+.beidaq-admin__form-card .form-select:focus {
+  border-color: var(--adm-gold) !important;
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15) !important;
+}
+
+.beidaq-admin__form-card .form-control::placeholder {
+  color: #aaa;
+}
+
+.beidaq-admin__form-card .form-check-label {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.85rem;
+  color: var(--adm-muted);
+}
+
+.beidaq-admin__form-card .form-select-sm {
+  font-size: 0.78rem !important;
+  padding: 0.35rem 0.65rem !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(212, 175, 55, 0.25) !important;
+  background: var(--adm-surface) !important;
+}
+
+/* Buttons */
+.beidaq-admin__btn-dark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.65rem 1.15rem;
+  border-radius: 10px;
+  border: 1px solid var(--adm-dark);
+  background: var(--adm-dark);
+  color: #fff;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--adm-transition);
+  width: 100%;
+}
+
+.beidaq-admin__btn-dark:hover {
+  background: var(--adm-dark-soft);
+  border-color: var(--adm-dark-soft);
+}
+
+/* Status badges */
+.beidaq-admin__status {
+  display: inline-block;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.beidaq-admin__status--pending {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.beidaq-admin__status--processing {
+  background: #DBEAFE;
+  color: #1E40AF;
+}
+
+.beidaq-admin__status--shipped {
+  background: #E0E7FF;
+  color: #3730A3;
+}
+
+.beidaq-admin__status--delivered {
+  background: #D1FAE5;
+  color: #065F46;
+}
+
+.beidaq-admin__status--cancelled {
+  background: #FEE2E2;
+  color: #991B1B;
+}
+
+.beidaq-admin__status--active {
+  background: rgba(5, 150, 105, 0.12);
+  color: #059669;
+}
+
+.beidaq-admin__status--hidden {
+  background: rgba(115, 115, 115, 0.12);
+  color: var(--adm-muted);
+}
+
+/* Action buttons */
+.beidaq-admin__action-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid var(--adm-border);
+  background: var(--adm-surface);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--adm-transition);
+  color: var(--adm-muted);
+}
+
+.beidaq-admin__action-btn:hover {
+  border-color: var(--adm-gold);
+  color: var(--adm-gold-dark);
+  background: rgba(212, 175, 55, 0.06);
+}
+
+.beidaq-admin__action-btn--danger:hover {
+  border-color: #E11D48;
+  color: #E11D48;
+  background: #FFF1F2;
+}
+
+/* Alerts & loading */
+.beidaq-admin__alert {
+  padding: 0.85rem 1.15rem;
+  border-radius: 12px;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.85rem;
+  margin-bottom: 1.25rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+.beidaq-admin__alert--error {
+  background: #FEE2E2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+}
+
+.beidaq-admin__loading {
+  height: 200px;
+  border-radius: 16px;
+  background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
+  background-size: 200% 100%;
+  animation: beidaq-admin-shimmer 1.5s infinite;
+}
+
+@keyframes beidaq-admin-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Stock list */
+.beidaq-admin__stock-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.08);
+  flex-direction: row-reverse;
+  gap: 0.75rem;
+}
+
+.beidaq-admin__stock-row:last-child {
+  border-bottom: none;
+}
+
+.beidaq-admin__stock-name {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--adm-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.beidaq-admin__stock-ok {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #059669;
+  text-align: center;
+  padding: 1rem 0;
+  margin: 0;
+}
+
+/* Image upload (light theme) */
+.beidaq-admin-upload__label {
+  display: block;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-bottom: 0.45rem;
+  color: var(--adm-muted);
+}
+
+.beidaq-admin-upload__input {
+  display: none;
+}
+
+.beidaq-admin-upload__zone {
+  position: relative;
+  border: 2px dashed rgba(212, 175, 55, 0.35);
+  border-radius: 14px;
+  background: var(--adm-offwhite);
+  cursor: pointer;
+  transition: var(--adm-transition);
+  overflow: hidden;
+  min-height: 140px;
+}
+
+.beidaq-admin-upload__zone:hover:not(.beidaq-admin-upload__zone--disabled) {
+  border-color: var(--adm-gold);
+  background: rgba(212, 175, 55, 0.04);
+}
+
+.beidaq-admin-upload__zone--active {
+  border-color: var(--adm-gold);
+  background: rgba(212, 175, 55, 0.08);
+}
+
+.beidaq-admin-upload__zone--disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.beidaq-admin-upload__zone--has-preview {
+  min-height: auto;
+}
+
+.beidaq-admin-upload__placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  gap: 0.35rem;
+}
+
+.beidaq-admin-upload__icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(212, 175, 55, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--adm-gold-dark);
+  margin-bottom: 0.25rem;
+}
+
+.beidaq-admin-upload__title {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--adm-ink);
+  margin: 0;
+}
+
+.beidaq-admin-upload__hint {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.72rem;
+  color: var(--adm-muted);
+  margin: 0;
+}
+
+.beidaq-admin-upload__preview-wrap {
+  position: relative;
+}
+
+.beidaq-admin-upload__preview-img {
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  display: block;
+}
+
+.beidaq-admin-upload__badge {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(15, 17, 21, 0.75);
+  color: var(--adm-gold-light);
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+}
+
+.beidaq-admin-upload__remove {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(225, 29, 72, 0.9);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--adm-transition);
+}
+
+.beidaq-admin-upload__remove:hover {
+  background: #E11D48;
+}
+
+.beidaq-admin-upload__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 17, 21, 0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  color: #fff;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  opacity: 0;
+  transition: var(--adm-transition);
+}
+
+.beidaq-admin-upload__zone:hover .beidaq-admin-upload__overlay {
+  opacity: 1;
+}
+
+.beidaq-admin-upload__filename {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.72rem;
+  color: var(--adm-muted);
+  margin: 0.4rem 0 0;
+  text-align: right;
+}
+
+.beidaq-admin-upload__progress {
+  position: relative;
+  height: 6px;
+  background: rgba(212, 175, 55, 0.15);
+  border-radius: 999px;
+  margin-top: 0.65rem;
+  overflow: hidden;
+}
+
+.beidaq-admin-upload__progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--adm-gold-dark), var(--adm-gold));
+  border-radius: 999px;
+  transition: width 0.2s;
+}
+
+.beidaq-admin-upload__progress-text {
+  position: absolute;
+  right: 0;
+  top: -1.2rem;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--adm-gold-dark);
+}
+
+.beidaq-admin__insight-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  border-radius: 12px;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.82rem;
+  color: var(--adm-muted);
+  flex-direction: row-reverse;
+}
+
+.beidaq-admin__insight-summary svg {
+  color: var(--adm-gold-dark);
+  flex-shrink: 0;
+}
+
+.beidaq-admin__insight-summary strong {
+  color: var(--adm-ink);
+}
+
+/* Product sales insight cards */
+.beidaq-admin__product-insight-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.15rem;
+}
+
+@media (max-width: 767.98px) {
+  .beidaq-admin__product-insight-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.beidaq-admin__product-insight {
+  background: var(--adm-surface);
+  border-radius: 16px;
+  border: 1px solid var(--adm-border);
+  padding: 1.25rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  text-align: right;
+  position: relative;
+  overflow: hidden;
+}
+
+.beidaq-admin__product-insight::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+.beidaq-admin__product-insight--top::before {
+  background: linear-gradient(90deg, var(--adm-gold-dark), var(--adm-gold));
+}
+
+.beidaq-admin__product-insight--bottom::before {
+  background: linear-gradient(90deg, #737373, #aaa);
+}
+
+.beidaq-admin__product-insight-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-direction: row-reverse;
+}
+
+.beidaq-admin__product-insight-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--adm-ink);
+}
+
+.beidaq-admin__product-insight--top .beidaq-admin__product-insight-badge svg {
+  color: var(--adm-gold-dark);
+}
+
+.beidaq-admin__product-insight--bottom .beidaq-admin__product-insight-badge svg {
+  color: var(--adm-muted);
+}
+
+.beidaq-admin__product-insight-note {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--adm-muted);
+  background: var(--adm-offwhite);
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+}
+
+.beidaq-admin__product-insight-body {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-direction: row-reverse;
+}
+
+.beidaq-admin__product-insight-img {
+  width: 72px;
+  height: 72px;
+  border-radius: 14px;
+  object-fit: cover;
+  border: 1px solid var(--adm-border);
+  flex-shrink: 0;
+}
+
+.beidaq-admin__product-insight-img--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--adm-offwhite);
+  color: var(--adm-gold-dark);
+}
+
+.beidaq-admin__product-insight-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.beidaq-admin__product-insight-name {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--adm-ink);
+  margin: 0 0 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.beidaq-admin__product-insight-metrics {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.8rem;
+  color: var(--adm-muted);
+}
+
+.beidaq-admin__product-insight-metrics strong {
+  color: var(--adm-ink);
+  font-size: 1.1rem;
+}
+
+.beidaq-admin__product-insight-revenue {
+  font-weight: 800;
+  color: var(--adm-gold-dark);
+}
+
+.beidaq-admin__product-insight-empty {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.85rem;
+  color: var(--adm-muted);
+  text-align: center;
+  margin: 1.5rem 0 0.5rem;
+}
+
+@media (max-width: 767.98px) {
+  .beidaq-admin {
+    padding: 1.25rem 0 2rem;
+  }
+
+  .beidaq-admin__main {
+    padding: 1.25rem;
+  }
+}

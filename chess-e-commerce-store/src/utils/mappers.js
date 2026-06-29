@@ -219,3 +219,64 @@ export function markBestSellers(products, count = 3) {
     isBestSeller: i < count
   }));
 }
+
+function isOrderCancelled(order) {
+  const raw = String(order.statusRaw || order.status || "").toLowerCase();
+  return raw === "cancelled" || raw === "ملغى";
+}
+
+/** Aggregate sold quantities from orders + catalog for admin overview rankings. */
+export function computeProductSalesRankings(orders = [], products = []) {
+  const salesMap = new Map();
+
+  orders
+    .filter((o) => !isOrderCancelled(o))
+    .forEach((order) => {
+      (order.items || []).forEach((item) => {
+        const key = item.productId ?? item.name;
+        const prev = salesMap.get(key) || {
+          productId: item.productId,
+          name: item.name,
+          image: item.image || "",
+          quantity: 0,
+          revenue: 0
+        };
+        prev.quantity += item.quantity || 0;
+        prev.revenue += Number(item.subtotal ?? (item.price || 0) * (item.quantity || 0));
+        if (!prev.image && item.image) prev.image = item.image;
+        salesMap.set(key, prev);
+      });
+    });
+
+  products.forEach((p) => {
+    const key = p.id;
+    if (!salesMap.has(key)) {
+      salesMap.set(key, {
+        productId: p.id,
+        name: p.name,
+        image: p.image || p.images?.[0] || "",
+        quantity: 0,
+        revenue: 0
+      });
+    } else {
+      const entry = salesMap.get(key);
+      if (!entry.image) entry.image = p.image || p.images?.[0] || "";
+      if (!entry.name) entry.name = p.name;
+    }
+  });
+
+  const ranked = [...salesMap.values()].sort(
+    (a, b) => b.quantity - a.quantity || b.revenue - a.revenue
+  );
+
+  const totalUnitsSold = ranked.reduce((sum, p) => sum + p.quantity, 0);
+  if (totalUnitsSold === 0) {
+    return { topProduct: null, bottomProduct: null, totalUnitsSold: 0 };
+  }
+
+  return {
+    topProduct: ranked[0],
+    bottomProduct: ranked[ranked.length - 1],
+    totalUnitsSold
+  };
+}

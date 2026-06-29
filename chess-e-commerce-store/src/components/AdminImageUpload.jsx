@@ -88,15 +88,15 @@ export default function AdminImageUpload({
   const showExistingBadge = !file && existingImage && preview === existingImage;
 
   return (
-    <div className="admin-image-upload">
-      <label className="admin-image-upload-label">
+    <div className="beidaq-admin-upload">
+      <label className="beidaq-admin-upload__label">
         {label}{required ? " *" : ""}
       </label>
 
       <div
         role="button"
         tabIndex={disabled ? -1 : 0}
-        className={`admin-upload-zone ${isDragging ? "admin-upload-zone--active" : ""} ${hasPreview ? "admin-upload-zone--has-preview" : ""} ${disabled ? "admin-upload-zone--disabled" : ""}`}
+        className={`beidaq-admin-upload__zone ${isDragging ? "beidaq-admin-upload__zone--active" : ""} ${hasPreview ? "beidaq-admin-upload__zone--has-preview" : ""} ${disabled ? "beidaq-admin-upload__zone--disabled" : ""}`}
         onClick={() => !disabled && inputRef.current?.click()}
         onKeyDown={(e) => {
           if (!disabled && (e.key === "Enter" || e.key === " ")) {
@@ -112,22 +112,22 @@ export default function AdminImageUpload({
           ref={inputRef}
           type="file"
           accept={ACCEPT_IMAGE_ATTR}
-          className="admin-upload-input"
+          className="beidaq-admin-upload__input"
           onChange={handleInputChange}
           disabled={disabled}
           tabIndex={-1}
         />
 
         {hasPreview ? (
-          <div className="admin-upload-preview-wrap">
-            <img src={preview} alt="Preview" className="admin-upload-preview-img" />
+          <div className="beidaq-admin-upload__preview-wrap">
+            <img src={preview} alt="Preview" className="beidaq-admin-upload__preview-img" />
             {showExistingBadge && (
-              <span className="admin-upload-badge">الصورة الحالية</span>
+              <span className="beidaq-admin-upload__badge">الصورة الحالية</span>
             )}
             {file && (
               <button
                 type="button"
-                className="admin-upload-remove"
+                className="beidaq-admin-upload__remove"
                 onClick={handleClear}
                 aria-label="إزالة الصورة المحددة"
               >
@@ -135,31 +135,31 @@ export default function AdminImageUpload({
               </button>
             )}
             {!disabled && (
-              <div className="admin-upload-overlay">
+              <div className="beidaq-admin-upload__overlay">
                 <Upload size={18} />
                 <span>{file ? "استبدال الصورة" : "انقر أو اسحب لاستبدال الصورة"}</span>
               </div>
             )}
           </div>
         ) : (
-          <div className="admin-upload-placeholder">
-            <div className="admin-upload-icon">
+          <div className="beidaq-admin-upload__placeholder">
+            <div className="beidaq-admin-upload__icon">
               <ImageIcon size={28} strokeWidth={1.5} />
             </div>
-            <p className="admin-upload-title">انقر للرفع أو اسحب وأفلت</p>
-            <p className="admin-upload-hint">JPG أو JPEG أو PNG أو WEBP · الحد الأقصى 2 ميجابايت</p>
+            <p className="beidaq-admin-upload__title">انقر للرفع أو اسحب وأفلت</p>
+            <p className="beidaq-admin-upload__hint">JPG أو JPEG أو PNG أو WEBP · الحد الأقصى 2 ميجابايت</p>
           </div>
         )}
       </div>
 
       {file && (
-        <p className="admin-upload-filename">{file.name}</p>
+        <p className="beidaq-admin-upload__filename">{file.name}</p>
       )}
 
       {uploadProgress !== null && (
-        <div className="admin-upload-progress">
-          <div className="admin-upload-progress-bar" style={{ width: `${uploadProgress}%` }} />
-          <span className="admin-upload-progress-text">{uploadProgress}%</span>
+        <div className="beidaq-admin-upload__progress">
+          <div className="beidaq-admin-upload__progress-bar" style={{ width: `${uploadProgress}%` }} />
+          <span className="beidaq-admin-upload__progress-text">{uploadProgress}%</span>
         </div>
       )}
     </div>

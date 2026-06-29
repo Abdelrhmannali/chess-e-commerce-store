@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import {
   LayoutDashboard,
   FolderOpen,
@@ -13,11 +13,20 @@ import {
   DollarSign,
   ShoppingBag,
   Clock,
-  Layers
+  Layers,
+  Trophy,
+  ArrowDownCircle
 } from "lucide-react";
+import { FaChessKing } from "react-icons/fa6";
 import { api } from "../utils/api";
+import { computeProductSalesRankings } from "../utils/mappers";
 import { useToast } from "../context/ToastContext";
 import AdminImageUpload from "./AdminImageUpload";
+import "../styles/Admin.css";
+import "../styles/UserPages.css";
+
+const formatSAR = (amount) =>
+  `${Number(amount).toLocaleString("ar-SA", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ر.س`;
 
 const NAV_ITEMS = [
   { id: "overview", label: "نظرة عامة", icon: LayoutDashboard },
@@ -55,12 +64,15 @@ const STATUS_LABELS = {
 function StatusBadge({ status }) {
   const key = (status || "").toLowerCase();
   const cls =
-    key === "delivered" ? "status-delivered" :
-    key === "shipped" ? "status-shipped" :
-    key === "processing" ? "status-processing" :
-    key === "cancelled" ? "status-cancelled" : "status-pending";
+    key === "delivered" ? "beidaq-admin__status--delivered" :
+    key === "shipped" ? "beidaq-admin__status--shipped" :
+    key === "processing" ? "beidaq-admin__status--processing" :
+    key === "cancelled" ? "beidaq-admin__status--cancelled" :
+    key === "نشط" || key === "active" ? "beidaq-admin__status--active" :
+    key === "مخفي" || key === "hidden" ? "beidaq-admin__status--hidden" :
+    "beidaq-admin__status--pending";
   const label = STATUS_LABELS[status] || STATUS_LABELS[key] || status;
-  return <span className={`status-badge ${cls}`}>{label}</span>;
+  return <span className={`beidaq-admin__status ${cls}`}>{label}</span>;
 }
 
 export default function AdminDashboard({ categories = [], onRefreshCatalog }) {
@@ -73,7 +85,6 @@ export default function AdminDashboard({ categories = [], onRefreshCatalog }) {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Product form
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [formName, setFormName] = useState("");
   const [formCategoryId, setFormCategoryId] = useState("");
@@ -86,10 +97,8 @@ export default function AdminDashboard({ categories = [], onRefreshCatalog }) {
   const [savingProduct, setSavingProduct] = useState(false);
   const [productUploadProgress, setProductUploadProgress] = useState(null);
 
-  // Category form
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [catName, setCatName] = useState("");
-  const [catSlug, setCatSlug] = useState("");
   const [catDescription, setCatDescription] = useState("");
   const [catImageFile, setCatImageFile] = useState(null);
   const [catExistingImage, setCatExistingImage] = useState("");
@@ -153,7 +162,6 @@ export default function AdminDashboard({ categories = [], onRefreshCatalog }) {
   const resetCategoryForm = () => {
     setSelectedCategory(null);
     setCatName("");
-    setCatSlug("");
     setCatDescription("");
     setCatImageFile(null);
     setCatExistingImage("");
@@ -231,7 +239,6 @@ export default function AdminDashboard({ categories = [], onRefreshCatalog }) {
     }
     const payload = {
       name: catName.trim(),
-      slug: catSlug.trim() || undefined,
       description: catDescription.trim() || undefined
     };
     setSavingCategory(true);
@@ -255,7 +262,6 @@ export default function AdminDashboard({ categories = [], onRefreshCatalog }) {
   const handleEditCategory = (cat) => {
     setSelectedCategory(cat);
     setCatName(cat.name);
-    setCatSlug(cat.slug || "");
     setCatDescription(cat.description || "");
     setCatImageFile(null);
     setCatExistingImage(cat.image || "");
@@ -286,12 +292,12 @@ export default function AdminDashboard({ categories = [], onRefreshCatalog }) {
   };
 
   const statCards = stats ? [
-    { key: "revenue", label: "إجمالي الإيرادات", value: `$${stats.totalSales.toFixed(2)}`, icon: DollarSign, stat: "stat-revenue", iconBg: "rgba(0,0,0,0.06)", iconColor: "#121212" },
-    { key: "orders", label: "إجمالي الطلبات", value: stats.totalOrders, icon: Receipt, stat: "stat-orders", iconBg: "rgba(124,58,237,0.12)", iconColor: "#7C3AED" },
-    { key: "pending", label: "طلبات قيد الانتظار", value: stats.pendingOrders, icon: Clock, stat: "stat-pending", iconBg: "rgba(245,158,11,0.12)", iconColor: "#F59E0B" },
-    { key: "users", label: "المستخدمون المسجلون", value: stats.totalCustomers, icon: Users, stat: "stat-users", iconBg: "rgba(5,150,105,0.12)", iconColor: "#059669" },
-    { key: "products", label: "المنتجات", value: stats.totalProducts, icon: Package, stat: "stat-products", iconBg: "rgba(225,29,72,0.1)", iconColor: "#E11D48" },
-    { key: "categories", label: "التصنيفات", value: stats.totalCategories, icon: Layers, stat: "stat-categories", iconBg: "rgba(107,63,160,0.12)", iconColor: "#6B3FA0" }
+    { key: "revenue", label: "إجمالي الإيرادات", value: formatSAR(stats.totalSales), icon: DollarSign, iconBg: "rgba(212,175,55,0.12)", iconColor: "#B8962E" },
+    { key: "orders", label: "إجمالي الطلبات", value: stats.totalOrders, icon: Receipt, iconBg: "rgba(124,58,237,0.1)", iconColor: "#7C3AED" },
+    { key: "pending", label: "طلبات قيد الانتظار", value: stats.pendingOrders, icon: Clock, iconBg: "rgba(245,158,11,0.12)", iconColor: "#F59E0B" },
+    { key: "users", label: "المستخدمون المسجلون", value: stats.totalCustomers, icon: Users, iconBg: "rgba(5,150,105,0.1)", iconColor: "#059669" },
+    { key: "products", label: "المنتجات", value: stats.totalProducts, icon: Package, iconBg: "rgba(225,29,72,0.08)", iconColor: "#E11D48" },
+    { key: "categories", label: "التصنيفات", value: stats.totalCategories, icon: Layers, iconBg: "rgba(15,17,21,0.06)", iconColor: "#121212" }
   ] : [];
 
   const navCounts = {
@@ -301,381 +307,500 @@ export default function AdminDashboard({ categories = [], onRefreshCatalog }) {
     customers: customersList.length
   };
 
-  return (
-    <div className="container py-4" id="admin-dashboard-layout">
-      <div className="admin-layout animate-fade-in-up">
-        {/* Sidebar */}
-        <aside className="admin-sidebar">
-          <div className="admin-sidebar-brand">
-            <h5>♔ مركز القيادة</h5>
-            <span>لوحة الإدارة</span>
-          </div>
-          {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
-            <button
-              key={id}
-              onClick={() => setAdminTab(id)}
-              className={`admin-nav-item ${adminTab === id ? "active" : ""}`}
-            >
-              <Icon size={18} />
-              {label}
-              {navCounts[id] !== undefined && (
-                <span className="admin-nav-badge">{navCounts[id]}</span>
-              )}
-            </button>
-          ))}
-          <div className="mt-auto pt-3">
-            <button onClick={loadAdminData} className="admin-nav-item">
-              <RefreshCw size={16} /> تحديث البيانات
-            </button>
-          </div>
-        </aside>
+  const productSalesRankings = useMemo(
+    () => computeProductSalesRankings(ordersList, productsList),
+    [ordersList, productsList]
+  );
 
-        {/* Mobile tabs */}
-        <div className="admin-sidebar-mobile w-100">
-          {NAV_ITEMS.map(({ id, label }) => (
-            <button key={id} onClick={() => setAdminTab(id)} className={`admin-tab-pill ${adminTab === id ? "active" : ""}`}>
+  const renderProductInsightCard = (product, variant, label, Icon) => {
+    if (!product) {
+      return (
+        <div className={`beidaq-admin__product-insight beidaq-admin__product-insight--${variant}`}>
+          <div className="beidaq-admin__product-insight-head">
+            <span className="beidaq-admin__product-insight-badge">
+              <Icon size={15} />
               {label}
-            </button>
-          ))}
+            </span>
+          </div>
+          <p className="beidaq-admin__product-insight-empty">لا توجد مبيعات بعد</p>
         </div>
+      );
+    }
 
-        {/* Main content */}
-        <main className="admin-main">
-          {errorMessage && <div className="admin-alert admin-alert-error">⚠ {errorMessage}</div>}
+    const isSameProduct =
+      productSalesRankings.topProduct &&
+      productSalesRankings.bottomProduct &&
+      productSalesRankings.topProduct.productId === productSalesRankings.bottomProduct.productId &&
+      productSalesRankings.topProduct.name === productSalesRankings.bottomProduct.name;
 
-          {loading ? (
-            <div className="py-5 text-center text-muted font-mono-custom loading-shimmer rounded-3" style={{ height: "200px" }} />
+    return (
+      <div className={`beidaq-admin__product-insight beidaq-admin__product-insight--${variant}`}>
+        <div className="beidaq-admin__product-insight-head">
+          <span className="beidaq-admin__product-insight-badge">
+            <Icon size={15} />
+            {label}
+          </span>
+          {variant === "bottom" && isSameProduct && (
+            <span className="beidaq-admin__product-insight-note">منتج واحد فقط</span>
+          )}
+        </div>
+        <div className="beidaq-admin__product-insight-body">
+          {product.image ? (
+            <img src={product.image} alt={product.name} className="beidaq-admin__product-insight-img" referrerPolicy="no-referrer" />
           ) : (
-            <>
-              {/* OVERVIEW */}
-              {adminTab === "overview" && stats && (
-                <div>
-                  <div className="d-flex align-items-center justify-content-between mb-4">
-                    <div>
-                      <h2 className="font-serif-custom fw-bold m-0" style={{ fontSize: "1.75rem" }}>نظرة عامة على المتجر</h2>
-                      <p className="text-muted m-0 mt-1" style={{ fontSize: "0.85rem" }}>إحصائيات مباشرة من الخادم</p>
-                    </div>
-                    <div className="d-flex align-items-center gap-2 text-success" style={{ fontSize: "0.75rem" }}>
-                      <TrendingUp size={16} />
-                      <span className="fw-bold">مباشر</span>
-                    </div>
-                  </div>
+            <div className="beidaq-admin__product-insight-img beidaq-admin__product-insight-img--placeholder">
+              <Package size={22} />
+            </div>
+          )}
+          <div className="beidaq-admin__product-insight-info">
+            <h3 className="beidaq-admin__product-insight-name">{product.name}</h3>
+            <div className="beidaq-admin__product-insight-metrics">
+              <span>
+                <strong>{product.quantity.toLocaleString("ar-SA")}</strong>
+                {" "}وحدة مباعة
+              </span>
+              <span className="beidaq-admin__product-insight-revenue">{formatSAR(product.revenue)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
-                  <div className="admin-stat-grid">
-                    {statCards.map(({ key, label, value, icon: Icon, stat, iconBg, iconColor }) => (
-                      <div key={key} className={`admin-stat-card ${stat}`}>
-                        <div className="admin-stat-icon" style={{ background: iconBg, color: iconColor }}>
-                          <Icon size={22} />
-                        </div>
-                        <div className="admin-stat-value">{value}</div>
-                        <div className="admin-stat-label">{label}</div>
+  return (
+    <section className="beidaq-admin rtl" id="admin-dashboard-layout">
+      <div className="container">
+        <div className="beidaq-admin__layout">
+          <aside className="beidaq-admin__sidebar">
+            <div className="beidaq-admin__brand">
+              <div className="beidaq-admin__brand-icon">
+                <FaChessKing size={18} />
+              </div>
+              <h2 className="beidaq-admin__brand-title">مركز القيادة</h2>
+              <span className="beidaq-admin__brand-sub">لوحة إدارة بيدق</span>
+            </div>
+            {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setAdminTab(id)}
+                className={`beidaq-admin__nav-item${adminTab === id ? " beidaq-admin__nav-item--active" : ""}`}
+              >
+                <Icon size={18} />
+                {label}
+                {navCounts[id] !== undefined && (
+                  <span className="beidaq-admin__nav-badge">{navCounts[id]}</span>
+                )}
+              </button>
+            ))}
+            <div className="mt-auto pt-3">
+              <button type="button" onClick={loadAdminData} className="beidaq-admin__nav-item">
+                <RefreshCw size={16} />
+                تحديث البيانات
+              </button>
+            </div>
+          </aside>
+
+          <div className="beidaq-admin__mobile-tabs w-100">
+            {NAV_ITEMS.map(({ id, label }) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setAdminTab(id)}
+                className={`beidaq-admin__tab-pill${adminTab === id ? " beidaq-admin__tab-pill--active" : ""}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          <main className="beidaq-admin__main">
+            {errorMessage && (
+              <div className="beidaq-admin__alert beidaq-admin__alert--error">⚠ {errorMessage}</div>
+            )}
+
+            {loading ? (
+              <div className="beidaq-admin__loading" />
+            ) : (
+              <>
+                {adminTab === "overview" && stats && (
+                  <div>
+                    <div className="beidaq-admin__page-head">
+                      <div>
+                        <h1 className="beidaq-admin__page-title">نظرة عامة على المتجر</h1>
+                        <p className="beidaq-admin__page-sub">إحصائيات مباشرة من الخادم</p>
                       </div>
-                    ))}
-                  </div>
+                      <div className="beidaq-admin__live-badge">
+                        <TrendingUp size={15} />
+                        <span>مباشر</span>
+                      </div>
+                    </div>
 
+                    <div className="beidaq-admin__stat-grid">
+                      {statCards.map(({ key, label, value, icon: Icon, iconBg, iconColor }) => (
+                        <div key={key} className="beidaq-admin__stat-card">
+                          <div className="beidaq-admin__stat-icon" style={{ background: iconBg, color: iconColor }}>
+                            <Icon size={22} />
+                          </div>
+                          <div className="beidaq-admin__stat-value">{value}</div>
+                          <div className="beidaq-admin__stat-label">{label}</div>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="beidaq-admin__product-insight-grid mb-4">
+                      {renderProductInsightCard(
+                        productSalesRankings.topProduct,
+                        "top",
+                        "الأكثر مبيعاً",
+                        Trophy
+                      )}
+                      {renderProductInsightCard(
+                        productSalesRankings.bottomProduct,
+                        "bottom",
+                        "الأقل مبيعاً",
+                        ArrowDownCircle
+                      )}
+                    </div>
+
+                    {productSalesRankings.totalUnitsSold > 0 && (
+                      <div className="beidaq-admin__insight-summary mb-4">
+                        <TrendingUp size={16} />
+                        <span>
+                          إجمالي الوحدات المباعة:{" "}
+                          <strong>{productSalesRankings.totalUnitsSold.toLocaleString("ar-SA")}</strong>
+                          {" "}وحدة عبر {ordersList.filter((o) => String(o.statusRaw || "").toLowerCase() !== "cancelled").length} طلب
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="row g-4">
+                      <div className="col-lg-7">
+                        <div className="beidaq-admin__panel">
+                          <div className="beidaq-admin__panel-head">
+                            <h2 className="beidaq-admin__panel-title">أحدث الطلبات</h2>
+                            <button type="button" onClick={() => setAdminTab("orders")} className="beidaq-admin__panel-link">
+                              عرض الكل ←
+                            </button>
+                          </div>
+                          <div className="table-responsive">
+                            <table className="beidaq-admin__table">
+                              <thead>
+                                <tr><th>الطلب</th><th>العميل</th><th>الإجمالي</th><th>الحالة</th></tr>
+                              </thead>
+                              <tbody>
+                                {(stats.recentOrders?.length ? stats.recentOrders : ordersList.slice(0, 5)).map((o) => (
+                                  <tr key={o.id}>
+                                    <td><strong>#{o.id}</strong></td>
+                                    <td>{o.user?.name || "—"}</td>
+                                    <td className="beidaq-admin__price">{formatSAR(Number(o.total ?? o.total_price))}</td>
+                                    <td><StatusBadge status={o.status} /></td>
+                                  </tr>
+                                ))}
+                                {!stats.recentOrders?.length && ordersList.length === 0 && (
+                                  <tr><td colSpan={4} className="text-center py-4" style={{ color: "#737373" }}>لا توجد طلبات بعد</td></tr>
+                                )}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="col-lg-5">
+                        <div className="beidaq-admin__panel">
+                          <div className="beidaq-admin__panel-head">
+                            <h2 className="beidaq-admin__panel-title">تنبيه المخزون المنخفض</h2>
+                          </div>
+                          <div className="beidaq-admin__panel-body">
+                            {productsList.filter((p) => p.stock <= 5).length === 0 ? (
+                              <p className="beidaq-admin__stock-ok">✓ جميع مستويات المخزون جيدة</p>
+                            ) : (
+                              productsList.filter((p) => p.stock <= 5).map((p) => (
+                                <div key={p.id} className="beidaq-admin__stock-row">
+                                  <span className="beidaq-admin__stock-name">{p.name}</span>
+                                  <span className={`beidaq-admin__status ${p.stock === 0 ? "beidaq-admin__status--cancelled" : "beidaq-admin__status--pending"}`}>
+                                    {p.stock === 0 ? "نفد" : `متبقي ${p.stock}`}
+                                  </span>
+                                </div>
+                              ))
+                            )}
+                          </div>
+                        </div>
+                        <div className="beidaq-admin__panel mt-3">
+                          <div className="beidaq-admin__panel-head">
+                            <h2 className="beidaq-admin__panel-title">إجراءات سريعة</h2>
+                          </div>
+                          <div className="beidaq-admin__panel-body d-grid gap-2">
+                            <button
+                              type="button"
+                              onClick={() => { resetCategoryForm(); setAdminTab("categories"); }}
+                              className="beidaq-admin__btn-dark"
+                            >
+                              <Plus size={14} />
+                              إضافة تصنيف
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => { resetProductForm(); setAdminTab("products"); }}
+                              className="beidaq-btn-gold beidaq-btn-gold--full"
+                            >
+                              <Plus size={14} />
+                              إضافة منتج
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {adminTab === "categories" && (
                   <div className="row g-4">
-                    <div className="col-lg-7">
-                      <div className="admin-panel-card">
-                        <div className="admin-panel-header">
-                          <h6>أحدث الطلبات</h6>
-                          <button onClick={() => setAdminTab("orders")} className="btn btn-link text-gold-custom p-0" style={{ fontSize: "0.75rem" }}>عرض الكل ←</button>
+                    <div className="col-lg-4">
+                      <div className="beidaq-admin__form-card">
+                        <h2 className="beidaq-admin__form-title">
+                          {selectedCategory ? "تعديل التصنيف" : "تصنيف جديد"}
+                        </h2>
+                        <form onSubmit={handleSaveCategory} className="d-grid gap-3">
+                          <div>
+                            <label>الاسم *</label>
+                            <input className="form-control" required value={catName} onChange={(e) => setCatName(e.target.value)} placeholder="رقاع الشطرنج" />
+                          </div>
+                          <div>
+                            <label>الوصف</label>
+                            <textarea className="form-control" rows={2} value={catDescription} onChange={(e) => setCatDescription(e.target.value)} />
+                          </div>
+                          <AdminImageUpload
+                            label="رفع صورة"
+                            required={!selectedCategory}
+                            existingImage={catExistingImage}
+                            file={catImageFile}
+                            onFileChange={setCatImageFile}
+                            onError={(msg) => flash(msg, true)}
+                            disabled={savingCategory}
+                            uploadProgress={savingCategory ? categoryUploadProgress : null}
+                          />
+                          <button type="submit" className="beidaq-btn-gold beidaq-btn-gold--full" disabled={savingCategory}>
+                            {savingCategory ? "جاري الرفع…" : selectedCategory ? "حفظ التغييرات" : "إنشاء التصنيف"}
+                          </button>
+                          {selectedCategory && (
+                            <button type="button" onClick={resetCategoryForm} className="beidaq-btn-outline">إلغاء</button>
+                          )}
+                        </form>
+                      </div>
+                    </div>
+                    <div className="col-lg-8">
+                      <div className="beidaq-admin__panel">
+                        <div className="beidaq-admin__panel-head">
+                          <h2 className="beidaq-admin__panel-title">جميع التصنيفات ({adminCategories.length})</h2>
                         </div>
                         <div className="table-responsive">
-                          <table className="admin-table">
-                            <thead><tr><th>الطلب</th><th>العميل</th><th>الإجمالي</th><th>الحالة</th></tr></thead>
+                          <table className="beidaq-admin__table">
+                            <thead><tr><th>الاسم</th><th>الصورة</th><th>المنتجات</th><th>الوصف</th><th></th></tr></thead>
                             <tbody>
-                              {(stats.recentOrders?.length ? stats.recentOrders : ordersList.slice(0, 5)).map((o) => (
-                                <tr key={o.id}>
-                                  <td><strong>#{o.id}</strong></td>
-                                  <td>{o.user?.name || "—"}</td>
-                                  <td className="text-gold-custom fw-bold">${Number(o.total ?? o.total_price).toFixed(2)}</td>
-                                  <td><StatusBadge status={o.status} /></td>
+                              {adminCategories.map((c) => (
+                                <tr key={c.id}>
+                                  <td className="fw-bold">{c.name}</td>
+                                  <td>
+                                    {c.image ? (
+                                      <img src={c.image} alt="" className="beidaq-admin__table-thumb" />
+                                    ) : (
+                                      <span style={{ fontSize: "0.72rem", color: "#737373" }}>—</span>
+                                    )}
+                                  </td>
+                                  <td><span className="beidaq-admin__status beidaq-admin__status--processing">{c.productsCount ?? 0}</span></td>
+                                  <td className="text-truncate" style={{ maxWidth: "180px", color: "#737373" }}>{c.description || "—"}</td>
+                                  <td>
+                                    <button type="button" onClick={() => handleEditCategory(c)} className="beidaq-admin__action-btn me-1"><Edit2 size={14} /></button>
+                                    <button type="button" onClick={() => handleDeleteCategory(c.id, c.name)} className="beidaq-admin__action-btn beidaq-admin__action-btn--danger"><Trash2 size={14} /></button>
+                                  </td>
                                 </tr>
                               ))}
-                              {!stats.recentOrders?.length && ordersList.length === 0 && (
-                                <tr><td colSpan={4} className="text-center text-muted py-4">لا توجد طلبات بعد</td></tr>
-                              )}
                             </tbody>
                           </table>
                         </div>
                       </div>
                     </div>
-                    <div className="col-lg-5">
-                      <div className="admin-panel-card">
-                        <div className="admin-panel-header"><h6>تنبيه المخزون المنخفض</h6></div>
-                        <div className="p-3">
-                          {productsList.filter((p) => p.stock <= 5).length === 0 ? (
-                            <p className="text-success fw-bold m-0 py-3 text-center" style={{ fontSize: "0.85rem" }}>✓ جميع مستويات المخزون جيدة</p>
-                          ) : (
-                            productsList.filter((p) => p.stock <= 5).map((p) => (
-                              <div key={p.id} className="d-flex justify-content-between align-items-center py-2 border-bottom">
-                                <span style={{ fontSize: "0.82rem" }} className="fw-semibold text-truncate me-2">{p.name}</span>
-                                <span className={`status-badge ${p.stock === 0 ? "status-cancelled" : "status-pending"}`}>{p.stock === 0 ? "نفد" : `متبقي ${p.stock}`}</span>
-                              </div>
-                            ))
+                  </div>
+                )}
+
+                {adminTab === "products" && (
+                  <div className="row g-4">
+                    <div className="col-lg-4">
+                      <div className="beidaq-admin__form-card">
+                        <h2 className="beidaq-admin__form-title">
+                          {selectedProduct ? "تعديل المنتج" : "منتج جديد"}
+                        </h2>
+                        <form onSubmit={handleSaveProduct} className="d-grid gap-3">
+                          <div>
+                            <label>الاسم *</label>
+                            <input className="form-control" required value={formName} onChange={(e) => setFormName(e.target.value)} />
+                          </div>
+                          <div>
+                            <label>التصنيف *</label>
+                            <select className="form-select" required value={formCategoryId} onChange={(e) => setFormCategoryId(e.target.value)}>
+                              {adminCategories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                            </select>
+                          </div>
+                          <div className="row g-2">
+                            <div className="col-6">
+                              <label>السعر (ر.س) *</label>
+                              <input type="number" step="0.01" className="form-control" required value={formPrice} onChange={(e) => setFormPrice(e.target.value)} />
+                            </div>
+                            <div className="col-6">
+                              <label>الكمية *</label>
+                              <input type="number" min="0" className="form-control" required value={formQuantity} onChange={(e) => setFormQuantity(e.target.value)} />
+                            </div>
+                          </div>
+                          <AdminImageUpload
+                            label="رفع صورة المنتج"
+                            required={!selectedProduct}
+                            existingImage={formExistingImage}
+                            file={formImageFile}
+                            onFileChange={setFormImageFile}
+                            onError={(msg) => flash(msg, true)}
+                            disabled={savingProduct}
+                            uploadProgress={savingProduct ? productUploadProgress : null}
+                          />
+                          <div>
+                            <label>الوصف</label>
+                            <textarea className="form-control" rows={3} value={formDescription} onChange={(e) => setFormDescription(e.target.value)} />
+                          </div>
+                          <div className="form-check">
+                            <input type="checkbox" className="form-check-input" id="prod-active" checked={formStatus} onChange={(e) => setFormStatus(e.target.checked)} />
+                            <label className="form-check-label" htmlFor="prod-active">نشط في المتجر</label>
+                          </div>
+                          <button type="submit" className="beidaq-btn-gold beidaq-btn-gold--full" disabled={savingProduct}>
+                            {savingProduct ? "جاري الرفع…" : selectedProduct ? "حفظ المنتج" : "إنشاء المنتج"}
+                          </button>
+                          {selectedProduct && (
+                            <button type="button" onClick={resetProductForm} className="beidaq-btn-outline">إلغاء</button>
                           )}
-                        </div>
-                      </div>
-                      <div className="admin-panel-card mt-3">
-                        <div className="admin-panel-header"><h6>إجراءات سريعة</h6></div>
-                        <div className="p-3 d-grid gap-2">
-                          <button onClick={() => { resetCategoryForm(); setAdminTab("categories"); }} className="btn btn-dark-custom py-2 d-flex align-items-center gap-2 justify-content-center" style={{ fontSize: "0.78rem" }}>
-                            <Plus size={14} /> إضافة تصنيف
-                          </button>
-                          <button onClick={() => { resetProductForm(); setAdminTab("products"); }} className="btn btn-gold-custom py-2 d-flex align-items-center gap-2 justify-content-center" style={{ fontSize: "0.78rem" }}>
-                            <Plus size={14} /> إضافة منتج
-                          </button>
-                        </div>
+                        </form>
                       </div>
                     </div>
-                  </div>
-                </div>
-              )}
-
-              {/* CATEGORIES CRUD */}
-              {adminTab === "categories" && (
-                <div className="row g-4">
-                  <div className="col-lg-4">
-                    <div className="admin-form-card">
-                      <h6 className="font-serif-custom fw-bold mb-3" style={{ color: "var(--color-gold-light)" }}>
-                        {selectedCategory ? "تعديل التصنيف" : "تصنيف جديد"}
-                      </h6>
-                      <form onSubmit={handleSaveCategory} className="d-grid gap-3">
-                        <div>
-                          <label>الاسم *</label>
-                          <input className="form-control" required value={catName} onChange={(e) => setCatName(e.target.value)} placeholder="رقاع الشطرنج" />
+                    <div className="col-lg-8">
+                      <div className="beidaq-admin__panel">
+                        <div className="beidaq-admin__panel-head">
+                          <h2 className="beidaq-admin__panel-title">مخزون المنتجات ({productsList.length})</h2>
                         </div>
-                        <div>
-                          <label>الرابط (Slug)</label>
-                          <input className="form-control" value={catSlug} onChange={(e) => setCatSlug(e.target.value)} placeholder="boards (يُنشأ تلقائياً إن تُرك فارغاً)" />
-                        </div>
-                        <div>
-                          <label>الوصف</label>
-                          <textarea className="form-control" rows={2} value={catDescription} onChange={(e) => setCatDescription(e.target.value)} />
-                        </div>
-                        <AdminImageUpload
-                          label="رفع صورة"
-                          required={!selectedCategory}
-                          existingImage={catExistingImage}
-                          file={catImageFile}
-                          onFileChange={setCatImageFile}
-                          onError={(msg) => flash(msg, true)}
-                          disabled={savingCategory}
-                          uploadProgress={savingCategory ? categoryUploadProgress : null}
-                        />
-                        <button type="submit" className="btn btn-gold-custom py-2 fw-bold" disabled={savingCategory}>
-                          {savingCategory ? "جاري الرفع…" : selectedCategory ? "حفظ التغييرات" : "إنشاء التصنيف"}
-                        </button>
-                        {selectedCategory && (
-                          <button type="button" onClick={resetCategoryForm} className="btn btn-outline-gold py-2">إلغاء</button>
-                        )}
-                      </form>
-                    </div>
-                  </div>
-                  <div className="col-lg-8">
-                    <div className="admin-panel-card">
-                      <div className="admin-panel-header"><h6>جميع التصنيفات ({adminCategories.length})</h6></div>
-                      <div className="table-responsive">
-                        <table className="admin-table">
-                          <thead><tr><th>الاسم</th><th>الصورة</th><th>Slug</th><th>المنتجات</th><th>الوصف</th><th></th></tr></thead>
-                          <tbody>
-                            {adminCategories.map((c) => (
-                              <tr key={c.id}>
-                                <td className="fw-bold">{c.name}</td>
-                                <td>
-                                  {c.image ? (
-                                    <img src={c.image} alt="" className="admin-table-thumb" />
-                                  ) : (
-                                    <span className="text-muted" style={{ fontSize: "0.72rem" }}>—</span>
-                                  )}
-                                </td>
-                                <td><code style={{ fontSize: "0.75rem" }}>{c.slug}</code></td>
-                                <td><span className="status-badge status-processing">{c.productsCount ?? 0}</span></td>
-                                <td className="text-muted text-truncate" style={{ maxWidth: "180px" }}>{c.description || "—"}</td>
-                                <td className="text-end">
-                                  <button onClick={() => handleEditCategory(c)} className="admin-action-btn me-1"><Edit2 size={14} /></button>
-                                  <button onClick={() => handleDeleteCategory(c.id, c.name)} className="admin-action-btn danger"><Trash2 size={14} /></button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* PRODUCTS CRUD */}
-              {adminTab === "products" && (
-                <div className="row g-4">
-                  <div className="col-lg-4">
-                    <div className="admin-form-card">
-                      <h6 className="font-serif-custom fw-bold mb-3" style={{ color: "var(--color-gold-light)" }}>
-                        {selectedProduct ? "تعديل المنتج" : "منتج جديد"}
-                      </h6>
-                      <form onSubmit={handleSaveProduct} className="d-grid gap-3">
-                        <div>
-                          <label>الاسم *</label>
-                          <input className="form-control" required value={formName} onChange={(e) => setFormName(e.target.value)} />
-                        </div>
-                        <div>
-                          <label>التصنيف *</label>
-                          <select className="form-select" required value={formCategoryId} onChange={(e) => setFormCategoryId(e.target.value)}>
-                            {adminCategories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-                          </select>
-                        </div>
-                        <div className="row g-2">
-                          <div className="col-6">
-                            <label>السعر *</label>
-                            <input type="number" step="0.01" className="form-control" required value={formPrice} onChange={(e) => setFormPrice(e.target.value)} />
-                          </div>
-                          <div className="col-6">
-                            <label>الكمية *</label>
-                            <input type="number" min="0" className="form-control" required value={formQuantity} onChange={(e) => setFormQuantity(e.target.value)} />
-                          </div>
-                        </div>
-                        <AdminImageUpload
-                          label="رفع صورة المنتج"
-                          required={!selectedProduct}
-                          existingImage={formExistingImage}
-                          file={formImageFile}
-                          onFileChange={setFormImageFile}
-                          onError={(msg) => flash(msg, true)}
-                          disabled={savingProduct}
-                          uploadProgress={savingProduct ? productUploadProgress : null}
-                        />
-                        <div>
-                          <label>الوصف</label>
-                          <textarea className="form-control" rows={3} value={formDescription} onChange={(e) => setFormDescription(e.target.value)} />
-                        </div>
-                        <div className="form-check">
-                          <input type="checkbox" className="form-check-input" id="prod-active" checked={formStatus} onChange={(e) => setFormStatus(e.target.checked)} />
-                          <label className="form-check-label text-white-50" htmlFor="prod-active" style={{ fontSize: "0.8rem" }}>نشط في المتجر</label>
-                        </div>
-                        <button type="submit" className="btn btn-gold-custom py-2 fw-bold" disabled={savingProduct}>
-                          {savingProduct ? "جاري الرفع…" : selectedProduct ? "حفظ المنتج" : "إنشاء المنتج"}
-                        </button>
-                        {selectedProduct && <button type="button" onClick={resetProductForm} className="btn btn-outline-gold py-2">إلغاء</button>}
-                      </form>
-                    </div>
-                  </div>
-                  <div className="col-lg-8">
-                    <div className="admin-panel-card">
-                      <div className="admin-panel-header"><h6>مخزون المنتجات ({productsList.length})</h6></div>
-                      <div className="table-responsive">
-                        <table className="admin-table">
-                          <thead><tr><th>المنتج</th><th>التصنيف</th><th>السعر</th><th>المخزون</th><th>الحالة</th><th></th></tr></thead>
-                          <tbody>
-                            {productsList.map((p) => (
-                              <tr key={p.id}>
-                                <td>
-                                  <div className="d-flex align-items-center gap-2">
-                                    {p.image && <img src={p.image} alt="" className="admin-table-thumb" />}
-                                    <div>
-                                      <div className="fw-bold">{p.name}</div>
-                                      <div className="text-muted" style={{ fontSize: "0.68rem" }}>#{p.id}</div>
+                        <div className="table-responsive">
+                          <table className="beidaq-admin__table">
+                            <thead><tr><th>المنتج</th><th>التصنيف</th><th>السعر</th><th>المخزون</th><th>الحالة</th><th></th></tr></thead>
+                            <tbody>
+                              {productsList.map((p) => (
+                                <tr key={p.id}>
+                                  <td>
+                                    <div className="d-flex align-items-center gap-2 flex-row-reverse">
+                                      {p.image && <img src={p.image} alt="" className="beidaq-admin__table-thumb" />}
+                                      <div>
+                                        <div className="fw-bold">{p.name}</div>
+                                        <div style={{ fontSize: "0.68rem", color: "#737373" }}>#{p.id}</div>
+                                      </div>
                                     </div>
-                                  </div>
-                                </td>
-                                <td>{p.categoryName || p.category}</td>
-                                <td className="fw-bold">${p.price.toFixed(2)}</td>
-                                <td className={p.stock <= 5 ? "text-danger fw-bold" : ""}>{p.stock}</td>
-                                <td><StatusBadge status={p.status !== false ? "نشط" : "مخفي"} /></td>
-                                <td className="text-end">
-                                  <button onClick={() => handleEditProduct(p)} className="admin-action-btn me-1"><Edit2 size={14} /></button>
-                                  <button onClick={() => handleDeleteProduct(p.id, p.name)} className="admin-action-btn danger"><Trash2 size={14} /></button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
+                                  </td>
+                                  <td>{p.categoryName || p.category}</td>
+                                  <td className="beidaq-admin__price">{formatSAR(p.price)}</td>
+                                  <td className={p.stock <= 5 ? "text-danger fw-bold" : ""}>{p.stock}</td>
+                                  <td><StatusBadge status={p.status !== false ? "نشط" : "مخفي"} /></td>
+                                  <td>
+                                    <button type="button" onClick={() => handleEditProduct(p)} className="beidaq-admin__action-btn me-1"><Edit2 size={14} /></button>
+                                    <button type="button" onClick={() => handleDeleteProduct(p.id, p.name)} className="beidaq-admin__action-btn beidaq-admin__action-btn--danger"><Trash2 size={14} /></button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* ORDERS */}
-              {adminTab === "orders" && (
-                <div className="admin-panel-card">
-                  <div className="admin-panel-header">
-                    <h6>إدارة الطلبات ({ordersList.length})</h6>
-                    <ShoppingBag size={20} className="text-gold-custom" />
+                {adminTab === "orders" && (
+                  <div className="beidaq-admin__panel">
+                    <div className="beidaq-admin__panel-head">
+                      <h2 className="beidaq-admin__panel-title">إدارة الطلبات ({ordersList.length})</h2>
+                      <ShoppingBag size={20} style={{ color: "#B8962E" }} />
+                    </div>
+                    <div className="table-responsive">
+                      <table className="beidaq-admin__table">
+                        <thead>
+                          <tr><th>الطلب</th><th>العميل</th><th>العناصر</th><th>الإجمالي</th><th>الدفع</th><th>الحالة</th><th>تحديث</th></tr>
+                        </thead>
+                        <tbody>
+                          {ordersList.map((o) => (
+                            <tr key={o.id}>
+                              <td>
+                                <strong>#{o.id}</strong>
+                                <div style={{ fontSize: "0.68rem", color: "#737373" }}>
+                                  {new Date(o.date || o.created_at).toLocaleDateString("ar-SA")}
+                                </div>
+                              </td>
+                              <td>
+                                <div className="fw-semibold">{o.customerName || "—"}</div>
+                                <div style={{ fontSize: "0.72rem", color: "#737373" }}>{o.phone}</div>
+                              </td>
+                              <td style={{ maxWidth: "160px" }}>
+                                {o.items?.map((i, idx) => (
+                                  <div key={idx} className="text-truncate" style={{ fontSize: "0.72rem", color: "#737373" }}>
+                                    {i.name} ×{i.quantity}
+                                  </div>
+                                ))}
+                              </td>
+                              <td className="beidaq-admin__price">{formatSAR(Number(o.total))}</td>
+                              <td><code style={{ fontSize: "0.7rem" }}>{o.payment_method}</code></td>
+                              <td><StatusBadge status={o.status} /></td>
+                              <td>
+                                <select
+                                  value={o.statusRaw || "pending"}
+                                  onChange={(e) => handleUpdateStatus(o.id, e.target.value)}
+                                  className="form-select form-select-sm"
+                                  style={{ width: "130px" }}
+                                >
+                                  {STATUS_OPTIONS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+                                </select>
+                              </td>
+                            </tr>
+                          ))}
+                          {ordersList.length === 0 && (
+                            <tr><td colSpan={7} className="text-center py-5" style={{ color: "#737373" }}>لا توجد طلبات بعد</td></tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                  <div className="table-responsive">
-                    <table className="admin-table">
-                      <thead>
-                        <tr><th>الطلب</th><th>العميل</th><th>العناصر</th><th>الإجمالي</th><th>الدفع</th><th>الحالة</th><th>تحديث</th></tr>
-                      </thead>
-                      <tbody>
-                        {ordersList.map((o) => (
-                          <tr key={o.id}>
-                            <td>
-                              <strong>#{o.id}</strong>
-                              <div className="text-muted" style={{ fontSize: "0.68rem" }}>{new Date(o.date || o.created_at).toLocaleDateString()}</div>
-                            </td>
-                            <td>
-                              <div className="fw-semibold">{o.customerName || "—"}</div>
-                              <div className="text-muted" style={{ fontSize: "0.72rem" }}>{o.phone}</div>
-                            </td>
-                            <td style={{ maxWidth: "160px" }}>
-                              {o.items?.map((i, idx) => (
-                                <div key={idx} className="text-muted text-truncate" style={{ fontSize: "0.72rem" }}>{i.name} ×{i.quantity}</div>
-                              ))}
-                            </td>
-                            <td className="fw-bold text-gold-custom">${Number(o.total).toFixed(2)}</td>
-                            <td><code style={{ fontSize: "0.7rem" }}>{o.payment_method}</code></td>
-                            <td><StatusBadge status={o.status} /></td>
-                            <td>
-                              <select
-                                value={o.statusRaw || "pending"}
-                                onChange={(e) => handleUpdateStatus(o.id, e.target.value)}
-                                className="form-select form-select-sm"
-                                style={{ fontSize: "0.75rem", width: "130px", borderRadius: "var(--radius-sm)" }}
-                              >
-                                {STATUS_OPTIONS.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
-                              </select>
-                            </td>
-                          </tr>
-                        ))}
-                        {ordersList.length === 0 && (
-                          <tr><td colSpan={7} className="text-center text-muted py-5">لا توجد طلبات بعد</td></tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
+                )}
 
-              {/* CUSTOMERS */}
-              {adminTab === "customers" && (
-                <div className="admin-panel-card">
-                  <div className="admin-panel-header"><h6>سجل العملاء ({customersList.length})</h6></div>
-                  <div className="table-responsive">
-                    <table className="admin-table">
-                      <thead><tr><th>الاسم</th><th>البريد</th><th>الهاتف</th><th>تاريخ الانضمام</th></tr></thead>
-                      <tbody>
-                        {customersList.map((c) => (
-                          <tr key={c.id}>
-                            <td className="fw-bold">{c.name}</td>
-                            <td>{c.email}</td>
-                            <td>{c.phone || "—"}</td>
-                            <td className="text-muted">{c.joinedDate || "—"}</td>
-                          </tr>
-                        ))}
-                        {customersList.length === 0 && (
-                          <tr><td colSpan={4} className="text-center text-muted py-5">لا يوجد عملاء بعد</td></tr>
-                        )}
-                      </tbody>
-                    </table>
+                {adminTab === "customers" && (
+                  <div className="beidaq-admin__panel">
+                    <div className="beidaq-admin__panel-head">
+                      <h2 className="beidaq-admin__panel-title">سجل العملاء ({customersList.length})</h2>
+                    </div>
+                    <div className="table-responsive">
+                      <table className="beidaq-admin__table">
+                        <thead><tr><th>الاسم</th><th>البريد</th><th>الهاتف</th><th>تاريخ الانضمام</th></tr></thead>
+                        <tbody>
+                          {customersList.map((c) => (
+                            <tr key={c.id}>
+                              <td className="fw-bold">{c.name}</td>
+                              <td>{c.email}</td>
+                              <td>{c.phone || "—"}</td>
+                              <td style={{ color: "#737373" }}>{c.joinedDate || "—"}</td>
+                            </tr>
+                          ))}
+                          {customersList.length === 0 && (
+                            <tr><td colSpan={4} className="text-center py-5" style={{ color: "#737373" }}>لا يوجد عملاء بعد</td></tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                </div>
-              )}
-            </>
-          )}
-        </main>
+                )}
+              </>
+            )}
+          </main>
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

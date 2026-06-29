@@ -45,7 +45,7 @@ export default function HomePage({
   return (
     <div className="beidaq-home rtl" id="home-view-page">
       {/* 1. Hero Banner */}
-      <section className="beidaq-hero hero-section overflow-hidden position-relative">
+      <section className="beidaq-hero overflow-hidden position-relative">
         <div className="beidaq-hero-pattern" aria-hidden="true" />
         <div className="container py-5 position-relative" style={{ zIndex: 2 }}>
           <div className="row align-items-center g-5">

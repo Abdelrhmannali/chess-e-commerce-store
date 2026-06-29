@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
   Search,
-  Heart,
   X
 } from "lucide-react";
 import Navbar from "./components/Navbar";
@@ -10,6 +9,7 @@ import ProductDetailsModal from "./components/ProductDetailsModal";
 import CartPage from "./components/CartPage";
 import CheckoutPage from "./components/CheckoutPage";
 import AccountPage from "./components/AccountPage";
+import WishlistPage from "./components/WishlistPage";
 import AdminDashboard from "./components/AdminDashboard";
 import HomePage from "./components/HomePage";
 import Footer from "./components/Footer";
@@ -25,7 +25,7 @@ import { hasPasswordResetLink } from "./utils/authParams";
 const USER_TABS = new Set(["home", "shop", "cart", "checkout", "account", "wishlist"]);
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState(() => (hasPasswordResetLink() ? "account" : "home"));
+  const [activeTab, setActiveTab] = useState("home");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   const [categories, setCategories] = useState([]);
@@ -466,30 +466,13 @@ export default function App() {
         )}
 
         {activeTab === "wishlist" && (
-          <div className="container py-5" id="wishlist-view-page">
-            <div className="border-bottom pb-4 mb-4 text-end">
-              <h2 className="font-serif-custom fw-bold text-charcoal-custom text-uppercase m-0">{t("myStrategyWishlist")}</h2>
-              <p className="text-muted font-mono-custom m-0 mt-1" style={{ fontSize: "11px" }}>{t("wishlistSub")}</p>
-            </div>
-            {wishlist.length === 0 ? (
-              <div className="card rounded-0 p-4 border-custom bg-white text-center mx-auto" style={{ maxWidth: "450px" }}>
-                <div className="d-flex align-items-center justify-content-center bg-light border rounded-3 mx-auto mb-3 text-gold-custom shadow-sm" style={{ width: "48px", height: "48px" }}>
-                  <Heart size={20} />
-                </div>
-                <h6 className="font-serif-custom fw-bold text-charcoal-custom text-uppercase mb-1">{t("noWishlistTitle")}</h6>
-                <p className="text-muted font-sans mb-4" style={{ fontSize: "11px" }}>{t("noWishlistDesc")}</p>
-                <button onClick={() => handleCategorySelect("all")} className="btn btn-gold-custom py-2 px-4 text-uppercase fw-bold font-mono-custom" style={{ fontSize: "11px" }}>{t("exploreElite")}</button>
-              </div>
-            ) : (
-              <div className="row beidaq-catalog-grid">
-                {wishlist.map((product, index) => (
-                  <div className="col-12 col-md-6 col-lg-3" key={product.id}>
-                    <ProductCard product={product} onSelect={handleSelectProduct} onAddToCart={handleAddToCart} onToggleWishlist={handleToggleWishlist} isWishlisted={true} animationIndex={index} />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <WishlistPage
+            wishlist={wishlist}
+            onSelectProduct={handleSelectProduct}
+            onAddToCart={handleAddToCart}
+            onToggleWishlist={handleToggleWishlist}
+            onNavigateToShop={() => handleCategorySelect("all")}
+          />
         )}
 
         {activeTab === "cart" && (
