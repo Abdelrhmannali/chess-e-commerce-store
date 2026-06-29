@@ -21,6 +21,7 @@ import { cartToUiItems, markBestSellers } from "./utils/mappers";
 import { useLanguage } from "./context/LanguageContext";
 import { useToast } from "./context/ToastContext";
 import { hasPasswordResetLink } from "./utils/authParams";
+import { scrollToTop } from "./components/ScrollToTop";
 
 const USER_TABS = new Set(["home", "shop", "cart", "checkout", "account", "wishlist"]);
 
@@ -142,6 +143,10 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem("chess_wishlist", JSON.stringify(wishlist));
   }, [wishlist]);
+
+  useEffect(() => {
+    scrollToTop();
+  }, [activeTab]);
 
   const handleCategorySelect = (cat) => {
     setSelectedCategory(cat);

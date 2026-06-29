@@ -22,6 +22,7 @@ import { api } from "../utils/api";
 import { computeProductSalesRankings } from "../utils/mappers";
 import { useToast } from "../context/ToastContext";
 import AdminImageUpload from "./AdminImageUpload";
+import { scrollToTop } from "./ScrollToTop";
 import "../styles/Admin.css";
 import "../styles/UserPages.css";
 
@@ -139,6 +140,10 @@ export default function AdminDashboard({ categories = [], onRefreshCatalog }) {
   }, [categories, formCategoryId]);
 
   useEffect(() => { loadAdminData(); }, [adminTab]);
+
+  useEffect(() => {
+    scrollToTop();
+  }, [adminTab]);
 
   useEffect(() => {
     if (categories.length > 0) {

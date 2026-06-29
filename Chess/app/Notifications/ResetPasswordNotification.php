@@ -7,7 +7,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 
 class ResetPasswordNotification extends ResetPassword
 {
-    public function toMail(object $notifiable): MailMessage
+    public function toMail($notifiable)
     {
         $frontend = rtrim((string) config('app.frontend_url', 'http://localhost:3000'), '/');
         $resetUrl = $frontend.'/reset-password?'.http_build_query([
