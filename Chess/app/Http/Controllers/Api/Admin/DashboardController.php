@@ -13,7 +13,20 @@ class DashboardController extends Controller
 {
     public function index(): JsonResponse
     {
-        $totalRevenue = Order::where('payment_status', 'paid')->sum('total_price');
+        // Revenue is collected from delivered orders (or any non-cancelled order
+        // that has been marked as paid by admin).
+        $totalRevenue = Order::query()
+            ->where(function ($q) {
+                $q->where('status', 'delivered')
+                  ->orWhere('payment_status', 'paid');
+            })
+            ->where('status', '!=', 'cancelled')
+            ->sum('total_price');
+
+        // Pending revenue: orders still in the pipeline (not yet delivered/cancelled).
+        $pendingRevenue = Order::query()
+            ->whereIn('status', ['pending', 'processing', 'shipped'])
+            ->sum('total_price');
 
         return response()->json([
             'statistics' => [
@@ -23,6 +36,7 @@ class DashboardController extends Controller
                 'orders' => Order::count(),
                 'pending_orders' => Order::where('status', 'pending')->count(),
                 'total_revenue' => number_format((float) $totalRevenue, 2, '.', ''),
+                'pending_revenue' => number_format((float) $pendingRevenue, 2, '.', ''),
             ],
             'recent_orders' => Order::with(['user', 'items.product'])
                 ->latest()

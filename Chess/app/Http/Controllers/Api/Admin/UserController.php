@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\OrderResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -26,9 +27,16 @@ class UserController extends Controller
         return UserResource::collection($users);
     }
 
-    public function show(User $user): UserResource
+    public function show(User $user): JsonResponse
     {
-        return new UserResource($user);
+        $user->load([
+            'orders' => fn ($query) => $query->with(['items.product'])->latest(),
+        ]);
+
+        return response()->json([
+            'user' => new UserResource($user),
+            'orders' => OrderResource::collection($user->orders),
+        ]);
     }
 
     public function update(Request $request, User $user): JsonResponse
@@ -49,9 +57,9 @@ class UserController extends Controller
         ]);
     }
 
-    public function destroy(User $user): JsonResponse
+    public function destroy(Request $request, User $user): JsonResponse
     {
-        if ($user->id === auth()->id()) {
+        if ($user->is($request->user())) {
             return response()->json(['message' => 'لا يمكنك حذف حسابك الخاص.'], 422);
         }
 

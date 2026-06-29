@@ -83,12 +83,12 @@ export default function Footer({ onCategorySelect, onNavigate }) {
                     <FaChessKing aria-hidden="true" />
                   </div>
                   <div>
-                    <h2 className="beidaq-footer-name">بيدق</h2>
-                    <p className="beidaq-footer-slogan">لأن كل بطل بدأ ببيدق.</p>
+                    <h2 className="beidaq-footer-name">بــيــدق</h2>
+                    <p className="beidaq-footer-slogan">لأن كل بطل بدأ ببــيــدق.</p>
                   </div>
                 </div>
                 <p className="beidaq-footer-desc">
-                  متجر بيدق هو وجهتك الأولى لعشاق الشطرنج في المملكة العربية السعودية، حيث نوفر رقع
+                  متجر بــيــدق هو وجهتك الأولى لعشاق الشطرنج في المملكة العربية السعودية، حيث نوفر رقع
                   الشطرنج، القطع، الساعات، والإكسسوارات بأعلى جودة.
                 </p>
                 <div className="beidaq-footer-social">
@@ -157,14 +157,14 @@ export default function Footer({ onCategorySelect, onNavigate }) {
                     <span className="beidaq-footer-contact-icon">
                       <FaLocationDot aria-hidden="true" />
                     </span>
-                    <span>Riyadh, Saudi Arabia</span>
+                    <span>Sakaka, Saudi Arabia</span>
                   </li>
                   <li>
                     <span className="beidaq-footer-contact-icon">
                       <FaPhone aria-hidden="true" />
                     </span>
-                    <a href="tel:+966501234567" className="beidaq-footer-contact-link">
-                      +966 50 123 4567
+                    <a href="tel:+966556354954" className="beidaq-footer-contact-link">
+                      +966 55 635 4954
                     </a>
                   </li>
                   <li>
@@ -205,7 +205,7 @@ export default function Footer({ onCategorySelect, onNavigate }) {
         {/* Bottom Bar */}
         <div className="beidaq-footer-bottom">
           <p className="beidaq-footer-copy mb-0">
-            &copy; 2026 بيدق - جميع الحقوق محفوظة.
+            &copy; 2026 بــيــدق - جميع الحقوق محفوظة.
           </p>
           <nav className="beidaq-footer-legal" aria-label="روابط قانونية">
             {LEGAL_LINKS.map((label) => (

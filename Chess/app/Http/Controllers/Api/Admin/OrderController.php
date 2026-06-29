@@ -32,7 +32,19 @@ class OrderController extends Controller
 
     public function update(UpdateOrderRequest $request, Order $order): JsonResponse
     {
-        $order->update($request->validated());
+        $data = $request->validated();
+
+        // Auto-mark payment as paid when order reaches delivered status
+        if (($data['status'] ?? null) === 'delivered' && empty($data['payment_status'])) {
+            $data['payment_status'] = 'paid';
+        }
+
+        // Reset payment to pending if order is cancelled
+        if (($data['status'] ?? null) === 'cancelled' && empty($data['payment_status'])) {
+            $data['payment_status'] = 'pending';
+        }
+
+        $order->update($data);
         $order->load(['user', 'items.product']);
 
         return response()->json([

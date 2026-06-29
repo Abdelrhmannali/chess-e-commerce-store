@@ -309,6 +309,14 @@ export const api = {
     return list.map(mapUser);
   },
 
+  async getAdminCustomer(userId) {
+    const result = await request(`/admin/users/${userId}`);
+    const user = mapUser(result.user ?? result.data ?? result);
+    const ordersRaw = result.orders?.data ?? result.orders ?? [];
+    const orders = mapOrders(Array.isArray(ordersRaw) ? ordersRaw : []);
+    return { user, orders };
+  },
+
   async getAdminCategories() {
     const result = await request("/admin/categories?per_page=100");
     const list = Array.isArray(result.data) ? result.data : [];

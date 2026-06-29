@@ -15,7 +15,9 @@ import {
   Clock,
   Layers,
   Trophy,
-  ArrowDownCircle
+  ArrowDownCircle,
+  Eye,
+  X
 } from "lucide-react";
 import { FaChessKing } from "react-icons/fa6";
 import { api } from "../utils/api";
@@ -106,6 +108,10 @@ export default function AdminDashboard({ categories = [], onRefreshCatalog }) {
   const [savingCategory, setSavingCategory] = useState(false);
   const [categoryUploadProgress, setCategoryUploadProgress] = useState(null);
 
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [customerOrders, setCustomerOrders] = useState([]);
+  const [loadingCustomerDetail, setLoadingCustomerDetail] = useState(false);
+
   const { showSuccess, showError } = useToast();
 
   const flash = (msg, isError = false) => {
@@ -140,6 +146,13 @@ export default function AdminDashboard({ categories = [], onRefreshCatalog }) {
   }, [categories, formCategoryId]);
 
   useEffect(() => { loadAdminData(); }, [adminTab]);
+
+  useEffect(() => {
+    if (adminTab !== "customers") {
+      setSelectedCustomer(null);
+      setCustomerOrders([]);
+    }
+  }, [adminTab]);
 
   useEffect(() => {
     scrollToTop();
@@ -291,13 +304,40 @@ export default function AdminDashboard({ categories = [], onRefreshCatalog }) {
       await api.updateOrderStatus(orderId, status);
       flash(`الطلب #${orderId} → ${STATUS_OPTIONS.find((s) => s.value === status)?.label || status}`);
       await loadAdminData();
+      if (selectedCustomer) {
+        const { orders } = await api.getAdminCustomer(selectedCustomer.id);
+        setCustomerOrders(orders);
+      }
     } catch (err) {
       flash(err.message || "فشل تحديث الطلب.", true);
     }
   };
 
+  const handleSelectCustomer = async (customer) => {
+    if (selectedCustomer?.id === customer.id) {
+      setSelectedCustomer(null);
+      setCustomerOrders([]);
+      return;
+    }
+
+    setSelectedCustomer(customer);
+    setCustomerOrders([]);
+    setLoadingCustomerDetail(true);
+    try {
+      const { user, orders } = await api.getAdminCustomer(customer.id);
+      setSelectedCustomer(user);
+      setCustomerOrders(orders);
+    } catch (err) {
+      flash(err.message || "تعذر تحميل بيانات العميل.", true);
+      setSelectedCustomer(null);
+    } finally {
+      setLoadingCustomerDetail(false);
+    }
+  };
+
   const statCards = stats ? [
-    { key: "revenue", label: "إجمالي الإيرادات", value: formatSAR(stats.totalSales), icon: DollarSign, iconBg: "rgba(212,175,55,0.12)", iconColor: "#B8962E" },
+    { key: "revenue", label: "إجمالي الإيرادات (مُحصَّل)", value: formatSAR(stats.totalSales), icon: DollarSign, iconBg: "rgba(212,175,55,0.12)", iconColor: "#B8962E" },
+    { key: "pending-revenue", label: "إيرادات قيد التحصيل", value: formatSAR(stats.pendingRevenue ?? 0), icon: Clock, iconBg: "rgba(245,158,11,0.12)", iconColor: "#F59E0B" },
     { key: "orders", label: "إجمالي الطلبات", value: stats.totalOrders, icon: Receipt, iconBg: "rgba(124,58,237,0.1)", iconColor: "#7C3AED" },
     { key: "pending", label: "طلبات قيد الانتظار", value: stats.pendingOrders, icon: Clock, iconBg: "rgba(245,158,11,0.12)", iconColor: "#F59E0B" },
     { key: "users", label: "المستخدمون المسجلون", value: stats.totalCustomers, icon: Users, iconBg: "rgba(5,150,105,0.1)", iconColor: "#059669" },
@@ -777,28 +817,115 @@ export default function AdminDashboard({ categories = [], onRefreshCatalog }) {
                 )}
 
                 {adminTab === "customers" && (
-                  <div className="beidaq-admin__panel">
-                    <div className="beidaq-admin__panel-head">
-                      <h2 className="beidaq-admin__panel-title">سجل العملاء ({customersList.length})</h2>
+                  <div className="d-flex flex-column gap-4">
+                    <div className="beidaq-admin__panel">
+                      <div className="beidaq-admin__panel-head">
+                        <h2 className="beidaq-admin__panel-title">سجل العملاء ({customersList.length})</h2>
+                      </div>
+                      <div className="table-responsive">
+                        <table className="beidaq-admin__table">
+                          <thead>
+                            <tr><th>الاسم</th><th>البريد</th><th>الهاتف</th><th>تاريخ الانضمام</th><th></th></tr>
+                          </thead>
+                          <tbody>
+                            {customersList.map((c) => (
+                              <tr
+                                key={c.id}
+                                className={`beidaq-admin__customer-row${
+                                  selectedCustomer?.id === c.id ? " beidaq-admin__customer-row--active" : ""
+                                }`}
+                                onClick={() => handleSelectCustomer(c)}
+                                role="button"
+                                tabIndex={0}
+                                onKeyDown={(e) => e.key === "Enter" && handleSelectCustomer(c)}
+                              >
+                                <td className="fw-bold">{c.name}</td>
+                                <td>{c.email}</td>
+                                <td>{c.phone || "—"}</td>
+                                <td style={{ color: "#737373" }}>{c.joinedDate || "—"}</td>
+                                <td>
+                                  <button
+                                    type="button"
+                                    className="beidaq-admin__action-btn"
+                                    onClick={(e) => { e.stopPropagation(); handleSelectCustomer(c); }}
+                                    title="عرض الطلبات"
+                                    aria-label="عرض الطلبات"
+                                  >
+                                    <Eye size={14} />
+                                  </button>
+                                </td>
+                              </tr>
+                            ))}
+                            {customersList.length === 0 && (
+                              <tr><td colSpan={5} className="text-center py-5" style={{ color: "#737373" }}>لا يوجد عملاء بعد</td></tr>
+                            )}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
-                    <div className="table-responsive">
-                      <table className="beidaq-admin__table">
-                        <thead><tr><th>الاسم</th><th>البريد</th><th>الهاتف</th><th>تاريخ الانضمام</th></tr></thead>
-                        <tbody>
-                          {customersList.map((c) => (
-                            <tr key={c.id}>
-                              <td className="fw-bold">{c.name}</td>
-                              <td>{c.email}</td>
-                              <td>{c.phone || "—"}</td>
-                              <td style={{ color: "#737373" }}>{c.joinedDate || "—"}</td>
-                            </tr>
-                          ))}
-                          {customersList.length === 0 && (
-                            <tr><td colSpan={4} className="text-center py-5" style={{ color: "#737373" }}>لا يوجد عملاء بعد</td></tr>
-                          )}
-                        </tbody>
-                      </table>
-                    </div>
+
+                    {selectedCustomer && (
+                      <div className="beidaq-admin__panel beidaq-admin__customer-detail">
+                        <div className="beidaq-admin__panel-head">
+                          <div>
+                            <h2 className="beidaq-admin__panel-title mb-1">طلبات {selectedCustomer.name}</h2>
+                            <p className="beidaq-admin__customer-meta mb-0">
+                              {selectedCustomer.email}
+                              {selectedCustomer.phone ? ` · ${selectedCustomer.phone}` : ""}
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            className="beidaq-admin__action-btn"
+                            onClick={() => { setSelectedCustomer(null); setCustomerOrders([]); }}
+                            aria-label="إغلاق"
+                          >
+                            <X size={14} />
+                          </button>
+                        </div>
+
+                        {loadingCustomerDetail ? (
+                          <div className="beidaq-admin__loading" style={{ height: "120px" }} />
+                        ) : customerOrders.length === 0 ? (
+                          <p className="beidaq-admin__customer-empty">لا توجد طلبات لهذا العميل بعد.</p>
+                        ) : (
+                          <div className="beidaq-admin__customer-orders d-grid gap-3">
+                            {customerOrders.map((order) => (
+                              <article key={order.id} className="beidaq-admin__customer-order">
+                                <div className="beidaq-admin__customer-order-head">
+                                  <div>
+                                    <strong>طلب #{order.id}</strong>
+                                    <span className="beidaq-admin__customer-order-date">
+                                      {new Date(order.date || order.created_at).toLocaleDateString("ar-SA")}
+                                    </span>
+                                  </div>
+                                  <div className="d-flex align-items-center gap-2 flex-row-reverse">
+                                    <StatusBadge status={order.status} />
+                                    <span className="beidaq-admin__price">{formatSAR(Number(order.total))}</span>
+                                  </div>
+                                </div>
+                                <ul className="beidaq-admin__customer-order-items">
+                                  {order.items?.map((item, idx) => (
+                                    <li key={idx} className="beidaq-admin__customer-order-item">
+                                      {item.image && (
+                                        <img src={item.image} alt="" className="beidaq-admin__table-thumb" referrerPolicy="no-referrer" />
+                                      )}
+                                      <span className="beidaq-admin__customer-order-item-name">{item.name}</span>
+                                      <span className="beidaq-admin__customer-order-item-qty">&times;{item.quantity}</span>
+                                      <span className="beidaq-admin__price">{formatSAR(item.subtotal ?? item.price * item.quantity)}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                                <div className="beidaq-admin__customer-order-foot">
+                                  <span>الدفع: <code>{order.payment_method || "—"}</code></span>
+                                  <span>التتبع: {order.trackingNumber}</span>
+                                </div>
+                              </article>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
               </>

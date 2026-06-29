@@ -937,3 +937,117 @@
     padding: 1.25rem;
   }
 }
+
+/* Customer detail */
+.beidaq-admin__customer-row {
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.beidaq-admin__customer-row:hover {
+  background: rgba(248, 247, 244, 0.9);
+}
+
+.beidaq-admin__customer-row--active {
+  background: rgba(212, 175, 55, 0.08);
+}
+
+.beidaq-admin__customer-detail {
+  animation: beidaq-admin-fade-in 0.35s ease-out;
+}
+
+@keyframes beidaq-admin-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.beidaq-admin__customer-meta {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.82rem;
+  color: var(--adm-muted);
+  text-align: right;
+}
+
+.beidaq-admin__customer-empty {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.88rem;
+  color: var(--adm-muted);
+  text-align: center;
+  padding: 2rem 1rem;
+  margin: 0;
+}
+
+.beidaq-admin__customer-order {
+  padding: 1rem 1.15rem;
+  background: var(--adm-offwhite);
+  border: 1px solid rgba(212, 175, 55, 0.12);
+  border-radius: 14px;
+  text-align: right;
+}
+
+.beidaq-admin__customer-order-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-direction: row-reverse;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+}
+
+.beidaq-admin__customer-order-date {
+  display: block;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.72rem;
+  color: var(--adm-muted);
+  font-weight: 500;
+  margin-top: 0.15rem;
+}
+
+.beidaq-admin__customer-order-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.beidaq-admin__customer-order-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-direction: row-reverse;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.85rem;
+}
+
+.beidaq-admin__customer-order-item-name {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  color: var(--adm-ink);
+}
+
+.beidaq-admin__customer-order-item-qty {
+  color: var(--adm-muted);
+  font-size: 0.78rem;
+}
+
+.beidaq-admin__customer-order-foot {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  flex-direction: row-reverse;
+  margin-top: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(212, 175, 55, 0.1);
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.75rem;
+  color: var(--adm-muted);
+}
+
+.beidaq-admin__customer-orders {
+  padding: 0 1.15rem 1.15rem;
+}

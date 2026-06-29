@@ -184,6 +184,7 @@ export function mapAdminDashboard(raw) {
 
   return {
     totalSales: Number(stats.total_revenue ?? 0),
+    pendingRevenue: Number(stats.pending_revenue ?? 0),
     totalOrders: stats.orders ?? 0,
     totalCustomers: stats.users ?? 0,
     totalProducts: stats.products ?? 0,
