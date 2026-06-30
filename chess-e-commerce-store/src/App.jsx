@@ -20,7 +20,6 @@ import { api } from "./utils/api";
 import { cartToUiItems, markBestSellers } from "./utils/mappers";
 import { useLanguage } from "./context/LanguageContext";
 import { useToast } from "./context/ToastContext";
-import { hasPasswordResetLink } from "./utils/authParams";
 import { scrollToTop } from "./components/ScrollToTop";
 
 const USER_TABS = new Set(["home", "shop", "cart", "checkout", "account", "wishlist"]);
@@ -48,7 +47,6 @@ export default function App() {
   const { t } = useLanguage();
   const { showSuccess, showError } = useToast();
   const isAdmin = currentUser?.role === "admin";
-  const passwordResetLink = hasPasswordResetLink();
 
   const loadCart = useCallback(async () => {
     if (!localStorage.getItem("chess_token")) return;
@@ -92,11 +90,7 @@ export default function App() {
         setProducts(markBestSellers(catalog, 3));
 
         const token = localStorage.getItem("chess_token");
-        if (hasPasswordResetLink()) {
-          localStorage.removeItem("chess_token");
-          setCurrentUser(null);
-          setActiveTab("account");
-        } else if (token) {
+        if (token) {
           const session = await api.getMe();
           setCurrentUser(session.user);
           if (session.user.role === "admin") {
@@ -129,7 +123,7 @@ export default function App() {
   }, [loadCart]);
 
   useEffect(() => {
-    if (isAdmin && USER_TABS.has(activeTab) && !hasPasswordResetLink()) {
+    if (isAdmin && USER_TABS.has(activeTab)) {
       setActiveTab("admin");
     }
   }, [isAdmin, activeTab]);

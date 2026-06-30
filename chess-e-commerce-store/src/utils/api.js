@@ -135,25 +135,6 @@ export const api = {
     return { user: mapUser(result.user) };
   },
 
-  async forgotPassword(email) {
-    return request("/forgot-password", {
-      method: "POST",
-      body: JSON.stringify({ email })
-    });
-  },
-
-  async resetPassword(email, token, password, passwordConfirmation) {
-    return request("/reset-password", {
-      method: "POST",
-      body: JSON.stringify({
-        email,
-        token,
-        password,
-        password_confirmation: passwordConfirmation
-      })
-    });
-  },
-
   async getCategories() {
     const result = await request("/categories?per_page=100");
     const list = Array.isArray(result.data) ? result.data : [];

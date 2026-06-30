@@ -822,3 +822,355 @@ a.beidaq-contact-card-value:hover {
     padding: 1.35rem;
   }
 }
+
+/* ════════════════════════════════════════════════════════════════
+   ── Chess Articles ───────────────────────────────────────────────
+   ════════════════════════════════════════════════════════════════ */
+
+.beidaq-articles {
+  background: linear-gradient(180deg, var(--beidaq-offwhite) 0%, var(--beidaq-offwhite-alt) 100%);
+}
+
+.beidaq-article-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--beidaq-surface);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+  border-radius: var(--beidaq-radius);
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+  transition: var(--beidaq-transition);
+  height: 100%;
+}
+
+.beidaq-article-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--beidaq-border-hover);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.12);
+}
+
+.beidaq-article-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+}
+
+.beidaq-article-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.beidaq-article-card:hover .beidaq-article-image {
+  transform: scale(1.08);
+}
+
+.beidaq-article-image-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 55%, rgba(15, 17, 21, 0.55) 100%);
+  pointer-events: none;
+}
+
+.beidaq-article-tag {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.35rem 0.85rem;
+  background: rgba(212, 175, 55, 0.95);
+  color: var(--beidaq-ink);
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  border-radius: var(--beidaq-radius-pill);
+  z-index: 2;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
+}
+
+.beidaq-article-body {
+  padding: 1.5rem 1.4rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.beidaq-article-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.18), rgba(212, 175, 55, 0.06));
+  color: var(--beidaq-gold-dark);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(212, 175, 55, 0.22);
+}
+
+.beidaq-article-title {
+  font-family: "Tajawal", sans-serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--beidaq-text);
+  margin: 0 0 0.65rem;
+  line-height: 1.4;
+}
+
+.beidaq-article-desc {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.9rem;
+  color: var(--beidaq-text-muted);
+  line-height: 1.8;
+  margin: 0 0 1.25rem;
+  flex: 1;
+}
+
+.beidaq-article-btn {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  background: transparent;
+  border: 1px solid var(--beidaq-border);
+  border-radius: var(--beidaq-radius-pill);
+  color: var(--beidaq-gold-dark);
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: var(--beidaq-transition);
+}
+
+.beidaq-article-btn:hover {
+  background: linear-gradient(135deg, var(--beidaq-gold) 0%, var(--beidaq-gold-dark) 100%);
+  color: var(--beidaq-ink);
+  border-color: transparent;
+  gap: 0.65rem;
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.28);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   ── Statistics Section ───────────────────────────────────────────
+   ════════════════════════════════════════════════════════════════ */
+
+.beidaq-stats {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(212, 175, 55, 0.08), transparent 55%),
+    radial-gradient(circle at 80% 80%, rgba(212, 175, 55, 0.06), transparent 55%),
+    linear-gradient(135deg, #0F1115 0%, #1A1D24 100%);
+  color: #ffffff;
+  position: relative;
+}
+
+.beidaq-stats-pattern {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(212, 175, 55, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 175, 55, 0.08) 1px, transparent 1px);
+  background-size: 56px 56px;
+  opacity: 0.5;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  pointer-events: none;
+}
+
+.beidaq-home-title--dark {
+  color: #ffffff !important;
+}
+
+.beidaq-home-subtitle--dark {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+.beidaq-home-eyebrow--dark {
+  color: var(--beidaq-gold-light) !important;
+}
+
+.beidaq-stat-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2rem 1.25rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  border-radius: var(--beidaq-radius);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: var(--beidaq-transition);
+  height: 100%;
+  overflow: hidden;
+}
+
+.beidaq-stat-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.12) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.beidaq-stat-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(212, 175, 55, 0.5);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.35);
+}
+
+.beidaq-stat-card:hover::before {
+  opacity: 1;
+}
+
+.beidaq-stat-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, var(--beidaq-gold) 0%, var(--beidaq-gold-dark) 100%);
+  color: var(--beidaq-ink);
+  border-radius: 16px;
+  margin-bottom: 1.1rem;
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.3);
+  position: relative;
+  z-index: 1;
+}
+
+.beidaq-stat-number {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.15rem;
+  font-family: "Tajawal", "Playfair Display", serif;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.1;
+  margin-bottom: 0.4rem;
+  letter-spacing: -0.02em;
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(135deg, #ffffff 0%, var(--beidaq-gold-light) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.beidaq-stat-prefix,
+.beidaq-stat-suffix {
+  font-size: 0.7em;
+  color: var(--beidaq-gold-light);
+  -webkit-text-fill-color: var(--beidaq-gold-light);
+}
+
+.beidaq-stat-label {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
+  position: relative;
+  z-index: 1;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   ── Brands Section ───────────────────────────────────────────────
+   ════════════════════════════════════════════════════════════════ */
+
+.beidaq-brands {
+  background: var(--beidaq-offwhite);
+}
+
+.beidaq-brand-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  height: 120px;
+  padding: 1rem;
+  background: var(--beidaq-surface);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: var(--beidaq-radius-sm);
+  filter: grayscale(100%);
+  opacity: 0.65;
+  transition: var(--beidaq-transition);
+  cursor: default;
+  text-align: center;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+}
+
+.beidaq-brand-card:hover {
+  filter: grayscale(0%);
+  opacity: 1;
+  transform: translateY(-4px);
+  border-color: var(--beidaq-border-hover);
+  background: linear-gradient(135deg, #ffffff 0%, #FFFBEF 100%);
+  box-shadow: 0 12px 32px rgba(212, 175, 55, 0.18);
+}
+
+.beidaq-brand-name {
+  font-family: "Playfair Display", "Tajawal", serif;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--beidaq-text);
+  letter-spacing: -0.01em;
+  transition: color 0.35s ease;
+}
+
+.beidaq-brand-card:hover .beidaq-brand-name {
+  color: var(--beidaq-gold-dark);
+}
+
+.beidaq-brand-tag {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--beidaq-text-muted);
+  text-transform: uppercase;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   ── Responsive Adjustments for new sections ──────────────────────
+   ════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 767.98px) {
+  .beidaq-stat-card {
+    padding: 1.5rem 0.9rem;
+  }
+
+  .beidaq-stat-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 0.85rem;
+  }
+
+  .beidaq-stat-number {
+    font-size: 1.85rem;
+  }
+
+  .beidaq-article-image-wrap {
+    height: 200px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .beidaq-brand-card {
+    height: 100px;
+  }
+
+  .beidaq-brand-name {
+    font-size: 1rem;
+  }
+}

@@ -15,6 +15,9 @@ import CustomerReviews from "./home/CustomerReviews";
 import ContactSection from "./home/ContactSection";
 import HomeCatalogSection from "./home/HomeCatalogSection";
 import RevealOnScroll from "./home/RevealOnScroll";
+import ChessArticles from "./home/ChessArticles";
+import StatsSection from "./home/StatsSection";
+import BrandsSection from "./home/BrandsSection";
 import "../styles/Home.css";
 
 export default function HomePage({
@@ -215,10 +218,19 @@ export default function HomePage({
         t={t}
       />
 
-      {/* 5. Customer Reviews */}
+      {/* 5. Chess Learning Articles */}
+      <ChessArticles />
+
+      {/* 6. Statistics */}
+      <StatsSection />
+
+      {/* 7. Brands */}
+      <BrandsSection />
+
+      {/* 8. Customer Reviews */}
       <CustomerReviews />
 
-      {/* 6. Contact Us */}
+      {/* 9. Contact Us */}
       <ContactSection />
     </div>
   );

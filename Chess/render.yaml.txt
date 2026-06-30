@@ -1,0 +1,4 @@
+services:
+  - type: web
+    name: chess-backend
+    env: docker

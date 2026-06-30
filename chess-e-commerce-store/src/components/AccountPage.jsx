@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import { KeyRound, MapPin, Phone, History, Heart, Shield, Eye, CheckCircle2, Truck, RefreshCw, X, LogOut } from "lucide-react";
 import { FaChessKing } from "react-icons/fa6";
 import { api } from "../utils/api";
 import { useLanguage } from "../context/LanguageContext";
 import { useToast } from "../context/ToastContext";
-import { getPasswordResetParams } from "../utils/authParams";
 import { getProductTranslation } from "../utils/translations";
 import "../styles/Auth.css";
 import "../styles/UserPages.css";
@@ -24,8 +22,6 @@ export default function AccountPage({
   onRefreshOrders,
   embedded = false,
 }) {
-  const navigate = useNavigate();
-  const resetParams = getPasswordResetParams();
   const showAuthForms = !currentUser;
   const [authMode, setAuthMode] = useState("login");
   const [email, setEmail] = useState("");
@@ -42,15 +38,6 @@ export default function AccountPage({
 
   const { t } = useLanguage();
   const { showSuccess, showError } = useToast();
-
-  useEffect(() => {
-    if (resetParams.token && resetParams.email) {
-      navigate(
-        `/reset-password?token=${encodeURIComponent(resetParams.token)}&email=${encodeURIComponent(resetParams.email)}`,
-        { replace: true }
-      );
-    }
-  }, [navigate, resetParams.token, resetParams.email]);
 
   const clearMessages = () => {
     setErrorMessage("");
@@ -277,11 +264,6 @@ export default function AccountPage({
                       />
                     </div>
                   </>
-                )}
-                {authMode === "login" && (
-                  <Link to="/forgot-password" className="beidaq-auth-forgot">
-                    نسيت كلمة المرور؟
-                  </Link>
                 )}
                 <button type="submit" disabled={loading} className="beidaq-auth-submit">
                   {loading ? t("authenticating") : authMode === "register" ? t("createCredentials") : t("enterDashboard")}
