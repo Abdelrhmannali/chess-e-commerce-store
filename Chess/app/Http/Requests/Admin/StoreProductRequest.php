@@ -20,6 +20,7 @@ class StoreProductRequest extends FormRequest
             'slug' => ['nullable', 'string', 'max:255', 'unique:products,slug'],
             'description' => ['required', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
+            'discount_price' => ['nullable', 'numeric', 'min:0', 'lt:price'],
             'quantity' => ['required', 'integer', 'min:0'],
             'image' => ['required', 'image', 'mimes:jpeg,jpg,png,webp', 'max:2048'],
             'status' => ['sometimes', 'boolean'],
@@ -39,6 +40,9 @@ class StoreProductRequest extends FormRequest
             'description.required' => 'وصف المنتج مطلوب.',
             'price.required' => 'السعر مطلوب.',
             'price.min' => 'يجب أن يكون السعر صفراً أو أكثر.',
+            'discount_price.numeric' => 'سعر العرض يجب أن يكون رقماً.',
+            'discount_price.min' => 'سعر العرض لا يمكن أن يكون سالباً.',
+            'discount_price.lt' => 'سعر العرض يجب أن يكون أقل من السعر الأصلي.',
             'quantity.required' => 'الكمية مطلوبة.',
             'quantity.min' => 'يجب أن تكون الكمية صفراً أو أكثر.',
         ];

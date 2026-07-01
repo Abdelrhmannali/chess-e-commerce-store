@@ -183,9 +183,12 @@ export const api = {
     }
     const formData = new FormData();
     Object.entries(product).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-        formData.append(key, typeof value === "boolean" ? (value ? "1" : "0") : value);
+      if (value === undefined) return;
+      if (value === null) {
+        formData.append(key, "");
+        return;
       }
+      formData.append(key, typeof value === "boolean" ? (value ? "1" : "0") : value);
     });
     formData.append("image", imageFile);
     const result = await multipartRequest("/admin/products", formData, "POST", onProgress);
@@ -195,9 +198,12 @@ export const api = {
   async updateProduct(id, product, imageFile, onProgress) {
     const formData = new FormData();
     Object.entries(product).forEach(([key, value]) => {
-      if (value !== null && value !== undefined) {
-        formData.append(key, typeof value === "boolean" ? (value ? "1" : "0") : value);
+      if (value === undefined) return;
+      if (value === null) {
+        formData.append(key, "");
+        return;
       }
+      formData.append(key, typeof value === "boolean" ? (value ? "1" : "0") : value);
     });
     if (imageFile) {
       formData.append("image", imageFile);

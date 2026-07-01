@@ -336,7 +336,7 @@ export default function App() {
 
   const featuredProduct = products[0];
 
-  if (isAdmin && !passwordResetLink) {
+  if (isAdmin ) {
     return (
       <div className="min-h-screen beidaq-app-shell text-charcoal-custom d-flex flex-col flex-column rtl text-end">
         <Navbar

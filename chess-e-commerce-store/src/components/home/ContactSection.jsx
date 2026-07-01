@@ -13,13 +13,13 @@ const CONTACT_ITEMS = [
   {
     icon: FaLocationDot,
     label: "الموقع",
-    value: "الرياض، المملكة العربية السعودية",
+    value: "سكاكا، المملكة العربية السعودية",
     href: null,
   },
   {
     icon: FaPhone,
     label: "الهاتف",
-    value: "+966 50 123 4567",
+    value: "+966 556354954",
     href: "tel:+966501234567",
   },
   {

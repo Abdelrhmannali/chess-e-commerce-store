@@ -648,9 +648,13 @@
 
 .beidaq-product-price-old {
   font-family: "Tajawal", sans-serif;
-  font-size: 0.78rem;
-  color: #999999;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #6B6B6B;
   text-decoration: line-through;
+  text-decoration-color: #DC2626;
+  text-decoration-thickness: 2px;
+  letter-spacing: 0.02em;
 }
 
 .beidaq-product-price {

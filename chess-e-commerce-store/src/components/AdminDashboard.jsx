@@ -92,6 +92,7 @@ export default function AdminDashboard({ categories = [], onRefreshCatalog }) {
   const [formName, setFormName] = useState("");
   const [formCategoryId, setFormCategoryId] = useState("");
   const [formPrice, setFormPrice] = useState("");
+  const [formDiscountPrice, setFormDiscountPrice] = useState("");
   const [formQuantity, setFormQuantity] = useState("");
   const [formDescription, setFormDescription] = useState("");
   const [formImageFile, setFormImageFile] = useState(null);
@@ -169,6 +170,7 @@ export default function AdminDashboard({ categories = [], onRefreshCatalog }) {
     setFormName("");
     setFormCategoryId(String(adminCategories[0]?.id || ""));
     setFormPrice("");
+    setFormDiscountPrice("");
     setFormQuantity("");
     setFormDescription("");
     setFormImageFile(null);
@@ -196,11 +198,26 @@ export default function AdminDashboard({ categories = [], onRefreshCatalog }) {
       flash("يرجى رفع صورة للمنتج.", true);
       return;
     }
+    const priceNum = Number(formPrice);
+    const discountTrim = String(formDiscountPrice).trim();
+    let discountNum = null;
+    if (discountTrim !== "") {
+      discountNum = Number(discountTrim);
+      if (Number.isNaN(discountNum) || discountNum < 0) {
+        flash("سعر العرض غير صالح.", true);
+        return;
+      }
+      if (discountNum >= priceNum) {
+        flash("سعر العرض يجب أن يكون أقل من السعر الأصلي.", true);
+        return;
+      }
+    }
     const payload = {
       category_id: Number(formCategoryId),
       name: formName,
       description: formDescription,
-      price: Number(formPrice),
+      price: priceNum,
+      discount_price: discountNum,
       quantity: Number(formQuantity),
       status: formStatus
     };
@@ -227,6 +244,11 @@ export default function AdminDashboard({ categories = [], onRefreshCatalog }) {
     setFormName(prod.name);
     setFormCategoryId(String(prod.categoryId || adminCategories[0]?.id || ""));
     setFormPrice(prod.price.toString());
+    setFormDiscountPrice(
+      prod.discountPrice !== undefined && prod.discountPrice !== null
+        ? String(prod.discountPrice)
+        : ""
+    );
     setFormQuantity(prod.stock.toString());
     setFormDescription(prod.description || "");
     setFormImageFile(null);
@@ -688,13 +710,35 @@ export default function AdminDashboard({ categories = [], onRefreshCatalog }) {
                           </div>
                           <div className="row g-2">
                             <div className="col-6">
-                              <label>السعر (ر.س) *</label>
-                              <input type="number" step="0.01" className="form-control" required value={formPrice} onChange={(e) => setFormPrice(e.target.value)} />
+                              <label>السعر الأصلي (ر.س) *</label>
+                              <input type="number" step="0.01" min="0" className="form-control" required value={formPrice} onChange={(e) => setFormPrice(e.target.value)} />
                             </div>
                             <div className="col-6">
                               <label>الكمية *</label>
                               <input type="number" min="0" className="form-control" required value={formQuantity} onChange={(e) => setFormQuantity(e.target.value)} />
                             </div>
+                          </div>
+                          <div>
+                            <label>
+                              سعر العرض (ر.س)
+                              <span style={{ fontSize: "0.68rem", color: "#B8962E", marginInlineStart: "0.35rem" }}>
+                                اختياري — اتركه فارغاً لإلغاء العرض
+                              </span>
+                            </label>
+                            <input
+                              type="number"
+                              step="0.01"
+                              min="0"
+                              className="form-control"
+                              placeholder="مثال: 199.00"
+                              value={formDiscountPrice}
+                              onChange={(e) => setFormDiscountPrice(e.target.value)}
+                            />
+                            {formPrice && formDiscountPrice && Number(formDiscountPrice) > 0 && Number(formDiscountPrice) < Number(formPrice) && (
+                              <div style={{ marginTop: "0.4rem", fontSize: "0.75rem", color: "#2F855A" }}>
+                                خصم {Math.round(((Number(formPrice) - Number(formDiscountPrice)) / Number(formPrice)) * 100)}% — سيوفر العميل {formatSAR(Number(formPrice) - Number(formDiscountPrice))}
+                              </div>
+                            )}
                           </div>
                           <AdminImageUpload
                             label="رفع صورة المنتج"
@@ -744,7 +788,17 @@ export default function AdminDashboard({ categories = [], onRefreshCatalog }) {
                                     </div>
                                   </td>
                                   <td>{p.categoryName || p.category}</td>
-                                  <td className="beidaq-admin__price">{formatSAR(p.price)}</td>
+                                  <td className="beidaq-admin__price">
+                                    {p.discountPrice !== undefined ? (
+                                      <div className="d-flex flex-column">
+                                        <span style={{ color: "#B8962E", fontWeight: 800 }}>{formatSAR(p.discountPrice)}</span>
+                                        <span style={{ textDecoration: "line-through", textDecorationColor: "#DC2626", textDecorationThickness: "2px", color: "#6B6B6B", fontSize: "0.85rem", fontWeight: 600 }}>{formatSAR(p.price)}</span>
+                                        <span style={{ display: "inline-block", background: "#DC2626", color: "#fff", fontSize: "0.62rem", padding: "1px 6px", borderRadius: "8px", marginTop: "2px", fontWeight: 700, width: "fit-content" }}>-{p.discountPercent}%</span>
+                                      </div>
+                                    ) : (
+                                      formatSAR(p.price)
+                                    )}
+                                  </td>
                                   <td className={p.stock <= 5 ? "text-danger fw-bold" : ""}>{p.stock}</td>
                                   <td><StatusBadge status={p.status !== false ? "نشط" : "مخفي"} /></td>
                                   <td>

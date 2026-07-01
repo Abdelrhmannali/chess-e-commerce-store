@@ -255,10 +255,14 @@
 .beidaq-product-modal__price-old {
   display: block;
   font-family: "Tajawal", sans-serif;
-  font-size: 0.82rem;
-  color: #999999;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #5F5F5F;
   text-decoration: line-through;
-  margin-bottom: 0.15rem;
+  text-decoration-color: #DC2626;
+  text-decoration-thickness: 2.5px;
+  margin-bottom: 0.35rem;
+  letter-spacing: 0.02em;
 }
 
 .beidaq-product-modal__price {

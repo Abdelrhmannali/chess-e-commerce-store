@@ -14,6 +14,7 @@ class Product extends Model
         'slug',
         'description',
         'price',
+        'discount_price',
         'quantity',
         'image',
         'status',
@@ -23,8 +24,24 @@ class Product extends Model
     {
         return [
             'price' => 'decimal:2',
+            'discount_price' => 'decimal:2',
             'status' => 'boolean',
         ];
+    }
+
+    /**
+     * The price actually charged to customers.
+     * Returns the discount price when it's set and lower than the regular price;
+     * otherwise falls back to the regular price.
+     */
+    public function getEffectivePriceAttribute(): float
+    {
+        $discount = $this->discount_price !== null ? (float) $this->discount_price : null;
+        $price = (float) $this->price;
+        if ($discount !== null && $discount > 0 && $discount < $price) {
+            return $discount;
+        }
+        return $price;
     }
 
     public function category(): BelongsTo

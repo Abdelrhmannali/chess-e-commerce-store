@@ -16,7 +16,11 @@ export default function CartPage({
 }) {
   const { t } = useLanguage();
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const effectivePriceOf = (p) => (p.discountPrice ?? p.effectivePrice ?? p.price);
+  const subtotal = cartItems.reduce(
+    (sum, item) => sum + effectivePriceOf(item.product) * item.quantity,
+    0
+  );
   const shipping = subtotal > 0 ? (subtotal > 150 ? 0 : 15.0) : 0;
   const total = subtotal + shipping;
 
@@ -72,9 +76,32 @@ export default function CartPage({
                         {translatedProduct.categoryName || translatedProduct.category}
                       </span>
                       <h3 className="beidaq-cart-item__name">{translatedProduct.name}</h3>
-                      <span className="beidaq-cart-item__price">
-                        {formatSAR(translatedProduct.price)}
-                      </span>
+                      {translatedProduct.discountPrice !== undefined ? (
+                        <div className="d-flex align-items-baseline gap-2 flex-row-reverse">
+                          <span className="beidaq-cart-item__price" style={{ color: "#B8962E" }}>
+                            {formatSAR(translatedProduct.discountPrice)}
+                          </span>
+                          <span
+                            style={{
+                              textDecoration: "line-through",
+                              textDecorationColor: "#DC2626",
+                              textDecorationThickness: "2px",
+                              color: "#6B6B6B",
+                              fontSize: "0.95rem",
+                              fontWeight: 600,
+                            }}
+                          >
+                            {formatSAR(translatedProduct.price)}
+                          </span>
+                          <span style={{ background: "#DC2626", color: "#fff", fontSize: "0.62rem", padding: "1px 6px", borderRadius: "8px", fontWeight: 700 }}>
+                            -{translatedProduct.discountPercent}%
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="beidaq-cart-item__price">
+                          {formatSAR(translatedProduct.price)}
+                        </span>
+                      )}
                     </div>
                     <div className="col-6 col-sm-3 d-flex justify-content-center justify-content-sm-start">
                       <div className="beidaq-qty-control">
@@ -100,7 +127,7 @@ export default function CartPage({
                     </div>
                     <div className="col-6 col-sm-3 d-flex align-items-center justify-content-end gap-3 flex-row-reverse">
                       <span className="beidaq-cart-item__total">
-                        {formatSAR(translatedProduct.price * quantity)}
+                        {formatSAR(effectivePriceOf(translatedProduct) * quantity)}
                       </span>
                       <button
                         type="button"

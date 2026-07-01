@@ -41,6 +41,18 @@ export function mapCategory(raw) {
 export function mapProduct(raw) {
   const p = unwrapData(raw);
   const price = Number(p.price);
+  const rawDiscount = p.discount_price !== undefined && p.discount_price !== null
+    ? Number(p.discount_price)
+    : null;
+  const discountPrice =
+    rawDiscount !== null && rawDiscount > 0 && rawDiscount < price
+      ? rawDiscount
+      : undefined;
+  const effectivePrice = discountPrice !== undefined ? discountPrice : price;
+  const discountPercent =
+    discountPrice !== undefined
+      ? Math.round(((price - discountPrice) / price) * 100)
+      : 0;
   return {
     id: p.id,
     name: p.name,
@@ -50,6 +62,9 @@ export function mapProduct(raw) {
     category: p.category?.slug || p.category?.name || String(p.category_id ?? ""),
     categoryName: p.category?.name || "",
     price,
+    discountPrice,
+    effectivePrice,
+    discountPercent,
     stock: p.quantity ?? 0,
     quantity: p.quantity ?? 0,
     image: resolveImageUrl(p.image || ""),
@@ -60,7 +75,6 @@ export function mapProduct(raw) {
     reviewsCount: 0,
     isBestSeller: false,
     isNewArrival: isRecent(p.created_at),
-    discountPrice: undefined
   };
 }
 

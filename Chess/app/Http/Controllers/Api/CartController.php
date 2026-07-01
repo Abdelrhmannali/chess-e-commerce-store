@@ -49,13 +49,13 @@ class CartController extends Controller
 
             $cartItem->update([
                 'quantity' => $newQuantity,
-                'price' => $product->price,
+                'price' => $product->effective_price,
             ]);
         } else {
             $cartItem = $cart->items()->create([
                 'product_id' => $product->id,
                 'quantity' => $request->quantity,
-                'price' => $product->price,
+                'price' => $product->effective_price,
             ]);
         }
 
@@ -85,7 +85,7 @@ class CartController extends Controller
 
         $cartItem->update([
             'quantity' => $request->quantity,
-            'price' => $product->price,
+            'price' => $product->effective_price,
         ]);
 
         $cart->load(['items.product.category']);

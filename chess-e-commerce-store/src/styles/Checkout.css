@@ -1,0 +1,949 @@
+/* ── Beidaq Luxury Checkout ─────────────────────────────────────── */
+
+.beidaq-checkout {
+  --co-gold: #D4AF37;
+  --co-gold-light: #E8C547;
+  --co-gold-dark: #B8962E;
+  --co-ink: #0F1115;
+  --co-text: #121212;
+  --co-text-2: #444444;
+  --co-muted: #737373;
+  --co-offwhite: #F8F7F4;
+  --co-offwhite-alt: #F3F2EE;
+  --co-surface: #FFFFFF;
+  --co-border: rgba(212, 175, 55, 0.18);
+  --co-border-strong: rgba(212, 175, 55, 0.42);
+  --co-danger: #C53030;
+  --co-danger-bg: #FDECEC;
+  --co-success: #2F855A;
+  --co-radius: 18px;
+  --co-radius-sm: 12px;
+  --co-radius-pill: 999px;
+  --co-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+  --co-shadow-hover: 0 12px 36px rgba(0, 0, 0, 0.08);
+  --co-transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+
+  background: var(--co-offwhite);
+  padding: 2.5rem 0 5rem;
+  min-height: 60vh;
+  font-family: "Tajawal", sans-serif;
+  color: var(--co-text);
+}
+
+/* Back button */
+.beidaq-checkout__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.55rem 1.1rem;
+  background: transparent;
+  border: 1px solid var(--co-border);
+  border-radius: var(--co-radius-pill);
+  color: var(--co-text-2);
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--co-transition);
+  margin-bottom: 1.5rem;
+}
+
+.beidaq-checkout__back:hover {
+  background: rgba(212, 175, 55, 0.08);
+  border-color: var(--co-gold);
+  color: var(--co-gold-dark);
+  gap: 0.55rem;
+}
+
+/* Header */
+.beidaq-checkout__header {
+  margin-bottom: 2rem;
+  text-align: right;
+}
+
+.beidaq-checkout__eyebrow {
+  display: inline-block;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--co-gold-dark);
+  margin-bottom: 0.4rem;
+  letter-spacing: 0.04em;
+}
+
+.beidaq-checkout__title {
+  font-family: "Tajawal", "Playfair Display", serif;
+  font-size: clamp(1.55rem, 3vw, 2.1rem);
+  font-weight: 800;
+  color: var(--co-text);
+  margin: 0 0 0.5rem;
+  line-height: 1.25;
+}
+
+.beidaq-checkout__subtitle {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.9rem;
+  color: var(--co-muted);
+  margin: 0;
+  line-height: 1.7;
+}
+
+/* Panel/Card */
+.beidaq-co-panel {
+  background: var(--co-surface);
+  border: 1px solid var(--co-border);
+  border-radius: var(--co-radius);
+  padding: 1.75rem;
+  box-shadow: var(--co-shadow);
+  transition: var(--co-transition);
+}
+
+.beidaq-co-panel + .beidaq-co-panel {
+  margin-top: 1.25rem;
+}
+
+.beidaq-co-panel__head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-bottom: 1rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px dashed var(--co-border);
+}
+
+.beidaq-co-panel__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--co-gold) 0%, var(--co-gold-dark) 100%);
+  color: var(--co-ink);
+  border-radius: 12px;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.25);
+  flex-shrink: 0;
+}
+
+.beidaq-co-panel__title {
+  flex: 1;
+  font-family: "Tajawal", sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--co-text);
+  margin: 0;
+}
+
+.beidaq-co-panel__hint {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--co-muted);
+  margin-top: 0.15rem;
+}
+
+/* Form fields */
+.beidaq-co-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.beidaq-co-label {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--co-text-2);
+}
+
+.beidaq-co-label__required {
+  color: var(--co-danger);
+  margin-inline-start: 0.15rem;
+}
+
+.beidaq-co-input,
+.beidaq-co-textarea {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: var(--co-offwhite);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: var(--co-radius-sm);
+  color: var(--co-text);
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.9rem;
+  transition: var(--co-transition);
+}
+
+.beidaq-co-input:focus,
+.beidaq-co-textarea:focus {
+  outline: none;
+  background: var(--co-surface);
+  border-color: var(--co-gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.14);
+}
+
+.beidaq-co-input::placeholder {
+  color: #B0B0B0;
+}
+
+.beidaq-co-input--readonly {
+  background: #F3F2EE;
+  color: var(--co-muted);
+  cursor: not-allowed;
+}
+
+.beidaq-co-input--ltr {
+  direction: ltr;
+  text-align: left;
+  letter-spacing: 0.05em;
+}
+
+.beidaq-co-input.is-invalid,
+.beidaq-co-textarea.is-invalid {
+  border-color: var(--co-danger);
+  background: var(--co-danger-bg);
+}
+
+.beidaq-co-input.is-invalid:focus,
+.beidaq-co-textarea.is-invalid:focus {
+  box-shadow: 0 0 0 3px rgba(197, 48, 48, 0.14);
+}
+
+.beidaq-co-error {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.75rem;
+  color: var(--co-danger);
+  margin: 0;
+}
+
+/* ── Payment method grid ────────────────────────────────────── */
+.beidaq-pm-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.beidaq-pm-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  padding: 1.1rem 0.75rem;
+  background: var(--co-surface);
+  border: 1.5px solid rgba(212, 175, 55, 0.18);
+  border-radius: var(--co-radius-sm);
+  cursor: pointer;
+  transition: var(--co-transition);
+  min-height: 108px;
+  outline: none;
+  font-family: "Tajawal", sans-serif;
+  text-align: center;
+}
+
+.beidaq-pm-card:hover {
+  border-color: var(--co-border-strong);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(212, 175, 55, 0.12);
+}
+
+.beidaq-pm-card--active {
+  border-color: var(--co-gold);
+  background: linear-gradient(135deg, #FFFDF6 0%, #FFF9E8 100%);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.22);
+}
+
+.beidaq-pm-card--active::after {
+  content: "";
+  position: absolute;
+  top: 0.55rem;
+  inset-inline-end: 0.55rem;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(135deg, var(--co-gold) 0%, var(--co-gold-dark) 100%);
+  color: white;
+  border-radius: 50%;
+  background-image:
+    linear-gradient(135deg, var(--co-gold) 0%, var(--co-gold-dark) 100%),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><path fill='white' d='M13.5 4.5L6 12L2.5 8.5' stroke='white' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-size: cover, 65% 65%;
+  background-repeat: no-repeat;
+  background-position: center;
+  box-shadow: 0 3px 10px rgba(212, 175, 55, 0.4);
+}
+
+.beidaq-pm-card--active .beidaq-pm-card__name {
+  color: var(--co-gold-dark);
+}
+
+.beidaq-pm-card__icon {
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.beidaq-pm-card__name {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--co-text);
+  transition: color 0.3s ease;
+}
+
+/* Selected form animation container */
+.beidaq-pm-form {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px dashed var(--co-border);
+  animation: pm-fade-in 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes pm-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Wallet button (Apple/Google/Samsung Pay) */
+.beidaq-wallet-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border: none;
+  border-radius: var(--co-radius-sm);
+  cursor: pointer;
+  transition: var(--co-transition);
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.beidaq-wallet-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+}
+
+.beidaq-wallet-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.beidaq-wallet-btn--apple {
+  background: #000000;
+  color: #FFFFFF;
+}
+
+.beidaq-wallet-btn--google {
+  background: #FFFFFF;
+  color: #3C4043;
+  border: 1px solid #DADCE0;
+}
+
+.beidaq-wallet-btn--samsung {
+  background: linear-gradient(135deg, #1428A0 0%, #0D1B6E 100%);
+  color: #FFFFFF;
+}
+
+.beidaq-wallet-btn--tamara {
+  background: linear-gradient(135deg, #E64F27 0%, #C7401D 100%);
+  color: #FFFFFF;
+}
+
+.beidaq-wallet-btn--tabby {
+  background: linear-gradient(135deg, #3BFFC1 0%, #22DBA1 100%);
+  color: #292929;
+}
+
+/* Info banner */
+.beidaq-info-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.95rem 1.1rem;
+  background: linear-gradient(135deg, #FFFDF6 0%, #FFF6DA 100%);
+  border: 1px solid rgba(212, 175, 55, 0.32);
+  border-radius: var(--co-radius-sm);
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.85rem;
+  color: var(--co-text-2);
+  line-height: 1.65;
+  margin-bottom: 1.15rem;
+}
+
+.beidaq-info-banner--soft {
+  background: rgba(212, 175, 55, 0.06);
+  border-color: var(--co-border);
+}
+
+.beidaq-info-banner__icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--co-gold-dark);
+}
+
+.beidaq-info-banner__title {
+  display: block;
+  font-weight: 800;
+  color: var(--co-text);
+  margin-bottom: 0.25rem;
+}
+
+/* BNPL Installments preview */
+.beidaq-bnpl-plan {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.5rem;
+  margin: 1rem 0 1.25rem;
+}
+
+.beidaq-bnpl-installment {
+  padding: 0.85rem 0.5rem;
+  background: var(--co-offwhite);
+  border: 1px solid var(--co-border);
+  border-radius: 10px;
+  text-align: center;
+}
+
+.beidaq-bnpl-installment:first-child {
+  background: linear-gradient(135deg, #FFFDF6 0%, #FFF9E8 100%);
+  border-color: var(--co-gold);
+}
+
+.beidaq-bnpl-installment__label {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--co-muted);
+  margin-bottom: 0.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.beidaq-bnpl-installment__amount {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--co-text);
+  direction: ltr;
+}
+
+/* Card visual preview (fancy) */
+.beidaq-card-visual {
+  position: relative;
+  width: 100%;
+  max-width: 380px;
+  aspect-ratio: 1.586 / 1;
+  margin: 0 auto 1.25rem;
+  background: linear-gradient(135deg, #14171D 0%, #2A2E38 55%, #1A1D24 100%);
+  border-radius: 16px;
+  padding: 1.25rem 1.4rem;
+  color: #FFFFFF;
+  overflow: hidden;
+  box-shadow: 0 18px 40px rgba(15, 17, 21, 0.28);
+  direction: ltr;
+  font-family: "Courier New", "Tajawal", monospace;
+}
+
+.beidaq-card-visual::before {
+  content: "";
+  position: absolute;
+  top: -30%;
+  right: -30%;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.25) 0%, transparent 70%);
+  filter: blur(2px);
+}
+
+.beidaq-card-visual__brand {
+  position: absolute;
+  top: 1rem;
+  right: 1.1rem;
+  z-index: 2;
+}
+
+.beidaq-card-visual__chip {
+  width: 42px;
+  height: 32px;
+  background: linear-gradient(135deg, #E5C264 0%, #B8962E 100%);
+  border-radius: 6px;
+  margin: 1.4rem 0 1.4rem;
+  position: relative;
+  z-index: 1;
+}
+
+.beidaq-card-visual__chip::before,
+.beidaq-card-visual__chip::after {
+  content: "";
+  position: absolute;
+  background: rgba(15, 17, 21, 0.2);
+}
+
+.beidaq-card-visual__chip::before {
+  top: 6px;
+  left: 4px;
+  right: 4px;
+  height: 1px;
+}
+
+.beidaq-card-visual__chip::after {
+  bottom: 6px;
+  left: 4px;
+  right: 4px;
+  height: 1px;
+}
+
+.beidaq-card-visual__number {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+  min-height: 22px;
+}
+
+.beidaq-card-visual__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.beidaq-card-visual__label {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.beidaq-card-visual__value {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.95);
+  letter-spacing: 0.06em;
+}
+
+/* Brand chip inside forms */
+.beidaq-brand-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.beidaq-brand-row__label {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--co-muted);
+}
+
+.beidaq-brand-chip {
+  padding: 0.35rem 0.6rem;
+  background: var(--co-offwhite);
+  border: 1px solid var(--co-border);
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Alerts */
+.beidaq-alert {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.75rem 1rem;
+  background: var(--co-danger-bg);
+  border: 1px solid rgba(197, 48, 48, 0.24);
+  border-radius: var(--co-radius-sm);
+  color: var(--co-danger);
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+/* Order summary sidebar */
+.beidaq-summary {
+  position: sticky;
+  top: 90px;
+  background: var(--co-surface);
+  border: 1px solid var(--co-border-strong);
+  border-radius: var(--co-radius);
+  overflow: hidden;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.06);
+}
+
+.beidaq-summary__bar {
+  height: 4px;
+  background: linear-gradient(90deg, var(--co-gold-light), var(--co-gold), var(--co-gold-dark));
+}
+
+.beidaq-summary__body {
+  padding: 1.5rem 1.5rem 1.75rem;
+}
+
+.beidaq-summary__title {
+  font-family: "Tajawal", sans-serif;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--co-text);
+  margin: 0 0 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.beidaq-summary__title-badge {
+  padding: 0.15rem 0.55rem;
+  background: rgba(212, 175, 55, 0.14);
+  color: var(--co-gold-dark);
+  border-radius: var(--co-radius-pill);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.beidaq-summary__items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px dashed var(--co-border);
+  margin-bottom: 1rem;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.beidaq-summary__item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.beidaq-summary__thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  object-fit: cover;
+  background: var(--co-offwhite);
+  border: 1px solid var(--co-border);
+  flex-shrink: 0;
+}
+
+.beidaq-summary__item-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.beidaq-summary__item-name {
+  display: block;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--co-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.beidaq-summary__item-qty {
+  display: block;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.72rem;
+  color: var(--co-muted);
+  margin-top: 0.15rem;
+}
+
+.beidaq-summary__item-price {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--co-gold-dark);
+  white-space: nowrap;
+}
+
+.beidaq-summary__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.88rem;
+  color: var(--co-text-2);
+}
+
+.beidaq-summary__row--total {
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+  border-top: 1px dashed var(--co-border);
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--co-text);
+}
+
+.beidaq-summary__total-value {
+  color: var(--co-gold-dark);
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+
+.beidaq-summary__free {
+  padding: 0.15rem 0.55rem;
+  background: rgba(47, 133, 90, 0.12);
+  color: var(--co-success);
+  border-radius: var(--co-radius-pill);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+/* Pay button */
+.beidaq-pay-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, var(--co-gold) 0%, var(--co-gold-dark) 100%);
+  border: none;
+  border-radius: var(--co-radius-pill);
+  color: var(--co-ink);
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: var(--co-transition);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.32);
+  margin-top: 1.5rem;
+}
+
+.beidaq-pay-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: linear-gradient(135deg, var(--co-gold-light) 0%, var(--co-gold) 100%);
+  box-shadow: 0 12px 32px rgba(212, 175, 55, 0.44);
+}
+
+.beidaq-pay-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.beidaq-pay-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  background: linear-gradient(135deg, #C7C0AC 0%, #A8A08D 100%);
+  color: #FFFFFF;
+  box-shadow: none;
+}
+
+/* Secure note */
+.beidaq-secure-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.75rem;
+  color: var(--co-muted);
+}
+
+.beidaq-secure-note svg {
+  color: var(--co-success);
+}
+
+/* Spinner */
+.beidaq-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(15, 17, 21, 0.2);
+  border-top-color: var(--co-ink);
+  border-radius: 50%;
+  animation: beidaq-spin 0.8s linear infinite;
+}
+
+.beidaq-wallet-btn .beidaq-spinner {
+  border-color: rgba(255, 255, 255, 0.3);
+  border-top-color: #FFFFFF;
+}
+
+@keyframes beidaq-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Success screen */
+.beidaq-co-success {
+  max-width: 620px;
+  margin: 2rem auto;
+  background: var(--co-surface);
+  border: 1px solid var(--co-border-strong);
+  border-radius: var(--co-radius);
+  padding: 2.5rem 2rem;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+}
+
+.beidaq-co-success__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 76px;
+  height: 76px;
+  background: linear-gradient(135deg, #E9F7EF 0%, #C7EAD4 100%);
+  border-radius: 50%;
+  color: var(--co-success);
+  margin-bottom: 1.25rem;
+  animation: beidaq-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes beidaq-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.beidaq-co-success__title {
+  font-family: "Tajawal", "Playfair Display", serif;
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--co-text);
+  margin: 0 0 0.5rem;
+}
+
+.beidaq-co-success__subtitle {
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.95rem;
+  color: var(--co-muted);
+  margin: 0 0 1.75rem;
+  line-height: 1.7;
+}
+
+.beidaq-co-success__details {
+  background: var(--co-offwhite);
+  border: 1px solid var(--co-border);
+  border-radius: var(--co-radius-sm);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.75rem;
+  text-align: start;
+}
+
+.beidaq-co-success__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0;
+  border-bottom: 1px dashed var(--co-border);
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.87rem;
+}
+
+.beidaq-co-success__row:last-child {
+  border-bottom: none;
+}
+
+.beidaq-co-success__row-label {
+  color: var(--co-muted);
+  font-weight: 600;
+}
+
+.beidaq-co-success__row-value {
+  color: var(--co-text);
+  font-weight: 700;
+}
+
+.beidaq-co-success__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+}
+
+.beidaq-co-btn-outline {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: 1px solid var(--co-border-strong);
+  border-radius: var(--co-radius-pill);
+  color: var(--co-text);
+  font-family: "Tajawal", sans-serif;
+  font-size: 0.87rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--co-transition);
+}
+
+.beidaq-co-btn-outline:hover {
+  background: rgba(212, 175, 55, 0.08);
+  border-color: var(--co-gold);
+  color: var(--co-gold-dark);
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 991.98px) {
+  .beidaq-summary {
+    position: static;
+    top: auto;
+    margin-top: 1.5rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .beidaq-checkout {
+    padding: 1.5rem 0 3rem;
+  }
+
+  .beidaq-co-panel {
+    padding: 1.25rem;
+  }
+
+  .beidaq-pm-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .beidaq-bnpl-plan {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .beidaq-pm-card {
+    min-height: 96px;
+    padding: 0.9rem 0.5rem;
+  }
+
+  .beidaq-pm-card__name {
+    font-size: 0.72rem;
+  }
+
+  .beidaq-card-visual {
+    max-width: 100%;
+  }
+}

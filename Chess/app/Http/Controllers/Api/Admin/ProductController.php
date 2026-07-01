@@ -37,6 +37,7 @@ class ProductController extends Controller
             'slug' => $request->slug ?? Str::slug($request->name),
             'description' => $request->description,
             'price' => $request->price,
+            'discount_price' => $request->filled('discount_price') ? $request->discount_price : null,
             'quantity' => $request->quantity,
             'image' => $imagePath,
             'status' => $request->boolean('status', true),
@@ -67,6 +68,13 @@ class ProductController extends Controller
 
         if ($request->has('status')) {
             $data['status'] = $request->boolean('status');
+        }
+
+        // Allow explicitly clearing the discount by sending an empty value
+        if ($request->exists('discount_price')) {
+            $data['discount_price'] = $request->filled('discount_price')
+                ? (float) $request->input('discount_price')
+                : null;
         }
 
         if ($request->hasFile('image')) {

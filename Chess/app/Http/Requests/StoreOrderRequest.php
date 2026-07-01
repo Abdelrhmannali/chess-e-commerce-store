@@ -15,7 +15,18 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'payment_method' => ['required', Rule::in(['cash', 'visa'])],
+            'payment_method' => ['required', Rule::in([
+                'cash',
+                'visa',
+                'mastercard',
+                'mada',
+                'apple_pay',
+                'stc_pay',
+                'google_pay',
+                'samsung_pay',
+                'tamara',
+                'tabby',
+            ])],
             'shipping_address' => ['required', 'string'],
             'phone' => ['required', 'string', 'max:20'],
         ];
