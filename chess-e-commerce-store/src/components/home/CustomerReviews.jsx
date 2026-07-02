@@ -5,7 +5,7 @@ import RevealOnScroll from "./RevealOnScroll";
 const TESTIMONIALS = [
   {
     id: 1,
-    name: "خالد العتيبي",
+    name: "محمد حمدان",
     city: "الرياض",
     date: "12 مارس 2026",
     initial: "خ",
@@ -13,7 +13,7 @@ const TESTIMONIALS = [
   },
   {
     id: 2,
-    name: "نورة القحطاني",
+    name: "مريم حسن",
     city: "جدة",
     date: "28 فبراير 2026",
     initial: "ن",
@@ -21,7 +21,7 @@ const TESTIMONIALS = [
   },
   {
     id: 3,
-    name: "محمد الدوسري",
+    name: "محمد محمود",
     city: "الدمام",
     date: "5 مارس 2026",
     initial: "م",
@@ -45,7 +45,7 @@ const TESTIMONIALS = [
   },
   {
     id: 6,
-    name: "سارة العنزي",
+    name: "سارة عبدالله",
     city: "المدينة",
     date: "20 فبراير 2026",
     initial: "س",

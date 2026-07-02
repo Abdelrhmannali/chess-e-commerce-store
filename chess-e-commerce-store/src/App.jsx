@@ -366,6 +366,9 @@ export default function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onOpenAuth={() => setAuthOpen(true)}
+        categories={categories}
+        selectedCategory={selectedCategory}
+        onCategorySelect={handleCategorySelect}
       />
 
       <main className="flex-grow-1">

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { ShoppingCart, Heart, User as UserIcon, LogOut, ShieldCheck, Menu, X } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { ShoppingCart, Heart, User as UserIcon, LogOut, ShieldCheck, Menu, X, ChevronDown } from "lucide-react";
 import { FaChessKing } from "react-icons/fa6";
 import { useLanguage } from "../context/LanguageContext";
 import "../styles/Navbar.css";
@@ -12,18 +12,55 @@ export default function Navbar({
   activeTab,
   setActiveTab,
   onOpenAuth,
-  isAdminMode = false
+  isAdminMode = false,
+  categories = [],
+  selectedCategory = "all",
+  onCategorySelect
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [catalogOpen, setCatalogOpen] = useState(false);
+  const catalogRef = useRef(null);
   const { t } = useLanguage();
+
+  useEffect(() => {
+    if (!catalogOpen) return undefined;
+    const handleClickOutside = (event) => {
+      if (catalogRef.current && !catalogRef.current.contains(event.target)) {
+        setCatalogOpen(false);
+      }
+    };
+    const handleEscape = (event) => {
+      if (event.key === "Escape") setCatalogOpen(false);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [catalogOpen]);
 
   const handleNavClick = (tab) => {
     setActiveTab(tab);
     setMobileMenuOpen(false);
+    setCatalogOpen(false);
+  };
+
+  const handleCategoryPick = (slug) => {
+    setCatalogOpen(false);
+    setMobileMenuOpen(false);
+    if (typeof onCategorySelect === "function") {
+      onCategorySelect(slug);
+    } else {
+      setActiveTab("shop");
+    }
   };
 
   const navLinkClass = (tab) =>
     `beidaq-navbar__link${activeTab === tab ? " beidaq-navbar__link--active" : ""}`;
+
+  const showCatalogMenu = !isAdminMode && categories && categories.length > 0;
+  const allLabel = t("all") || "الكل";
 
   if (isAdminMode) {
     return (
@@ -84,9 +121,60 @@ export default function Navbar({
             <button type="button" onClick={() => handleNavClick("home")} className={navLinkClass("home")}>
               {t("collection")}
             </button>
-            <button type="button" onClick={() => handleNavClick("shop")} className={navLinkClass("shop")}>
-              {t("catalog")}
-            </button>
+
+            {showCatalogMenu ? (
+              <div
+                className="beidaq-navbar__catalog-wrap"
+                ref={catalogRef}
+                onMouseEnter={() => setCatalogOpen(true)}
+                onMouseLeave={() => setCatalogOpen(false)}
+              >
+                <button
+                  type="button"
+                  onClick={() => handleNavClick("shop")}
+                  onFocus={() => setCatalogOpen(true)}
+                  className={`${navLinkClass("shop")} beidaq-navbar__link--has-menu`}
+                  aria-haspopup="true"
+                  aria-expanded={catalogOpen}
+                >
+                  {t("catalog")}
+                  <ChevronDown size={12} className="beidaq-navbar__caret" aria-hidden="true" />
+                </button>
+
+                {catalogOpen && (
+                  <div className="beidaq-navbar__dropdown" role="menu">
+                    <button
+                      type="button"
+                      onClick={() => handleCategoryPick("all")}
+                      className={`beidaq-navbar__dropdown-item${
+                        selectedCategory === "all" ? " beidaq-navbar__dropdown-item--active" : ""
+                      }`}
+                      role="menuitem"
+                    >
+                      {allLabel}
+                    </button>
+                    {categories.map((cat) => (
+                      <button
+                        key={cat.slug || cat.id}
+                        type="button"
+                        onClick={() => handleCategoryPick(cat.slug)}
+                        className={`beidaq-navbar__dropdown-item${
+                          selectedCategory === cat.slug ? " beidaq-navbar__dropdown-item--active" : ""
+                        }`}
+                        role="menuitem"
+                      >
+                        {cat.name}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button type="button" onClick={() => handleNavClick("shop")} className={navLinkClass("shop")}>
+                {t("catalog")}
+              </button>
+            )}
+
             <button type="button" onClick={() => handleNavClick("account")} className={navLinkClass("account")}>
               {t("myAccount")}
             </button>
@@ -210,6 +298,35 @@ export default function Navbar({
             >
               {t("catalog")}
             </button>
+
+            {showCatalogMenu && (
+              <div className="beidaq-navbar__mobile-sublist" role="menu">
+                <button
+                  type="button"
+                  onClick={() => handleCategoryPick("all")}
+                  className={`beidaq-navbar__mobile-sublink${
+                    selectedCategory === "all" ? " beidaq-navbar__mobile-sublink--active" : ""
+                  }`}
+                  role="menuitem"
+                >
+                  {allLabel}
+                </button>
+                {categories.map((cat) => (
+                  <button
+                    key={cat.slug || cat.id}
+                    type="button"
+                    onClick={() => handleCategoryPick(cat.slug)}
+                    className={`beidaq-navbar__mobile-sublink${
+                      selectedCategory === cat.slug ? " beidaq-navbar__mobile-sublink--active" : ""
+                    }`}
+                    role="menuitem"
+                  >
+                    {cat.name}
+                  </button>
+                ))}
+              </div>
+            )}
+
             <button
               type="button"
               onClick={() => handleNavClick("account")}
